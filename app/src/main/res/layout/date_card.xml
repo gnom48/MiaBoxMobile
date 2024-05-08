@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:id="@+id/rootContainer"
+    android:background="@color/transparent0"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:background="@color/black"
+    android:layout_marginHorizontal="7dp"
+    android:paddingVertical="5dp"
+    android:paddingHorizontal="8dp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/dayOfWeekTextView"
+        style="@style/simpleText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="Пн"
+        android:layout_marginHorizontal="5dp"
+        android:layout_marginTop="5dp"
+        android:textAlignment="center"
+        android:textSize="12sp" />
+
+    <TextView
+        android:gravity="center"
+        style="@style/supportText"
+        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:layout_marginHorizontal="5dp"
+        android:layout_marginBottom="5dp"
+        android:id="@+id/numberTextView"
+        android:textAlignment="center"
+        android:text="04"/>
+
+</LinearLayout>

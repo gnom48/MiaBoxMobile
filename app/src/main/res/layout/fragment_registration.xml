@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/registrationFragmentRoot"
+    android:background="@color/black">
+
+    <com.example.pronedvizapp.AnimatedGradientViewOnAuthorize
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/gradientView"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/goBackImageButton"
+        android:id="@+id/titleTextView"
+        android:text="Регистрация"
+        android:textColor="@color/white"
+        android:textSize="30sp"
+        android:fontFamily="@font/montserrat_bold"/>
+
+    <ImageButton
+        android:id="@+id/goBackImageButton"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:background="@color/transparent0"
+        android:contentDescription="go back"
+        android:src="@drawable/back_arrow_icon" />
+
+    <ScrollView
+        android:layout_below="@+id/titleTextView"
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent">
+
+            <LinearLayout
+                android:id="@+id/linearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <EditText
+                    android:id="@+id/enterNameEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:hint="Имя"
+                    style="@style/lightHintEditText" />
+
+                <EditText
+                    android:id="@+id/enterSurnameEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:hint="Фамилия"
+                    style="@style/lightHintEditText" />
+
+                <EditText
+                    android:id="@+id/enterUserLoginEditText"
+                    style="@style/lightHintEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:hint="Логин" />
+
+                <EditText
+                    android:id="@+id/enterPasswordEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:hint="Пароль"
+                    style="@style/lightHintEditText" />
+
+            </LinearLayout>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/completeButton"
+                style="@style/customeButton"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/main_buttons_res"
+                android:text="Готово"
+                android:layout_marginTop="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+
+            <TextView
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:text="@string/goToAuthorizationText"
+                android:layout_marginTop="30dp"
+                app:layout_constraintTop_toBottomOf="@+id/completeButton"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginBottom="20dp"
+                style="@style/simpleText"
+                android:id="@+id/goToAuthorizationTextView"
+                android:textAlignment="center"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+</RelativeLayout>

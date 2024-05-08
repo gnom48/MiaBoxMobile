@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="simpleText">
+
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textColorHint">@color/white</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:paddingBottom">-10dp</item>
+        <item name="maxHeight">20dp</item>
+        <item name="android:fontFamily">@font/montserrat_medium</item>
+
+    </style>
+
+    <style name="supportText">
+
+        <item name="android:textColor">@color/light_grey</item>
+        <item name="android:textColorHint">@color/light_grey</item>
+        <item name="android:paddingBottom">-10dp</item>
+        <item name="android:textSize">14sp</item>
+        <item name="maxHeight">20dp</item>
+        <item name="android:fontFamily">@font/montserrat_medium</item>
+
+    </style>
+
+    <style name="lightHintEditText" parent="simpleText">
+        <item name="android:fontFamily">@font/montserrat_light</item>
+        <item name="android:padding">10dp</item>
+    </style>
+
+    <style name="customeButton">
+
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:fontFamily">@font/montserrat_regular</item>
+        <item name="backgroundColor">@color/light_blue</item>
+
+    </style>
+
+    <style name="NumberPickerStyle">
+        <item name="android:textColorPrimary">#FFFFFF</item>
+        <item name="textFillColor">#FFFFFF</item>
+        <item name="textOutlineColor">#FFFFFF</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textColorSecondary">#FFFFFF</item>
+    </style>
+
+</resources>

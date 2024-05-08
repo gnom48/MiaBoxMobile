@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="buttons_style" parent="ShapeAppearanceOverlay.Material3.Button">
+
+        <item name="android:textSize">14sp</item>
+        <item name="android:layout_marginTop">6dp</item>
+        <item name="android:layout_marginBottom">6dp</item>
+        <item name="android:layout_marginStart">60dp</item>
+        <item name="android:layout_marginEnd">60dp</item>
+        <item name="elevation">5dp</item>
+        <item name="android:layout_width">match_parent</item>
+
+    </style>
+
+    <style name="MainRoundedCornersButton" parent="@style/Widget.AppCompat.Button.Colored">
+        <item name="background">@drawable/main_buttons_res</item>
+        <item name="colorButtonNormal">#1a237e</item>
+        <item name="colorControlHighlight">#673ab7</item>
+        <item name="elevation">5dp</item>
+    </style>
+
+</resources>
