@@ -2,12 +2,22 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
 
     <application
         android:name=".MyApplication"
@@ -22,10 +32,16 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".MyTeamDetailsActivity"
+            android:name=".teams.QrCodeScannerActivity"
             android:exported="false" />
         <activity
-            android:name=".AllTeamsActivity"
+            android:name=".teams.JoinTeamActivity"
+            android:exported="false" />
+        <activity
+            android:name=".teams.MyTeamDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".teams.AllTeamsActivity"
             android:exported="false" />
 
         <receiver
@@ -34,6 +50,13 @@
         <receiver
             android:name=".notifications.NotificationBroadcast"
             android:enabled="true" />
+
+        <service
+            android:name=".bisness.calls.CallRecordingService"
+            android:enabled="true"
+            android:exported="true"
+            android:stopWithTask="false"
+            android:foregroundServiceType="microphone" />
 
         <activity
             android:name=".KnowledgeBaseActivity"

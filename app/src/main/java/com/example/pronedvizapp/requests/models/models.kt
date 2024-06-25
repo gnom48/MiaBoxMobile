@@ -107,3 +107,12 @@ data class UserTeamsWithInfoItem(
 )
 
 class UserTeamsWithInfo : ArrayList<UserTeamsWithInfoItem>()
+
+data class AddresInfo(
+    val record_id: Int,
+    val user_id: Int,
+    val address: String,
+    val lat: Float,
+    val lon: Float,
+    val date_time: Int
+)

@@ -12,6 +12,10 @@ import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import com.example.pronedvizapp.bisness.geo.GeoWorker
 import com.example.pronedvizapp.databinding.ActivityMainBinding
 import com.example.pronedvizapp.databinding.FragmentActionResultBinding
 import com.example.pronedvizapp.main.CreateEditNoteFragment
@@ -32,8 +36,8 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.await
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
-@Suppress("Since15")
 class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
@@ -53,9 +57,15 @@ class MainActivity : AppCompatActivity() {
         NotesFragment.getCompletedTasksCurrentUser(this) { completedTasks ->
             completedTasks?.let { it.forEach { showResultDialog(it as Task, this) } }
         }
+
+        val workRequest = OneTimeWorkRequestBuilder<GeoWorker>()
+            .setInitialDelay(10, TimeUnit.MINUTES)
+            .build()
+        WorkManager.getInstance(applicationContext)
+            .enqueueUniqueWork(GeoWorker.WORK_TAG, ExistingWorkPolicy.KEEP, workRequest)
     }
 
-    fun initUi() {
+    private fun initUi() {
         binding.gradientView.animateGradientColors()
 
         binding.bottomMenu.labelVisibilityMode = NavigationBarView.LABEL_VISIBILITY_LABELED

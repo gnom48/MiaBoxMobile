@@ -1,5 +1,6 @@
 package com.example.pronedvizapp
 
+import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -8,9 +9,12 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.pronedvizapp.authentication.AuthorizationFragment.Companion.getUserInfo
 import com.example.pronedvizapp.authentication.RegistrationFragment
+import com.example.pronedvizapp.bisness.calls.CallRecordingService
+import com.example.pronedvizapp.bisness.calls.CallRecordingService.Companion.isServiceRunning
 import com.example.pronedvizapp.requests.models.User
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
@@ -46,7 +50,11 @@ class InitialActivity : AppCompatActivity() {
             android.Manifest.permission.ACCESS_FINE_LOCATION,
             android.Manifest.permission.ACCESS_COARSE_LOCATION,
             android.Manifest.permission.POST_NOTIFICATIONS,
-            android.Manifest.permission.SCHEDULE_EXACT_ALARM
+            android.Manifest.permission.SCHEDULE_EXACT_ALARM,
+            android.Manifest.permission.RECORD_AUDIO,
+            android.Manifest.permission.READ_PHONE_STATE,
+            android.Manifest.permission.CAMERA,
+            android.Manifest.permission.FOREGROUND_SERVICE
         )
         val deniedPermissions = mutableListOf<String>()
 
@@ -59,7 +67,7 @@ class InitialActivity : AppCompatActivity() {
         if (deniedPermissions.isNotEmpty()) {
             MaterialAlertDialogBuilder(this)
                 .setTitle("Для полноценной работы приложения необходимо получить некоторые разрешения.")
-                .setMessage("Пожалуйста, разрешите доступ к вашим геоданным и уведомлениям для работы приложения")
+                .setMessage("Пожалуйста, разрешите доступ к вашим геоданным, камере и уведомлениям для работы приложения")
                 .setPositiveButton("Ок"){ _,_ ->
                     ActivityCompat.requestPermissions(
                         this,

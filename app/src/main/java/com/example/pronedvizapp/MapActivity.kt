@@ -2,7 +2,6 @@ package com.example.pronedvizapp
 
 import android.Manifest
 import android.app.AlertDialog
-import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -12,25 +11,27 @@ import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.ListAdapter
+import com.example.pronedvizapp.bisness.geo.GeoWorker.Companion.getAddressByCoords
 import com.example.pronedvizapp.databinding.ActivityMapBinding
 import com.example.pronedvizapp.requests.DadataApi
-import com.example.pronedvizapp.requests.ServerApiUsers
+import com.example.pronedvizapp.requests.ServerApiTeams
 import com.example.pronedvizapp.requests.models.AddressResponse
 import com.example.pronedvizapp.requests.models.Coordinates
-import com.example.pronedvizapp.requests.models.Statistics
+import com.example.pronedvizapp.teams.QrCodeData
+import com.example.pronedvizapp.teams.encodeSecret
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.dialog.MaterialDialogs
+import com.google.gson.Gson
 import com.yandex.mapkit.Animation
 import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.geometry.Point
@@ -38,11 +39,8 @@ import com.yandex.mapkit.layers.ObjectEvent
 import com.yandex.mapkit.map.CameraListener
 import com.yandex.mapkit.map.CameraPosition
 import com.yandex.mapkit.map.CameraUpdateReason
-import com.yandex.mapkit.map.IconStyle
 import com.yandex.mapkit.map.Map
 import com.yandex.mapkit.map.MapObjectCollection
-import com.yandex.mapkit.map.MapType
-import com.yandex.mapkit.map.RotationType
 import com.yandex.mapkit.map.VisibleRegionUtils
 import com.yandex.mapkit.search.Response
 import com.yandex.mapkit.search.SearchFactory
@@ -59,9 +57,13 @@ import com.yandex.runtime.network.NetworkError
 import com.yandex.runtime.network.RemoteError
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Callback
 import retrofit2.Retrofit
 import retrofit2.await
 import retrofit2.converter.gson.GsonConverterFactory
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 
 class MapActivity : AppCompatActivity(), Session.SearchListener, UserLocationObjectListener, CameraListener {
 
@@ -91,6 +93,9 @@ class MapActivity : AppCompatActivity(), Session.SearchListener, UserLocationObj
         }
 
         binding = ActivityMapBinding.inflate(layoutInflater)
+        setSupportActionBar(binding.constraintLayout)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+
         setContentView(binding.root)
 
         binding.addressesMapView.map.isNightModeEnabled = true
@@ -146,7 +151,7 @@ class MapActivity : AppCompatActivity(), Session.SearchListener, UserLocationObj
                     Animation(Animation.Type.SMOOTH, 2.0f), null
                 )
 
-                showAddresDialog()
+                showAddressDialog()
             } catch (e: Exception) {
                 return@setOnClickListener
             }
@@ -160,9 +165,27 @@ class MapActivity : AppCompatActivity(), Session.SearchListener, UserLocationObj
         geoService.requestLocationUpdates(locationRequest, geoCallback, null)
     }
 
-    private fun showAddresDialog() {
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+//        val t: MenuItem = findViewById(R.id.leaveTeamMenuItem)
+//        t.isVisible = true
+        menuInflater.inflate(R.menu.map_optional_menu_res, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return  when (item.itemId) {
+            R.id.unqueueImHereMenuItem -> {
+                // TODO: внеочередной запрос на адрес по координатам и передача на сервер
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+
+    private fun showAddressDialog() {
         lifecycleScope.launch {
-            val res = getAddressByCoords(this@MapActivity)
+            val res = getAddressByCoords(this@MapActivity, mLocation)
             res.onSuccess {
 //                val dialogBuilder = AlertDialog.Builder(this@MapActivity)
 //                dialogBuilder.setTitle(it.suggestions[0].value)
@@ -178,26 +201,6 @@ class MapActivity : AppCompatActivity(), Session.SearchListener, UserLocationObj
                 val e = it
                 Log.e("MiaBox", e.message.toString())
             }
-        }
-    }
-
-    suspend private fun getAddressByCoords(context: Context): Result<AddressResponse> = coroutineScope {
-        val retrofit = Retrofit.Builder()
-            .baseUrl(context.getString(R.string.server_ip_address))
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        val dadataApi = retrofit.create(DadataApi::class.java)
-
-        return@coroutineScope try {
-            val response = dadataApi.getAddressByCoordinates(Coordinates(mLocation.latitude, mLocation.longitude)).await()
-            if (response != null) {
-                Result.success(response)
-            } else {
-                Result.failure(Exception("Ошибка получения данных"))
-            }
-        } catch (e: Exception) {
-            Result.failure(e)
         }
     }
 

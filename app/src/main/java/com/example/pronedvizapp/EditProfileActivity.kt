@@ -7,7 +7,6 @@ import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.InputType
 import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -18,21 +17,15 @@ import com.example.pronedvizapp.databinding.EditProfileGenderDialogBinding
 import com.example.pronedvizapp.databinding.EditProfileNameDialogBinding
 import com.example.pronedvizapp.databinding.EditProfilePhoneDialogBinding
 import com.example.pronedvizapp.requests.ServerApiUsers
-import com.google.android.material.datepicker.MaterialDatePicker
-import com.squareup.picasso.Picasso
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.text.SimpleDateFormat
-import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.Period
 import java.time.ZoneOffset
 import java.util.Calendar
-import java.util.Locale
 
 class EditProfileActivity : AppCompatActivity() {
 
@@ -76,7 +69,7 @@ class EditProfileActivity : AppCompatActivity() {
                     return@setOnClickListener
                 }
                 MainActivity.currentUser!!.name = name
-                EditProfileActivity.syncUserPrifile(this)
+                EditProfileActivity.syncUserProfile(this)
                 dialog.dismiss()
                 showUserDataInFields()
             }
@@ -115,7 +108,7 @@ class EditProfileActivity : AppCompatActivity() {
 
                 if (selectedDate.isBefore(sixteenYearsAgo)) {
                     MainActivity.currentUser!!.birthday = selectedDate.atStartOfDay(ZoneOffset.UTC).toEpochSecond()
-                    syncUserPrifile(this)
+                    syncUserProfile(this)
                     showUserDataInFields()
                 } else {
                     Toast.makeText(this, "Выбранная дата была менее чем 16 лет назад. Выберите другую дату.", Toast.LENGTH_SHORT).show()
@@ -149,7 +142,7 @@ class EditProfileActivity : AppCompatActivity() {
 
                 MainActivity.currentUser!!.phone = phone
                 dialog.dismiss()
-                EditProfileActivity.syncUserPrifile(this)
+                EditProfileActivity.syncUserProfile(this)
                 showUserDataInFields()
             }
         }
@@ -195,7 +188,7 @@ class EditProfileActivity : AppCompatActivity() {
             }
 
             bindingDialog.saveButton.setOnClickListener {
-                EditProfileActivity.syncUserPrifile(this)
+                EditProfileActivity.syncUserProfile(this)
                 showUserDataInFields()
                 dialog.dismiss()
             }
@@ -225,7 +218,7 @@ class EditProfileActivity : AppCompatActivity() {
 
         private var isProfileSynchronized: Boolean = true
 
-        public fun syncUserPrifile(context: Context) {
+        public fun syncUserProfile(context: Context) {
             val retrofit = Retrofit.Builder()
                 .baseUrl(context.getString(R.string.server_ip_address))
                 .addConverterFactory(GsonConverterFactory.create())

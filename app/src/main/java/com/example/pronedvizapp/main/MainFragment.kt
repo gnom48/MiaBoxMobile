@@ -8,17 +8,17 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import com.example.pronedvizapp.AllTeamsActivity
+import androidx.core.content.ContextCompat
+import com.example.pronedvizapp.teams.AllTeamsActivity
 import com.example.pronedvizapp.EditProfileActivity
-import com.example.pronedvizapp.KnowledgeBaseActivity
 import com.example.pronedvizapp.MainActivity
 import com.example.pronedvizapp.MapActivity
 import com.example.pronedvizapp.R
 import com.example.pronedvizapp.ResultsActivity
 import com.example.pronedvizapp.WebViewActivity
+import com.example.pronedvizapp.bisness.calls.CallRecordingService
+import com.example.pronedvizapp.bisness.calls.CallRecordingService.Companion.isServiceRunning
 import com.example.pronedvizapp.databinding.FragmentMainBinding
-import com.squareup.picasso.Picasso
 
 class MainFragment : Fragment() {
 
@@ -84,8 +84,24 @@ class MainFragment : Fragment() {
         }
 
         binding.myTeamConstraintLayout.setOnClickListener {
-//            val intent = Intent(this.requireContext(), AllTeamsActivity::class.java)
-//            startActivity(intent)
+            val intent = Intent(this.requireContext(), AllTeamsActivity::class.java)
+            startActivity(intent)
+        }
+
+        if (isServiceRunning(this.requireContext(), CallRecordingService::class.java)) {
+            binding.recordMyCallsSwitch.isChecked = true
+        }
+        binding.recordMyCallsSwitch.setOnCheckedChangeListener { _, isChecked ->
+            val context = this.requireContext()
+            if (isChecked) {
+                if (!isServiceRunning(context, CallRecordingService::class.java)) {
+                    ContextCompat.startForegroundService(context, Intent(context, CallRecordingService::class.java))
+                }
+            } else {
+                if (isServiceRunning(context, CallRecordingService::class.java)) {
+                    context.stopService(Intent(context, CallRecordingService::class.java))
+                }
+            }
         }
 
         return binding.root

@@ -177,6 +177,40 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/recordMyCallsConstraintLayout"
+                android:layout_marginTop="2dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@color/panels_background">
+
+                <TextView
+                    style="@style/simpleText"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_light"
+                    android:text="Записывать мои звонки"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/recordMyCallsSwitch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    app:thumbTint="@color/switch_selector"
+                    android:layout_marginEnd="20dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="TouchTargetSizeCheck,UseSwitchCompatOrMaterialXml" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/resultsConstraintLayout"
                 android:layout_marginTop="2dp"
                 android:layout_width="match_parent"
@@ -270,7 +304,7 @@
                 android:textAlignment="center"
                 android:textColor="@color/light_grey"
                 android:layout_marginTop="20dp"
-                android:layout_marginBottom="70dp"
+                android:layout_marginBottom="105dp"
                 android:textSize="18dp"
                 android:text="@string/aboutApp"/>
 

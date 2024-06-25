@@ -14,9 +14,10 @@ import retrofit2.http.Query
 
 interface ServerApiTeams {
 
-    @PUT("team/join")
+    @POST("team/join")
     fun joinTeam(
         @Query("team_id") teamId: Int,
+        @Query("joined_by") joinedBy: Int,
         @Header("token-authorization") tokenAuthorization: String
     ): Call<Boolean>
 

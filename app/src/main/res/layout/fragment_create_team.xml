@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="10dp"
+    android:background="@drawable/no_tansparent_rounded_corners"
+    android:id="@+id/aboutActivityRoot">
+
+    <ImageButton
+        android:id="@+id/closeImageButton"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="end"
+        android:layout_margin="9dp"
+        android:background="@color/transparent0"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/close_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/aboutActivityNameTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Создание командного пространства"
+        android:layout_marginHorizontal="20dp"
+        android:textAlignment="center"
+        style="@style/simpleText"
+        android:textSize="22sp"
+        android:fontFamily="@font/montserrat_bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/closeImageButton" />
+
+    <TextView
+        android:id="@+id/textView21"
+        style="@style/supportText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20sp"
+        android:text="Введите название команды:"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/aboutActivityNameTextView" />
+
+    <androidx.appcompat.widget.AppCompatEditText
+        style="@style/simpleText"
+        android:id="@+id/enterTeamNameEditText"
+        android:background="@drawable/rounded_corners_res"
+        android:hint="Команда синих.."
+        android:textColorHint="@color/light_grey"
+        android:lines="1"
+        android:minHeight="48dp"
+        android:padding="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_margin="20dp"
+        android:singleLine="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView21"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/completeButton"
+        style="@style/customeButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="30dp"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginVertical="20dp"
+        android:background="@drawable/main_buttons_res"
+        android:text="  Создать  "
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,8 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.pronedvizapp.AllTeamsActivity
-import com.example.pronedvizapp.MyTeamDetailsActivity
+import com.example.pronedvizapp.teams.AllTeamsActivity
+import com.example.pronedvizapp.teams.MyTeamDetailsActivity
 import com.example.pronedvizapp.R
 import com.example.pronedvizapp.databinding.TeamCardBinding
 import com.example.pronedvizapp.requests.models.UserTeamsWithInfo
