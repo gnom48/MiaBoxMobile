@@ -1,16 +1,25 @@
 package com.example.pronedvizapp
 
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
+import com.example.pronedvizapp.adapters.MainInfoAdapter
+import com.example.pronedvizapp.adapters.MainInfoForCard
 import com.example.pronedvizapp.bisness.calls.CallRecordingService
 import com.example.pronedvizapp.bisness.calls.CallRecordingService.Companion.isServiceRunning
 import com.example.pronedvizapp.databinding.ActivityResultsBinding
+import com.example.pronedvizapp.requests.ServerApiUsers
 import com.example.pronedvizapp.requests.models.DAY_STATISTICS_PERIOD
 import com.example.pronedvizapp.requests.models.MONTH_STATISTICS_PERIOD
+import com.example.pronedvizapp.requests.models.StatisticsWithKpi
 import com.example.pronedvizapp.requests.models.WEEK_STATISTICS_PERIOD
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import retrofit2.Retrofit
+import retrofit2.await
+import retrofit2.converter.gson.GsonConverterFactory
 
 class ResultsActivity : AppCompatActivity() {
 
@@ -20,6 +29,14 @@ class ResultsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityResultsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        lifecycleScope.launch {
+            val userStatics = getUserStatisticsWithKpi(this@ResultsActivity, MainStatic.currentToken!!)
+            userStatics.onSuccess {
+                binding.kpiLevelTextView.text = it.user_level
+                binding.kpiTextView.text = it.salary_percentage.toString()
+            }
+        }
 
         binding.dayButton.isSelected = true
 
@@ -51,22 +68,37 @@ class ResultsActivity : AppCompatActivity() {
 
     private fun showResultsByPeriod(period: String) {
         lifecycleScope.launch {
-            val userStatics = MainActivity.getUserStatistics(period, this@ResultsActivity, MainActivity.currentToken!!)
+            val userStatics = MainActivity.getUserStatistics(period, this@ResultsActivity, MainStatic.currentToken!!)
             userStatics.onSuccess {
                 binding.countAnalyticsTextView.setText(it.analytics.toString())
                 binding.countCallsTextView.setText(it.calls.toString())
                 binding.countFlyersTextView.setText(it.flyers.toString())
                 binding.countDealsTextView.setText(it.deals.toString())
-
-                val callsKpi = it.calls / 20 * 100
-                val anakyticsKpi = it.analytics / 5 * 100
-                val dealsKpi = it.deals / 2 * 100
-                val flyersKpi = it.flyers / 20 * 100
-
-                val kpi = 0.2 * callsKpi + 0.3 * flyersKpi + 0.1 * anakyticsKpi + 0.4 * dealsKpi
-
-                binding.kpiTextView.setText(kpi.toString())
             }
         }
+    }
+
+    companion object {
+        public suspend fun getUserStatisticsWithKpi(context: Context, token: String): Result<StatisticsWithKpi> = coroutineScope {
+            val retrofit = Retrofit.Builder()
+                .baseUrl(context.getString(R.string.server_ip_address))
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+
+            val statisticsApi = retrofit.create(ServerApiUsers::class.java)
+
+            return@coroutineScope try {
+                val response = statisticsApi.getStatisticsWithKpi(token).await()
+                if (response != null) {
+                    Result.success(response)
+                } else {
+                    Result.failure(Exception("Ошибка получения данных"))
+                }
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+
+
     }
 }

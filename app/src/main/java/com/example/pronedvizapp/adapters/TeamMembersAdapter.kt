@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
 import com.example.pronedvizapp.MainActivity
+import com.example.pronedvizapp.MainStatic
 import com.example.pronedvizapp.R
 import com.example.pronedvizapp.databinding.FullMemberInfoDialogBinding
 import com.example.pronedvizapp.databinding.TeamUserCardBinding
@@ -32,7 +33,7 @@ class TeamMembersAdapter(val dataSource: List<Member>, val context: Context): Re
             binding.callsPreTextView.setText(item.statistics.day.calls.toString())
 
             binding.root.setOnClickListener {
-                if (dataSource.find { member -> member.user.id == MainActivity.currentUser!!.id }?.role?.name == UserStatuses.OWNER.name) {
+                if (dataSource.find { member -> member.user.id == MainStatic.currentUser!!.id }?.role?.name == UserStatuses.OWNER.name) {
                     val bindingDialog = FullMemberInfoDialogBinding.inflate(LayoutInflater.from(context))
 
                     bindingDialog.recyclerStatistics.adapter = FullStatisticsAdapter(item.statistics, context)

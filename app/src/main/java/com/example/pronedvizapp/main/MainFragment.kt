@@ -9,9 +9,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
+import com.example.pronedvizapp.CallsActivity
 import com.example.pronedvizapp.teams.AllTeamsActivity
 import com.example.pronedvizapp.EditProfileActivity
-import com.example.pronedvizapp.MainActivity
+import com.example.pronedvizapp.IFragmentTag
+import com.example.pronedvizapp.MainStatic
 import com.example.pronedvizapp.MapActivity
 import com.example.pronedvizapp.R
 import com.example.pronedvizapp.ResultsActivity
@@ -19,8 +22,9 @@ import com.example.pronedvizapp.WebViewActivity
 import com.example.pronedvizapp.bisness.calls.CallRecordingService
 import com.example.pronedvizapp.bisness.calls.CallRecordingService.Companion.isServiceRunning
 import com.example.pronedvizapp.databinding.FragmentMainBinding
+import kotlinx.coroutines.launch
 
-class MainFragment : Fragment() {
+class MainFragment(override val fragmentNavigationTag: String = "MainFragment") : Fragment(), IFragmentTag {
 
     lateinit var binding: FragmentMainBinding
 
@@ -40,18 +44,14 @@ class MainFragment : Fragment() {
 
         binding = FragmentMainBinding.inflate(inflater, container, false)
 
-        binding.userNameTextView.setText(MainActivity.currentUser!!.name)
+        binding.userNameTextView.setText(MainStatic.currentUser!!.name)
         binding.avatarImageView.setImageDrawable(this.requireContext().getDrawable(R.drawable.avatar))
         binding.avatarImageView.setForeground(getResources().getDrawable(R.drawable.image_view_rounded_corners, null))
 
-        // TODO: Picasso
-//        Picasso.get()
-//            .load(MainActivity.currentUser!!.photo + "потом убрать")
-//            .error(R.drawable.default_avatar)
-//            .resize(110, 110)
-//            .centerInside()
-//            .into(binding.avatarImageView)
-
+        lifecycleScope.launch {
+            ProfileFragment.bindUserImageAsync(this@MainFragment.requireContext().applicationContext, binding.avatarImageView)
+        }
+        
         binding.personalDataConstraintLayout.setOnClickListener {
             val intent = Intent(this.requireContext(), EditProfileActivity::class.java)
             startActivity(intent)
@@ -102,6 +102,11 @@ class MainFragment : Fragment() {
                     context.stopService(Intent(context, CallRecordingService::class.java))
                 }
             }
+        }
+
+        binding.recordMyCallsConstraintLayout.setOnClickListener {
+            val intent = Intent(this.requireContext(), CallsActivity::class.java)
+            startActivity(intent)
         }
 
         return binding.root

@@ -24,18 +24,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/goBackImageButton"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_margin="20dp"
                 android:background="@color/transparent0"
-                android:contentDescription="go back"
                 android:src="@drawable/back_arrow_icon"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="TouchTargetSizeCheck" />
+                app:layout_constraintTop_toTopOf="parent"/>
 
             <TextView
                 style="@style/simpleText"
@@ -305,45 +303,81 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/constraintLayout2"
+                android:id="@+id/constraintLayout3"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="wrap_content"
                 android:layout_marginHorizontal="30dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="20dp"
                 android:background="@drawable/kpi_res"
                 android:gravity="center"
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/linearLayout9">
 
-                <TextView
-                    style="@style/simpleText"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_marginTop="10dp"
+                    android:gravity="center"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="5dp"
-                    android:text="KPI = "
-                    android:textSize="25sp" />
+                    android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/kpiTextView"
-                    style="@style/simpleText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="5dp"
-                    android:text="87"
-                    android:textColor="#5BAF5B"
-                    android:textSize="25sp" />
+                    <TextView
+                        style="@style/simpleText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="5dp"
+                        android:text="KPI = "
+                        android:textSize="25sp" />
 
-                <TextView
-                    style="@style/simpleText"
-                    android:layout_width="wrap_content"
+                    <TextView
+                        android:id="@+id/kpiTextView"
+                        style="@style/simpleText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="5dp"
+                        android:text="87"
+                        android:textColor="#5BAF5B"
+                        android:textSize="25sp" />
+
+                    <TextView
+                        style="@style/simpleText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="5dp"
+                        android:text="%"
+                        android:textSize="25sp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_marginTop="10dp"
+                    android:gravity="center"
+                    android:layout_marginVertical="10dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="5dp"
-                    android:text="%"
-                    android:textSize="25sp" />
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/simpleText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="5dp"
+                        android:text="Уровень:"/>
+
+                    <TextView
+                        android:id="@+id/kpiLevelTextView"
+                        style="@style/simpleText"
+                        android:layout_marginStart="7dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="5dp"
+                        android:text="СПЕЦИАЛИСТ"
+                        android:textSize="20sp" />
+
+                </LinearLayout>
 
             </LinearLayout>
 

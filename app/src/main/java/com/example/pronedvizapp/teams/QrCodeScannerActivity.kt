@@ -34,6 +34,10 @@ class QrCodeScannerActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityQrCodeScannerBinding.inflate(layoutInflater)
+        binding.goBackPanel.setOnClickListener {
+            this.finish()
+        }
+
         barcodeView = binding.barcodeScanner
         val formats = listOf(BarcodeFormat.QR_CODE, BarcodeFormat.CODE_39)
         barcodeView.barcodeView.decoderFactory = DefaultDecoderFactory(formats)

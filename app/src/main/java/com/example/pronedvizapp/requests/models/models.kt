@@ -1,10 +1,6 @@
 package com.example.pronedvizapp.requests.models
 
-import android.os.Parcelable
-import com.example.pronedvizapp.bisness.Analytics
 import com.example.pronedvizapp.databases.models.INotesAdapterTemplete
-import com.google.gson.annotations.SerializedName
-import java.io.Serializable
 
 enum class UserTypes(val description: String) {
     COMMERCIAL("Риелтер коммерческой недвижимости"),
@@ -23,6 +19,12 @@ enum class WorkTasksTypes(val description: String) {
     OTHER("Нечто особенное")
 }
 
+data class Image(
+    var id: Int,
+    var name: String,
+    var data: String
+)
+
 data class User(
     var id: Int,
     var login: String,
@@ -33,7 +35,8 @@ data class User(
     var gender: String?,
     var birthday: Long?,
     var phone: String?,
-    val reg_date: Long
+    val reg_date: Long,
+    var image: Int
 )
 
 data class Note(
@@ -115,4 +118,50 @@ data class AddresInfo(
     val lat: Float,
     val lon: Float,
     val date_time: Int
+)
+
+enum class UserKpiLevels(val description: String) {
+    TRAINEE("Стажер"),
+    SPECIALIST("Специалист"),
+    EXPERT("Эксперт"),
+    TOP("ТОП")
+}
+
+data class StatisticsWithKpi(
+    val user_id: Int,
+    var flyers: Int,
+    var calls: Int,
+    var shows: Int,
+    var meets: Int,
+    var deals: Int,
+    var deposits: Int,
+    var searches: Int,
+    var analytics: Int,
+    var others: Int,
+    var user_level: String,
+    var salary_percentage: Float
+)
+
+data class CallsRecords(
+    val id: Int,
+    val name: String,
+    val data: ByteArray
+)
+
+data class UsersCalls(
+    val user_id: Int,
+    val record_id: Int,
+    val info: String = "",
+    val date_time: Int,
+    val phone_number: String,
+    val contact_name: String,
+    val length_seconds: Int,
+    val call_type: Int,
+    val transcription: String = "no transcription"
+)
+
+data class TranscriptionTask(
+    val transcription_task: String,
+    val date_time: Int,
+    val position: Int
 )

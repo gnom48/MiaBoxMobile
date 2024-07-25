@@ -13,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
+import com.example.pronedvizapp.IFragmentTag
 import com.example.pronedvizapp.R
 import com.example.pronedvizapp.databinding.FragmentAboutActivityBinding
 import com.example.pronedvizapp.databinding.FragmentWorkBinding
@@ -29,7 +30,7 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.util.Calendar
 
-class WorkFragment : Fragment() {
+class WorkFragment(override var fragmentNavigationTag: String = "WorkFragment") : Fragment(), IFragmentTag {
 
     lateinit var binding: FragmentWorkBinding
 
@@ -43,7 +44,6 @@ class WorkFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-
         binding = FragmentWorkBinding.inflate(inflater, container, false)
 
         binding.analyticsConstraintLayout.setOnClickListener{

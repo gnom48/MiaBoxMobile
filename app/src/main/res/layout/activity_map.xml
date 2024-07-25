@@ -24,18 +24,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/goBackImageButton"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_margin="20dp"
                 android:background="@color/transparent0"
-                android:contentDescription="go back"
                 android:src="@drawable/back_arrow_icon"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="TouchTargetSizeCheck" />
+                app:layout_constraintTop_toTopOf="parent"/>
 
             <TextView
                 style="@style/simpleText"
@@ -51,103 +49,149 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-<!--        <TextView-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="Геолокация записывается"-->
-<!--            android:layout_gravity="end"-->
-<!--            android:layout_marginEnd="10dp"-->
-<!--            style="@style/supportText"/>-->
-
     </androidx.appcompat.widget.Toolbar>
 
-    <com.yandex.mapkit.mapview.MapView
-        android:background="@drawable/rounded_corners_res"
-        android:id="@+id/addressesMapView"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/mapViewContainer"
+        android:layout_margin="20dp"
         android:layout_width="match_parent"
-        android:layout_height="350dp"
+        android:layout_height="300dp"
+        app:cardCornerRadius="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/constraintLayout"
-        android:layout_margin="20dp">
+        app:layout_constraintTop_toBottomOf="@id/constraintLayout">
 
-        <EditText
-            style="@style/simpleText"
-            android:id="@+id/searchEditText"
+        <com.yandex.mapkit.mapview.MapView
+            android:id="@+id/addressesMapView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
-            android:background="@drawable/no_tansparent_rounded_corners"
-            android:maxLines="1"
-            android:inputType="text"
-            android:layout_marginBottom="10dp"
-            android:hint="Поиск..."
-            android:paddingHorizontal="20dp"
-            android:imeOptions="actionSearch"
-            android:minHeight="48dp" />
+            android:layout_height="match_parent">
 
-        <ImageButton
-            android:id="@+id/cancelSearchButton"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_alignEnd="@+id/searchEditText"
-            android:layout_alignBottom="@+id/searchEditText"
-            android:layout_alignParentTop="true"
-            android:layout_marginEnd="10dp"
-            android:layout_marginTop="10dp"
-            android:background="@color/transparent0"
-            android:contentDescription="@string/app_name"
-            android:src="@drawable/close_image"
-            app:layout_constraintBottom_toBottomOf="@+id/searchEditText"
-            app:layout_constraintEnd_toEndOf="@+id/searchEditText"
-            app:layout_constraintTop_toTopOf="@+id/searchEditText"
-            tools:ignore="TouchTargetSizeCheck" />
+            <EditText
+                android:id="@+id/searchEditText"
+                style="@style/simpleText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/no_tansparent_rounded_corners"
+                android:hint="Поиск..."
+                android:imeOptions="actionSearch"
+                android:inputType="text"
+                android:maxLines="1"
+                android:minHeight="48dp"
+                android:paddingHorizontal="20dp" />
 
-    </com.yandex.mapkit.mapview.MapView>
+            <ImageButton
+                android:id="@+id/cancelSearchButton"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignEnd="@+id/searchEditText"
+                android:layout_alignBottom="@+id/searchEditText"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:background="@color/transparent0"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/close_image"
+                app:layout_constraintBottom_toBottomOf="@+id/searchEditText"
+                app:layout_constraintEnd_toEndOf="@+id/searchEditText"
+                app:layout_constraintTop_toTopOf="@+id/searchEditText"
+                tools:ignore="TouchTargetSizeCheck" />
+
+        </com.yandex.mapkit.mapview.MapView>
+
+    </androidx.cardview.widget.CardView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/geopositionFloatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
+        android:layout_marginEnd="5dp"
         android:layout_marginBottom="30dp"
         android:contentDescription="@string/aboutApp"
         android:src="@drawable/cursor_map"
         app:backgroundTint="@color/mainRichBlueEnd"
-        app:layout_constraintBottom_toBottomOf="@+id/addressesMapView"
-        app:layout_constraintEnd_toEndOf="@+id/addressesMapView"
+        app:layout_constraintBottom_toBottomOf="@+id/mapViewContainer"
+        app:layout_constraintEnd_toEndOf="@+id/mapViewContainer"
         app:tint="@color/white" />
 
-    <TextView
-        android:id="@+id/textView8"
-        style="@style/simpleText"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:layout_margin="10dp"
-        android:fontFamily="@font/montserrat_medium"
-        android:text="Последние адреса:"
-        app:layout_constraintEnd_toEndOf="@+id/addressesMapView"
-        app:layout_constraintStart_toStartOf="@+id/addressesMapView"
-        app:layout_constraintTop_toBottomOf="@+id/addressesMapView" />
+        android:id="@+id/whenAddressLinearLayout"
+        android:gravity="center_horizontal|center_vertical"
+        app:layout_constraintEnd_toEndOf="@+id/mapViewContainer"
+        app:layout_constraintStart_toStartOf="@+id/mapViewContainer"
+        app:layout_constraintTop_toBottomOf="@+id/mapViewContainer" >
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/showAddressesByPeriodTextView"
+            style="@style/customeButton"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/main_buttons_res"
+            android:gravity="center_horizontal"
+            android:text="@string/showAddressesByPeriod"
+            tools:ignore="TouchTargetSizeCheck" />
+
+        <LinearLayout
+            android:gravity="center_horizontal"
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/setDateStartTextView"
+                style="@style/supportText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="сегодня"
+                android:drawableRight="@drawable/baseline_calendar_month_24"/>
+
+            <TextView
+                android:layout_marginHorizontal="10dp"
+                style="@style/supportText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="-"/>
+
+            <TextView
+                android:id="@+id/setDateEndTextView"
+                style="@style/supportText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="сегодня"
+                android:drawableRight="@drawable/baseline_calendar_month_24"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
 
     <ListView
-        android:id="@+id/listView"
+        android:id="@+id/addressesListView"
         android:layout_width="match_parent"
         android:layout_height="250dp"
-        android:layout_margin="20dp"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginBottom="30dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView8" />
+        app:layout_constraintTop_toBottomOf="@+id/whenAddressLinearLayout" />
 
-    <ImageView
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:src="@drawable/no_data_img"
-        android:id="@+id/noDataImageView"
-        app:layout_constraintEnd_toEndOf="@+id/listView"
-        app:layout_constraintStart_toStartOf="@+id/listView"
-        app:layout_constraintTop_toTopOf="@+id/listView" />
+<!--    <ImageView-->
+<!--        android:layout_width="200dp"-->
+<!--        android:layout_height="200dp"-->
+<!--        android:src="@drawable/no_data_img"-->
+<!--        android:id="@+id/noDataImageView"-->
+<!--        app:layout_constraintEnd_toEndOf="@+id/addressesListView"-->
+<!--        app:layout_constraintStart_toStartOf="@+id/addressesListView"-->
+<!--        app:layout_constraintTop_toTopOf="@+id/addressesListView" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

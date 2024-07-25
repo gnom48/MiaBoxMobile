@@ -27,14 +27,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <ImageView
-                    android:scaleType="centerCrop"
-                    android:background="@drawable/rounded_corners_res"
-                    android:src="@drawable/avatar"
+                <androidx.cardview.widget.CardView
+                    android:layout_margin="20dp"
                     android:layout_width="120dp"
                     android:layout_height="120dp"
-                    android:id="@+id/avatarImageView"
-                    android:layout_margin="20dp"/>
+                    app:cardCornerRadius="20dp">
+
+                    <ImageView
+                        android:id="@+id/avatarImageView"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/avatar"/>
+
+                </androidx.cardview.widget.CardView>
 
                 <TextView
                     android:id="@+id/userNameTextView"

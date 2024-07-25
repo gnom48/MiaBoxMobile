@@ -11,6 +11,7 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.pronedvizapp.MainActivity
+import com.example.pronedvizapp.MainStatic
 import com.example.pronedvizapp.R
 import com.example.pronedvizapp.databases.DbViewModel
 import com.example.pronedvizapp.databases.LocalDb
@@ -47,7 +48,7 @@ abstract class Work(val context: Context, val workType: WorkTasksTypes) {
         val dbContext = LocalDb.getDb(context)
         val newWork = ActiveWorkOrm(
             null,
-            MainActivity.currentUser?.id!!.toLong(),
+            MainStatic.currentUser?.id!!.toLong(),
             "Работа",
             workStartTime.toEpochSecond(ZoneOffset.UTC),
             "Описание",
@@ -87,7 +88,7 @@ abstract class Work(val context: Context, val workType: WorkTasksTypes) {
         }
 
         //saveToDb(context)
-        val newTask = Task(0, workType.description, workStartTime.toEpochSecond(ZoneOffset.UTC), "Работа", workDuration.toSeconds().toInt(), MainActivity.currentUser!!.id, notifId)
+        val newTask = Task(0, workType.description, workStartTime.toEpochSecond(ZoneOffset.UTC), "Работа", workDuration.toSeconds().toInt(), MainStatic.currentUser!!.id, notifId)
 
         val retrofit = Retrofit.Builder()
             .baseUrl(context.getString(R.string.server_ip_address))
@@ -96,7 +97,7 @@ abstract class Work(val context: Context, val workType: WorkTasksTypes) {
 
         val taskApi = retrofit.create(ServerApiTasks::class.java)
 
-        val req = taskApi.addTask(newTask, MainActivity.currentToken!!)
+        val req = taskApi.addTask(newTask, MainStatic.currentToken!!)
         var resultAddition: Int? = null
         req.enqueue(object : Callback<Int?> {
             override fun onResponse(call: Call<Int?>, response: Response<Int?>) {
@@ -157,7 +158,7 @@ class CustomeWork(val _context: Context, val _workType: WorkTasksTypes) : Work(_
         }
 
         //saveToDb(context)
-        val newTask = Task(0, workType.description, workStartTime.toEpochSecond(ZoneOffset.UTC), this.desc, workDuration.toSeconds().toInt(), MainActivity.currentUser!!.id, notifId)
+        val newTask = Task(0, workType.description, workStartTime.toEpochSecond(ZoneOffset.UTC), this.desc, workDuration.toSeconds().toInt(), MainStatic.currentUser!!.id, notifId)
 
         val retrofit = Retrofit.Builder()
             .baseUrl(context.getString(R.string.server_ip_address))
@@ -166,7 +167,7 @@ class CustomeWork(val _context: Context, val _workType: WorkTasksTypes) : Work(_
 
         val taskApi = retrofit.create(ServerApiTasks::class.java)
 
-        val req = taskApi.addTask(newTask, MainActivity.currentToken!!)
+        val req = taskApi.addTask(newTask, MainStatic.currentToken!!)
         var resultAddition: Int? = null
         req.enqueue(object : Callback<Int?> {
             override fun onResponse(call: Call<Int?>, response: Response<Int?>) {

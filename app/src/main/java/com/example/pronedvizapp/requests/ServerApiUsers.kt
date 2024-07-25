@@ -1,11 +1,14 @@
 package com.example.pronedvizapp.requests
 
+import com.example.pronedvizapp.requests.models.Image
 import com.example.pronedvizapp.requests.models.Statistics
+import com.example.pronedvizapp.requests.models.StatisticsWithKpi
 import com.example.pronedvizapp.requests.models.User
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Query
@@ -34,7 +37,7 @@ interface ServerApiUsers {
         @Header("token-authorization") tokenAuthorization: String
     ): Call<Boolean?>
 
-    @GET("/user/statistics/update")
+    @PUT("/user/statistics/update")
     fun updateStatistics(
         @Query("statistic") statisticName: String,
         @Query("addvalue") addValue: Int,
@@ -46,5 +49,21 @@ interface ServerApiUsers {
         @Query("period") period: String,
         @Header("token-authorization") tokenAuthorization: String
     ): Call<Statistics?>
+
+    @GET("/user/statistics/get_kpi")
+    fun getStatisticsWithKpi(
+        @Header("token-authorization") tokenAuthorization: String
+    ): Call<StatisticsWithKpi?>
+
+    @POST("/user/set_image")
+    fun setImageToUser(
+        @Body image: Image,
+        @Header("token-authorization") tokenAuthorization: String
+    ): Call<Int?>
+
+    @GET("/user/get_image")
+    fun getImageByUser(
+        @Header("token-authorization") tokenAuthorization: String
+    ): Call<Image?>
 
 }

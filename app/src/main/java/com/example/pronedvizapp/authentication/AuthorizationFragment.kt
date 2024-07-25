@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.pronedvizapp.MainActivity
+import com.example.pronedvizapp.MainStatic
 import com.example.pronedvizapp.R
 import com.example.pronedvizapp.databases.DbViewModel
 import com.example.pronedvizapp.databinding.FragmentAuthorizationBinding
@@ -111,8 +112,8 @@ class AuthorizationFragment: Fragment() {
                         //                    Toast.makeText(this@AuthorizationFragment.requireContext(), "Ошибка записи в бд", Toast.LENGTH_SHORT).show()
                         //                }
                         //            }
-                        MainActivity.currentUser = userFromServer
-                        MainActivity.currentToken = token
+                        MainStatic.currentUser = userFromServer
+                        MainStatic.currentToken = token
 
                         val editor = preferences.edit()
                         editor.putString("LAST_LOGIN", binding.enterLoginEditText.text.toString()).apply()

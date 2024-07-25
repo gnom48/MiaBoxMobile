@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@color/black_background"
     android:layout_height="match_parent"
-    tools:context=".teams.MyTeamDetailsActivity">
+    tools:context=".CallsActivity"
+    android:background="@color/black_background">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/constraintLayout"
@@ -51,34 +51,17 @@
 
     </androidx.appcompat.widget.Toolbar>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/teamNameTextView"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
-        app:layout_constraintStart_toStartOf="parent"
-        android:text="Название команды"
-        android:layout_margin="10dp"
-        style="@style/simpleText"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView"
-        app:layout_constraintTop_toBottomOf="@+id/teamNameTextView"
-        app:layout_constraintStart_toStartOf="parent"
-        android:text="Участники:"
-        android:layout_margin="10dp"
-        style="@style/supportText"/>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:layout_marginTop="130dp"
-        android:id="@+id/recyclerView"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/rootSwipeRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        android:layout_marginTop="55dp">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

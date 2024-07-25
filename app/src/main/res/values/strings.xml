@@ -26,5 +26,6 @@
     <string name="map_api_key">800bff94-5dc3-46b8-8baf-6e2b2a3d3e18</string>
     <string name="secret">gnom48</string>
     <string name="about_qr_code_scan">Чтобы присоединиться к командному пространству, вы можете отсканировать QR-код, который сгенерирует администратор команды.</string>
+    <string name="showAddressesByPeriod">Показать адреса за период</string>
 
 </resources>

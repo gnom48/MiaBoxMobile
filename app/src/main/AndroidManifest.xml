@@ -7,16 +7,20 @@
         android:required="true" />
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
 
     <application
@@ -32,17 +36,25 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".CallsActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+        <activity
             android:name=".teams.QrCodeScannerActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".teams.JoinTeamActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".teams.MyTeamDetailsActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".teams.AllTeamsActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
 
         <receiver
             android:name=".notifications.NotificationApp"
@@ -50,51 +62,62 @@
         <receiver
             android:name=".notifications.NotificationBroadcast"
             android:enabled="true" />
+        <receiver
+            android:name=".notifications.MorningNotificationBroadcast"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
 
         <service
             android:name=".bisness.calls.CallRecordingService"
             android:enabled="true"
             android:exported="true"
+            android:foregroundServiceType="microphone"
+            android:stopWithTask="false" />
+        <service
+            android:name=".bisness.geo.GeoService"
+            android:enabled="true"
+            android:exported="true"
+            android:foregroundServiceType="location"
             android:stopWithTask="false"
-            android:foregroundServiceType="microphone" />
+            tools:ignore="ForegroundServicePermission" />
 
-        <activity
-            android:name=".KnowledgeBaseActivity"
-            android:exported="false"
-            android:screenOrientation="locked" />
         <activity
             android:name=".ResultsActivity"
             android:exported="false"
-            android:screenOrientation="locked" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".WebViewActivity"
             android:exported="false"
-            android:screenOrientation="locked" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".MapActivity"
             android:exported="false"
-            android:screenOrientation="locked" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".InitialActivity"
             android:exported="false"
-            android:screenOrientation="locked" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".EditProfileActivity"
             android:exported="false"
-            android:screenOrientation="locked" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".authentication.AuthenticationActivity"
             android:exported="false"
-            android:screenOrientation="locked"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".MainActivity"
             android:exported="false"
-            android:screenOrientation="locked" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".GreetingsActivity"
             android:exported="true"
-            android:screenOrientation="locked"
+            android:screenOrientation="portrait"
             android:theme="@style/GreetingsTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

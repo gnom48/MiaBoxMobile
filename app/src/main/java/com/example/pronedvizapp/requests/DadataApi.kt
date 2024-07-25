@@ -13,6 +13,6 @@ interface DadataApi {
         "Accept: application/json",
         "Authorization: Token 63fc0220f7a8411af1ec225a49ee35103be869c5"
     )
-    @POST("http://suggestions.dadata.ru/suggestions/api/4_1/rs/geolocate/address")
+    @POST("4_1/rs/geolocate/address")
     fun getAddressByCoordinates(@Body coordinates: Coordinates): Call<AddressResponse>
 }

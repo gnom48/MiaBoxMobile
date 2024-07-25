@@ -22,7 +22,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.pronedvizapp.IFragmentTag
 import com.example.pronedvizapp.MainActivity
+import com.example.pronedvizapp.MainStatic
 import com.example.pronedvizapp.R
 import com.example.pronedvizapp.adapters.DatesAdapter
 import com.example.pronedvizapp.adapters.NotesTasksAdapter
@@ -49,23 +51,20 @@ import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-class NotesFragment : Fragment() {
+class NotesFragment(override val fragmentNavigationTag: String = "NotesFragment") : Fragment(), IFragmentTag {
 
     var dataSource = ArrayList<INotesAdapterTemplete>()
     var tmp = ArrayList<INotesAdapterTemplete>()
 
     lateinit var binding: FragmentNotesBinding
 
-    @RequiresApi(Build.VERSION_CODES.O)
     var selectedDate: LocalDateTime = LocalDateTime.now()
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         selectedDate = LocalDateTime.now()
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
@@ -117,7 +116,7 @@ class NotesFragment : Fragment() {
                             PendingIntent.getBroadcast(this@NotesFragment.requireContext(), (objectToDelete as Note).notification_id, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
                         }
                         alarmManager.cancel(alarmIntent)
-                        deleteNote(this@NotesFragment.requireContext(), MainActivity.currentToken!!, objectToDelete.id)
+                        deleteNote(this@NotesFragment.requireContext(), MainStatic.currentToken!!, objectToDelete.id)
                     } else {
                         val alarmIntent = Intent(this@NotesFragment.requireContext(), NotificationApp::class.java).let {
                                 intent ->
@@ -126,7 +125,7 @@ class NotesFragment : Fragment() {
                             PendingIntent.getBroadcast(this@NotesFragment.requireContext(), (objectToDelete as Task).notification_id, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
                         }
                         alarmManager.cancel(alarmIntent)
-                        deleteTask(this@NotesFragment.requireContext(), MainActivity.currentToken!!, objectToDelete.id)
+                        deleteTask(this@NotesFragment.requireContext(), MainStatic.currentToken!!, objectToDelete.id)
                     }
 
                     binding.notesRecyclerView.adapter = NotesTasksAdapter(this@NotesFragment.requireActivity() as MainActivity, tmp)
@@ -149,7 +148,6 @@ class NotesFragment : Fragment() {
 
         binding.rootSwipeRefreshLayout.setOnRefreshListener {
             updateRecyclerViewAdapter()
-            binding.rootSwipeRefreshLayout.isRefreshing = false
         }
 
         updateRecyclerViewAdapter()
@@ -157,7 +155,6 @@ class NotesFragment : Fragment() {
         return binding.root
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun updateRecyclerViewAdapter() {
         refreshNotesTasks { unionList ->
             this@NotesFragment.dataSource = unionList
@@ -170,10 +167,10 @@ class NotesFragment : Fragment() {
             } else {
                 binding.notesRecyclerView.setBackgroundColor(Color.TRANSPARENT)
             }
+            binding.rootSwipeRefreshLayout.isRefreshing = false
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun getFormattedDateString(date: LocalDateTime): String {
         val zonedDateTime = date.atZone(ZoneId.systemDefault())
         val formatter = DateTimeFormatter.ofPattern("d MMMM yyyy, EEEE", Locale("ru"))
@@ -183,12 +180,12 @@ class NotesFragment : Fragment() {
 
     private fun refreshNotesTasks(callback: (ArrayList<INotesAdapterTemplete>) -> Unit) {
         lifecycleScope.launch {
-            val resNotes = getAllNotesCurrentUser(this@NotesFragment.requireContext(), MainActivity.currentToken!!)
+            val resNotes = getAllNotesCurrentUser(this@NotesFragment.requireContext(), MainStatic.currentToken!!)
             var unionList = ArrayList<INotesAdapterTemplete>()
 
             resNotes.onSuccess {
                 unionList.addAll(it as ArrayList<INotesAdapterTemplete>)
-                val resTasks = getAllTasksCurrentUser(this@NotesFragment.requireContext(), MainActivity.currentToken!!)
+                val resTasks = getAllTasksCurrentUser(this@NotesFragment.requireContext(), MainStatic.currentToken!!)
 
                 resTasks.onSuccess {
                     unionList.addAll(it as ArrayList<INotesAdapterTemplete>)
@@ -231,7 +228,7 @@ class NotesFragment : Fragment() {
             return delRes
         }
 
-        fun deleteTask(context: Context, token: String, taskId: Int): Boolean { //: Result<Boolean> = coroutineScope {
+        fun deleteTask(context: Context, token: String, taskId: Int): Boolean {
             val retrofit = Retrofit.Builder()
                 .baseUrl(context.getString(R.string.server_ip_address))
                 .addConverterFactory(GsonConverterFactory.create())
@@ -294,7 +291,7 @@ class NotesFragment : Fragment() {
             }
         }
 
-        public fun getCompletedTasksCurrentUser(context: Context, callback: (ArrayList<Task>) -> Unit): ArrayList<Task> {
+        public fun getCompletedTasksCurrentUser(context: Context, callback: (ArrayList<Task>) -> Unit) {
             var tasksList: ArrayList<Task> = arrayListOf()
 
             val retrofit = Retrofit.Builder()
@@ -304,21 +301,34 @@ class NotesFragment : Fragment() {
 
             val tasksApi = retrofit.create(ServerApiTasks::class.java)
 
-            val resp = tasksApi.getAllTasks(MainActivity.currentToken!!)
-            resp.enqueue(object : Callback<List<Task>> {
-                override fun onResponse(call: Call<List<Task>>, response: Response<List<Task>>) {
-                    if (response.isSuccessful) {
-                        val tasksList = response.body()?.filter { !LocalDateTime.now().isBefore(LocalDateTime.ofEpochSecond(it.date_time + it.duration_seconds, 0, ZoneOffset.UTC)) } as ArrayList<Task>
-                        callback(tasksList)
+            val preferences = context.getSharedPreferences("settings", Context.MODE_PRIVATE)
+            preferences.getString("TOKEN", null)?.let {token ->
+                val resp = tasksApi.getAllTasks(token)
+
+                resp.enqueue(object : Callback<List<Task>> {
+                    override fun onResponse(
+                        call: Call<List<Task>>,
+                        response: Response<List<Task>>
+                    ) {
+                        if (response.isSuccessful) {
+                            val tasksList = response.body()?.filter {
+                                !LocalDateTime.now().isBefore(
+                                    LocalDateTime.ofEpochSecond(
+                                        it.date_time + it.duration_seconds,
+                                        0,
+                                        ZoneOffset.UTC
+                                    )
+                                )
+                            } as ArrayList<Task>
+                            callback(tasksList)
+                        }
                     }
-                }
 
-                override fun onFailure(call: Call<List<Task>>, t: Throwable) {
-                    callback(arrayListOf<Task>())
-                }
-            })
-
-            return tasksList
+                    override fun onFailure(call: Call<List<Task>>, t: Throwable) {
+                        callback(arrayListOf<Task>())
+                    }
+                })
+            }
         }
     }
 }

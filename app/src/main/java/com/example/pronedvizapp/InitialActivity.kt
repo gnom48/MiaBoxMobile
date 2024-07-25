@@ -5,8 +5,11 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.PowerManager
+import android.provider.Settings
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -46,6 +49,15 @@ class InitialActivity : AppCompatActivity() {
     }
 
     private fun checkPermission() {
+        val intent = Intent()
+        val packN = packageName
+        val pm = getSystemService(Context.POWER_SERVICE) as PowerManager
+        if (!pm.isIgnoringBatteryOptimizations(packN)) {
+            intent.action = Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+            intent.data = Uri.parse("package:$packN")
+            startActivity(intent)
+        }
+
         val permissions = arrayOf(
             android.Manifest.permission.ACCESS_FINE_LOCATION,
             android.Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -112,8 +124,8 @@ class InitialActivity : AppCompatActivity() {
                                 Toast.makeText(this@InitialActivity, "Неверный логин или пароль", Toast.LENGTH_SHORT).show()
                                 return@launch
                             }
-                            MainActivity.currentUser = userFromServer
-                            MainActivity.currentToken = token
+                            MainStatic.currentUser = userFromServer
+                            MainStatic.currentToken = token
 
                             val editor = preferences.edit()
                             editor.putString("LAST_LOGIN", login).apply()

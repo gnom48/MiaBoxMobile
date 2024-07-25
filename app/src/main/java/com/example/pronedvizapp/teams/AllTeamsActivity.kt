@@ -13,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.pronedvizapp.EditProfileActivity
 import com.example.pronedvizapp.MainActivity
+import com.example.pronedvizapp.MainStatic
 import com.example.pronedvizapp.R
 import com.example.pronedvizapp.adapters.TeamsAdapter
 import com.example.pronedvizapp.databinding.ActivityAllTeamsBinding
@@ -48,7 +49,7 @@ class AllTeamsActivity : AppCompatActivity() {
         }
 
         lifecycleScope.launch {
-            val res = getMyTeamsInfo(this@AllTeamsActivity, MainActivity.currentToken!!)
+            val res = getMyTeamsInfo(this@AllTeamsActivity, MainStatic.currentToken!!)
             res.onSuccess {
                 it.sortBy { userTeamsWithInfoItem -> userTeamsWithInfoItem.team.name }
                 teamsInfo = it
@@ -89,7 +90,7 @@ class AllTeamsActivity : AppCompatActivity() {
                 lifecycleScope.launch {
                     val res = postCreatTeam(
                         this@AllTeamsActivity,
-                        MainActivity.currentToken!!,
+                        MainStatic.currentToken!!,
                         Team(0, teamName, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC))
                     )
                     res.onSuccess { }
@@ -118,7 +119,7 @@ class AllTeamsActivity : AppCompatActivity() {
 
     private fun updateTeams(callback: (UserTeamsWithInfo) -> Unit) {
         lifecycleScope.launch {
-            val res = getMyTeamsInfo(this@AllTeamsActivity, MainActivity.currentToken!!)
+            val res = getMyTeamsInfo(this@AllTeamsActivity, MainStatic.currentToken!!)
             res.onSuccess {
                 it.sortBy { userTeamsWithInfoItem -> userTeamsWithInfoItem.team.name }
                 teamsInfo = it

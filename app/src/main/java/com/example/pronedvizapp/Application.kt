@@ -30,7 +30,6 @@ class MyApplication : Application() {
     private fun registerAppLifecycleObserver() {
         ProcessLifecycleOwner.get().lifecycle.addObserver(object : LifecycleObserver {
             @SuppressLint("ScheduleExactAlarm")
-            @RequiresApi(Build.VERSION_CODES.O)
             @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
             fun onAppBackgrounded() {
                 val calendar = Calendar.getInstance()

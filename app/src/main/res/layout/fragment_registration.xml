@@ -64,6 +64,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
+                    android:singleLine="true"
                     android:hint="Имя"
                     style="@style/lightHintEditText" />
 
@@ -72,12 +73,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
+                    android:singleLine="true"
                     android:hint="Фамилия"
                     style="@style/lightHintEditText" />
 
                 <EditText
                     android:id="@+id/enterUserLoginEditText"
                     style="@style/lightHintEditText"
+                    android:singleLine="true"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
@@ -88,6 +91,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
+                    android:singleLine="true"
                     android:hint="Пароль"
                     style="@style/lightHintEditText" />
 

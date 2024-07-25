@@ -1,10 +1,12 @@
 package com.example.pronedvizapp
 
 import android.Manifest
-import android.app.AlertDialog
+import android.app.DatePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.PointF
 import android.location.Location
@@ -15,23 +17,30 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
-import com.example.pronedvizapp.bisness.geo.GeoWorker.Companion.getAddressByCoords
+import com.example.pronedvizapp.adapters.AddressesAdapter
+import com.example.pronedvizapp.bisness.geo.GeoService
 import com.example.pronedvizapp.databinding.ActivityMapBinding
 import com.example.pronedvizapp.requests.DadataApi
-import com.example.pronedvizapp.requests.ServerApiTeams
+import com.example.pronedvizapp.requests.ServerApiAddress
+import com.example.pronedvizapp.requests.ServerApiTasks
+import com.example.pronedvizapp.requests.ServerApiUsers
+import com.example.pronedvizapp.requests.models.AddresInfo
 import com.example.pronedvizapp.requests.models.AddressResponse
 import com.example.pronedvizapp.requests.models.Coordinates
-import com.example.pronedvizapp.teams.QrCodeData
-import com.example.pronedvizapp.teams.encodeSecret
+import com.example.pronedvizapp.requests.models.Image
+import com.example.pronedvizapp.requests.models.Task
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
-import com.google.gson.Gson
+import com.google.android.material.datepicker.MaterialStyledDatePickerDialog
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.yandex.mapkit.Animation
 import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.geometry.Point
@@ -62,12 +71,20 @@ import retrofit2.Callback
 import retrofit2.Retrofit
 import retrofit2.await
 import retrofit2.converter.gson.GsonConverterFactory
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.ZoneId
 import java.time.ZoneOffset
+import java.util.Calendar
+import java.util.Locale
 
 class MapActivity : AppCompatActivity(), Session.SearchListener, UserLocationObjectListener, CameraListener {
 
     lateinit var binding: ActivityMapBinding
+
+    private lateinit var selectedLocalDateTimeStartPeriod: LocalDateTime
+    private lateinit var selectedLocalDateTimeEndPeriod: LocalDateTime
 
     private val geoService by lazy { LocationServices.getFusedLocationProviderClient(this) }
     private val locationRequest by lazy { initLocationRequest() }
@@ -98,6 +115,8 @@ class MapActivity : AppCompatActivity(), Session.SearchListener, UserLocationObj
 
         setContentView(binding.root)
 
+        selectedLocalDateTimeStartPeriod = LocalDateTime.of(LocalDate.now(), LocalTime.of(0,0, 1))
+        selectedLocalDateTimeEndPeriod = LocalDateTime.of(LocalDate.now(), LocalTime.of(23,59, 59))
         binding.addressesMapView.map.isNightModeEnabled = true
 
         binding.goBackPanel.setOnClickListener {
@@ -142,6 +161,66 @@ class MapActivity : AppCompatActivity(), Session.SearchListener, UserLocationObj
             false
         }
 
+        binding.setDateStartTextView.setOnClickListener {
+            val year = selectedLocalDateTimeStartPeriod.year
+            val month = selectedLocalDateTimeStartPeriod.monthValue
+            val day = selectedLocalDateTimeStartPeriod.dayOfMonth
+
+            val datePickerDialog = DatePickerDialog(this, DatePickerDialog.OnDateSetListener { _, selectedYear, selectedMonth, selectedDay ->
+                if (LocalDateTime.of(selectedYear, selectedMonth + 1, selectedDay, selectedLocalDateTimeStartPeriod.hour, selectedLocalDateTimeStartPeriod.minute, selectedLocalDateTimeStartPeriod.second).isAfter(selectedLocalDateTimeEndPeriod)) {
+                    MaterialAlertDialogBuilder(this@MapActivity)
+                        .setMessage("Извините, выберите дату начала периода раньше даты окончания!")
+                        .setPositiveButton("Ок") { dialog, _ ->
+                            dialog.dismiss()
+                        }
+                        .create()
+                        .show()
+                    return@OnDateSetListener
+                }
+                val selectedDate = String.format(Locale.US, "%02d.%02d.%04d", selectedDay, selectedMonth + 1, selectedYear)
+                selectedLocalDateTimeStartPeriod = LocalDateTime.of(selectedYear, selectedMonth, selectedDay + 1, selectedLocalDateTimeStartPeriod.hour, selectedLocalDateTimeStartPeriod.minute, selectedLocalDateTimeStartPeriod.second)
+                binding.setDateStartTextView.text = selectedDate
+            }, year, month-1, day).apply {
+                datePicker.maxDate = selectedLocalDateTimeEndPeriod.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+            }
+            datePickerDialog.setTitle("Начало периода")
+
+            datePickerDialog.show()
+        }
+
+        binding.setDateEndTextView.setOnClickListener {
+            val year = selectedLocalDateTimeEndPeriod.year
+            val month = selectedLocalDateTimeEndPeriod.monthValue
+            val day = selectedLocalDateTimeEndPeriod.dayOfMonth
+
+            val datePickerDialog = DatePickerDialog(this, DatePickerDialog.OnDateSetListener { _, selectedYear, selectedMonth, selectedDay ->
+                if (LocalDateTime.of(selectedYear, selectedMonth + 1, selectedDay, selectedLocalDateTimeEndPeriod.hour, selectedLocalDateTimeEndPeriod.minute, selectedLocalDateTimeEndPeriod.second).isBefore(selectedLocalDateTimeStartPeriod)) {
+                    MaterialAlertDialogBuilder(this@MapActivity)
+                        .setMessage("Извините, выберите дату окончания периода позже даты начала!")
+                        .setPositiveButton("Ок") { dialog, _ ->
+                            dialog.dismiss()
+                        }
+                        .create()
+                        .show()
+                    return@OnDateSetListener
+                }
+                val selectedDate = String.format(Locale.US, "%02d.%02d.%04d", selectedDay, selectedMonth + 1, selectedYear)
+                selectedLocalDateTimeEndPeriod = LocalDateTime.of(selectedYear, selectedMonth + 1, selectedDay, selectedLocalDateTimeEndPeriod.hour, selectedLocalDateTimeEndPeriod.minute, selectedLocalDateTimeEndPeriod.second)
+                binding.setDateEndTextView.text = selectedDate
+            }, year, month-1, day).apply {
+                datePicker.minDate = selectedLocalDateTimeStartPeriod.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+            }
+            datePickerDialog.setTitle("Конец периода")
+
+            datePickerDialog.show()
+        }
+
+        binding.showAddressesByPeriodTextView.setOnClickListener {
+            it.isEnabled = false
+            updateGeoPoints()
+            it.isEnabled = true
+        }
+
         binding.geopositionFloatingActionButton.setOnClickListener {
             try {
                 val tPoint = Point(mLocation.latitude, mLocation.longitude)
@@ -150,8 +229,6 @@ class MapActivity : AppCompatActivity(), Session.SearchListener, UserLocationObj
                     CameraPosition(tPoint, 12.0f, 0.0f, 0.0f),
                     Animation(Animation.Type.SMOOTH, 2.0f), null
                 )
-
-                showAddressDialog()
             } catch (e: Exception) {
                 return@setOnClickListener
             }
@@ -165,9 +242,56 @@ class MapActivity : AppCompatActivity(), Session.SearchListener, UserLocationObj
         geoService.requestLocationUpdates(locationRequest, geoCallback, null)
     }
 
+    private fun updateGeoPoints() {
+        val mapObjects: MapObjectCollection = binding.addressesMapView.map.mapObjects
+        mapObjects.clear()
+
+        getAllAddresses(
+            MainStatic.currentUser!!.id,
+            selectedLocalDateTimeStartPeriod.toEpochSecond(ZoneOffset.UTC).toInt(),
+            selectedLocalDateTimeEndPeriod.toEpochSecond(ZoneOffset.UTC).toInt(),
+            this.applicationContext) {addresses ->
+
+            if (addresses.isEmpty()) {
+                binding.addressesListView.setBackgroundResource(R.drawable.no_data_img_background)
+            } else {
+                binding.addressesListView.adapter = AddressesAdapter(this@MapActivity, addresses.map { it.address })
+                binding.addressesListView.setOnItemClickListener { p0, p1, p2, p3 ->
+                    // TODO: перемещение камеры на отметку на карте
+                }
+
+            }
+
+            val bitmapPoint = createBitmapFromVector(R.drawable.baseline_location_pin_24)
+            for (addressInfo in addresses) {
+                mapObjects.addPlacemark(
+                    Point(
+                        addressInfo.lat.toDouble(),
+                        addressInfo.lon.toDouble()
+                    ),
+                    ImageProvider.fromBitmap(
+                        bitmapPoint,
+                        true,
+                        "MAP_POINT_RED"
+                    ))
+            }
+        }
+    }
+
+    private fun createBitmapFromVector(art: Int): Bitmap? {
+        val drawable = ContextCompat.getDrawable(this, art) ?: return null
+        val bitmap = Bitmap.createBitmap(
+            drawable.intrinsicWidth,
+            drawable.intrinsicHeight,
+            Bitmap.Config.ARGB_8888
+        ) ?: return null
+        val canvas = Canvas(bitmap)
+        drawable.setBounds(0, 0, canvas.width, canvas.height)
+        drawable.draw(canvas)
+        return bitmap
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-//        val t: MenuItem = findViewById(R.id.leaveTeamMenuItem)
-//        t.isVisible = true
         menuInflater.inflate(R.menu.map_optional_menu_res, menu)
         return true
     }
@@ -175,34 +299,58 @@ class MapActivity : AppCompatActivity(), Session.SearchListener, UserLocationObj
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return  when (item.itemId) {
             R.id.unqueueImHereMenuItem -> {
-                // TODO: внеочередной запрос на адрес по координатам и передача на сервер
+                lifecycleScope.launch {
+                    val res = getAddressByCoordsAsync(this@MapActivity, mLocation)
+                    res.onSuccess { address ->
+                        val serverApiAddressAdditionResponse = GeoService.addAddressRecordAsync(
+                            applicationContext, AddresInfo(
+                                -1,
+                                MainStatic.currentUser!!.id,
+                                address.suggestions[0].value,
+                                mLocation!!.latitude.toFloat(),
+                                mLocation!!.longitude.toFloat(),
+                                LocalDateTime.now().toEpochSecond(ZoneOffset.UTC).toInt()
+                            )
+                        )
+                        serverApiAddressAdditionResponse.onSuccess {
+                            Toast.makeText(this@MapActivity.applicationContext, "Адрес записан", Toast.LENGTH_SHORT).show()
+                        }
+                        serverApiAddressAdditionResponse.onFailure { e ->
+                            Log.e("MiaBox", "${e.message.toString()} | $address")
+                            Toast.makeText(this@MapActivity.applicationContext, "Ошибка отправки данных на сервер", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                    res.onFailure {
+                        Log.e("MiaBox", it.message.toString())
+                        Toast.makeText(this@MapActivity.applicationContext, "Ошибка запроса к стороннему API: ${it.message.toString()}", Toast.LENGTH_SHORT).show()
+                    }
+                }
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
     }
 
+    public suspend fun getAddressByCoordsAsync(context: Context, mLocation: Location): kotlin.Result<AddressResponse> = coroutineScope {
+        val retrofit = Retrofit.Builder()
+            .baseUrl("http://suggestions.dadata.ru/suggestions/api/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
 
-    private fun showAddressDialog() {
-        lifecycleScope.launch {
-            val res = getAddressByCoords(this@MapActivity, mLocation)
-            res.onSuccess {
-//                val dialogBuilder = AlertDialog.Builder(this@MapActivity)
-//                dialogBuilder.setTitle(it.suggestions[0].value)
-//                dialogBuilder.setPositiveButton("OK") { dialog, _ ->
-//                    dialog.dismiss()
-//                }
-//                val dialog = dialogBuilder.create()
-//                dialog.show()
-                binding.listView.adapter = ArrayAdapter<String>(this@MapActivity, R.layout.address_card, arrayListOf(it.suggestions[0].value))
-                binding.noDataImageView.visibility = View.GONE
+        val dadataApi = retrofit.create(DadataApi::class.java)
+
+        return@coroutineScope try {
+            val response = dadataApi.getAddressByCoordinates(Coordinates(mLocation.latitude, mLocation.longitude)).await()
+            if (response != null) {
+                kotlin.Result.success(response)
+            } else {
+                kotlin.Result.failure(Exception("Ошибка получения данных"))
             }
-            res.onFailure {
-                val e = it
-                Log.e("MiaBox", e.message.toString())
-            }
+        } catch (e: Exception) {
+            kotlin.Result.failure(e)
         }
     }
+
 
     private fun initLocationRequest(): LocationRequest {
         var request = LocationRequest.create()
@@ -281,13 +429,9 @@ class MapActivity : AppCompatActivity(), Session.SearchListener, UserLocationObj
         userLocationView.accuracyCircle.fillColor = Color.TRANSPARENT
     }
 
-    override fun onObjectRemoved(userLocationView: UserLocationView) {
+    override fun onObjectRemoved(userLocationView: UserLocationView) { }
 
-    }
-
-    override fun onObjectUpdated(userLocationView: UserLocationView, objectEvent: ObjectEvent) {
-
-    }
+    override fun onObjectUpdated(userLocationView: UserLocationView, objectEvent: ObjectEvent) { }
 
     override fun onCameraPositionChanged(
         map: Map,
@@ -311,4 +455,34 @@ class MapActivity : AppCompatActivity(), Session.SearchListener, UserLocationObj
         super.onSaveInstanceState(outState)
         outState.putBoolean("haveApiKey", true)
     }
+
+    companion object {
+
+        public fun getAllAddresses(userId: Int, dateStart: Int, dateEnd: Int, context: Context, callback: (ArrayList<AddresInfo>) -> Unit) {
+            val retrofit = Retrofit.Builder()
+                .baseUrl(context.getString(R.string.server_ip_address))
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+
+            val addressApi = retrofit.create(ServerApiAddress::class.java)
+
+            val resp = addressApi.getUserAddressesByPeriod(userId, dateStart, dateEnd, MainStatic.currentToken!!)
+            resp.enqueue(object : Callback<List<AddresInfo>> {
+                override fun onResponse(call: Call<List<AddresInfo>>, response: retrofit2.Response<List<AddresInfo>>) {
+                    if (response.isSuccessful) {
+                        response.body()?.let { callback(ArrayList(it)) }
+                        return
+                    }
+
+                    callback(arrayListOf<AddresInfo>())
+                }
+
+                override fun onFailure(call: Call<List<AddresInfo>>, t: Throwable) {
+                    callback(arrayListOf<AddresInfo>())
+                }
+            })
+        }
+    }
+
+
 }

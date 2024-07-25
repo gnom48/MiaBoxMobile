@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.pronedvizapp.MainActivity
+import com.example.pronedvizapp.MainStatic
 import com.example.pronedvizapp.R
 import com.example.pronedvizapp.adapters.TeamsAdapter
 import com.example.pronedvizapp.databinding.ActivityJoinTeamBinding
@@ -69,7 +70,7 @@ class JoinTeamActivity : AppCompatActivity() {
                     }
                     binding.scanResultTextView.text = "Ваша новая команда: \"${inviteData.teamId}\""
                     lifecycleScope.launch {
-                        val res = joinToTeam(this@JoinTeamActivity, MainActivity.currentToken!!, inviteData.teamId, inviteData.authorId)
+                        val res = joinToTeam(this@JoinTeamActivity, MainStatic.currentToken!!, inviteData.teamId, inviteData.authorId)
                         res.onSuccess {
                             binding.scanResultTextView.text = "Вы успешно присоединились к команде!\nПерейдите к списку команд и посмотрите."
                             CoroutineScope(Dispatchers.IO).launch {

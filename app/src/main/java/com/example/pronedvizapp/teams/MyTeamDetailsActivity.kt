@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.pronedvizapp.MainActivity
+import com.example.pronedvizapp.MainStatic
 import com.example.pronedvizapp.R
 import com.example.pronedvizapp.adapters.TeamMembersAdapter
 import com.example.pronedvizapp.databinding.ActivityMyTeamDetailsBinding
@@ -83,7 +84,7 @@ class MyTeamDetailsActivity : AppCompatActivity() {
 
                         val teamsApi = retrofit.create(ServerApiTeams::class.java)
 
-                        val resp = teamsApi.leaveTeam(teamInfo.team.id, MainActivity.currentToken!!)
+                        val resp = teamsApi.leaveTeam(teamInfo.team.id, MainStatic.currentToken!!)
                         resp.enqueue(object : Callback<Boolean> {
                             override fun onResponse(call: Call<Boolean>, response: Response<Boolean>) {
                                 if (response.isSuccessful) {
@@ -110,7 +111,7 @@ class MyTeamDetailsActivity : AppCompatActivity() {
             R.id.inviteTeamMenuItem -> {
                 val jsonData = Gson().toJson(QrCodeData(
                     teamInfo.team.id,
-                    MainActivity.currentUser!!.id,
+                    MainStatic.currentUser!!.id,
                     LocalDateTime.now().toEpochSecond(ZoneOffset.UTC),
                     encodeSecret(this@MyTeamDetailsActivity)))
                 val bitmap = generateQRCode(jsonData)

@@ -10,6 +10,7 @@ import java.io.File
 import java.io.IOException
 import java.lang.RuntimeException
 
+// Заморожено
 class CallRecorder(private val context: Context) {
 
     private var mediaRecorder: MediaRecorder? = null

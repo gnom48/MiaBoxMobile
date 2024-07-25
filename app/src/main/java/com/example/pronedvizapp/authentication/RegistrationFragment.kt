@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
 import com.example.pronedvizapp.MainActivity
+import com.example.pronedvizapp.MainStatic
 import com.example.pronedvizapp.R
 import com.example.pronedvizapp.databinding.FragmentRegistrationBinding
 import com.example.pronedvizapp.requests.ServerApiUsers
@@ -76,7 +77,8 @@ class RegistrationFragment: Fragment() {
                 "",
                 0,
                 "",
-                0
+                0,
+                1
             )
 
             var token: String? = ""
@@ -103,8 +105,8 @@ class RegistrationFragment: Fragment() {
                         //                Toast.makeText(this@RegistrationFragment.requireContext(), "Ошибка записи в бд", Toast.LENGTH_SHORT).show()
                         //            }
 
-                        MainActivity.currentToken = token
-                        MainActivity.currentUser = newUser
+                        MainStatic.currentToken = token
+                        MainStatic.currentUser = newUser
 
                         val editor = preferences.edit()
                         editor.putString("LAST_LOGIN", newUser.login).apply()
@@ -175,7 +177,7 @@ class RegistrationFragment: Fragment() {
                 if (response != -1) {
                     Result.success(response)
                 } else {
-                    Result.failure(Exception("Ошибка авторизации"))
+                    Result.failure(Exception("Ошибка регистрации"))
                 }
             } catch (e: Exception) {
                 Result.failure(e)

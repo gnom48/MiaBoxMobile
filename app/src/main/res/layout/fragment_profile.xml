@@ -38,24 +38,32 @@
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="10dp">
 
-                    <ImageView
-                        android:id="@+id/photoImageView"
+                    <androidx.cardview.widget.CardView
                         android:layout_width="120dp"
                         android:layout_height="120dp"
-                        android:src="@drawable/avatar"
+                        app:cardCornerRadius="20dp"
+                        android:id="@+id/photoCardView"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        android:background="@drawable/rounded_corners_res"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"/>
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <ImageView
+                            android:id="@+id/photoImageView"
+                            android:layout_width="120dp"
+                            android:layout_height="120dp"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/avatar"/>
+
+                    </androidx.cardview.widget.CardView>
 
                     <View
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:background="@drawable/green_circle_online"
                         android:elevation="15dp"
-                        app:layout_constraintEnd_toEndOf="@id/photoImageView"
-                        app:layout_constraintTop_toTopOf="@id/photoImageView" />
+                        app:layout_constraintEnd_toEndOf="@id/photoCardView"
+                        app:layout_constraintTop_toTopOf="@id/photoCardView" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -71,7 +79,6 @@
                         style="@style/supportText"
                         android:id="@+id/dayTimeGreetingsTextView"
                         android:textAlignment="center"
-                        android:textSize="21sp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -80,7 +87,6 @@
                     <TextView
                         android:id="@+id/userNameTextView"
                         style="@style/simpleText"
-                        android:textSize="21sp"
                         android:textAlignment="center"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

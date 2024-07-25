@@ -27,7 +27,6 @@ class NotesTasksAdapter(val context: MainActivity, var dataSource: ArrayList<INo
     }
 
     inner class NoteViewHolder(val view: View): RecyclerView.ViewHolder(view) {
-        @RequiresApi(Build.VERSION_CODES.O)
         fun bind(mItem: INotesAdapterTemplete) {
             val binding: NoteCardBinding = NoteCardBinding.bind(view)
 
@@ -120,7 +119,6 @@ class NotesTasksAdapter(val context: MainActivity, var dataSource: ArrayList<INo
         return dataSource.size
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: NoteViewHolder, position: Int) {
         holder.bind(dataSource[position])
     }

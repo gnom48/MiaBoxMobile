@@ -15,7 +15,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import com.example.pronedvizapp.IFragmentTag
 import com.example.pronedvizapp.MainActivity
+import com.example.pronedvizapp.MainStatic
 import com.example.pronedvizapp.R
 import com.example.pronedvizapp.databinding.FragmentCreateEditTaskBinding
 import com.example.pronedvizapp.notifications.NotificationApp
@@ -36,7 +38,7 @@ import java.util.Locale
 import java.util.UUID
 
 
-class CreateEditNoteFragment : Fragment {
+class CreateEditNoteFragment: Fragment {
 
     lateinit var alarmManager: AlarmManager
 
@@ -58,7 +60,6 @@ class CreateEditNoteFragment : Fragment {
     }
 
     @SuppressLint("ScheduleExactAlarm")
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
@@ -132,7 +133,7 @@ class CreateEditNoteFragment : Fragment {
                     binding.taskTitleEditText.text.toString(),
                     binding.taskDescEditText.text.toString(),
                     selectedLocalDateTime.toEpochSecond(ZoneOffset.UTC),
-                    MainActivity.currentUser!!.id,
+                    MainStatic.currentUser!!.id,
                     System.currentTimeMillis().toInt()
                 )
 
@@ -155,7 +156,7 @@ class CreateEditNoteFragment : Fragment {
 
                 val notesApi = retrofit.create(ServerApiNotes::class.java)
 
-                val req = notesApi.addNote(newNote, MainActivity.currentToken!!)
+                val req = notesApi.addNote(newNote, MainStatic.currentToken!!)
                 var resultAddition: Int? = null
                 req.enqueue(object : Callback<Int?> {
                     override fun onResponse(call: Call<Int?>, response: Response<Int?>) {
@@ -225,7 +226,7 @@ class CreateEditNoteFragment : Fragment {
 
                 val notesApi = retrofit.create(ServerApiNotes::class.java)
 
-                val req = notesApi.editNote(newNote, MainActivity.currentToken!!)
+                val req = notesApi.editNote(newNote, MainStatic.currentToken!!)
                 var resultAddition: Int? = null
                 req.enqueue(object : Callback<Void> {
                     override fun onResponse(call: Call<Void>, response: Response<Void>) {
@@ -265,9 +266,4 @@ class CreateEditNoteFragment : Fragment {
 
         return binding.root
     }
-}
-
-fun generateNotificationId(): Int {
-    val uuid = UUID.randomUUID()
-    return uuid.hashCode()
 }
