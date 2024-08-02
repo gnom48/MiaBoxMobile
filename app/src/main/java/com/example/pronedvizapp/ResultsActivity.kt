@@ -1,14 +1,9 @@
 package com.example.pronedvizapp
 
 import android.content.Context
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
-import com.example.pronedvizapp.adapters.MainInfoAdapter
-import com.example.pronedvizapp.adapters.MainInfoForCard
-import com.example.pronedvizapp.bisness.calls.CallRecordingService
-import com.example.pronedvizapp.bisness.calls.CallRecordingService.Companion.isServiceRunning
 import com.example.pronedvizapp.databinding.ActivityResultsBinding
 import com.example.pronedvizapp.requests.ServerApiUsers
 import com.example.pronedvizapp.requests.models.DAY_STATISTICS_PERIOD
@@ -33,8 +28,8 @@ class ResultsActivity : AppCompatActivity() {
         lifecycleScope.launch {
             val userStatics = getUserStatisticsWithKpi(this@ResultsActivity, MainStatic.currentToken!!)
             userStatics.onSuccess {
-                binding.kpiLevelTextView.text = it.user_level
-                binding.kpiTextView.text = it.salary_percentage.toString()
+                binding.kpiLevelTextView.text = it.userLevel
+                binding.kpiTextView.text = it.salaryPercentage.toString()
             }
         }
 

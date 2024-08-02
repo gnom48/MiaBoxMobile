@@ -19,8 +19,10 @@ import com.example.pronedvizapp.MapActivity
 import com.example.pronedvizapp.R
 import com.example.pronedvizapp.ResultsActivity
 import com.example.pronedvizapp.WebViewActivity
+import com.example.pronedvizapp.WebViewActivity.Companion.SOURCE
 import com.example.pronedvizapp.bisness.calls.CallRecordingService
-import com.example.pronedvizapp.bisness.calls.CallRecordingService.Companion.isServiceRunning
+import com.example.pronedvizapp.bisness.geo.GeoPositionService
+import com.example.pronedvizapp.bisness.isServiceRunning
 import com.example.pronedvizapp.databinding.FragmentMainBinding
 import kotlinx.coroutines.launch
 
@@ -49,7 +51,7 @@ class MainFragment(override val fragmentNavigationTag: String = "MainFragment") 
         binding.avatarImageView.setForeground(getResources().getDrawable(R.drawable.image_view_rounded_corners, null))
 
         lifecycleScope.launch {
-            ProfileFragment.bindUserImageAsync(this@MainFragment.requireContext().applicationContext, binding.avatarImageView)
+            ProfileFragment.bindUserImageFileAsync(this@MainFragment.requireContext().applicationContext, binding.avatarImageView)
         }
         
         binding.personalDataConstraintLayout.setOnClickListener {
@@ -75,6 +77,7 @@ class MainFragment(override val fragmentNavigationTag: String = "MainFragment") 
 
         binding.knowledgeBaseConstraintLayout.setOnClickListener {
             val intent = Intent(this.requireContext(), WebViewActivity::class.java)
+            intent.putExtra(SOURCE, "baza.html")
             startActivity(intent)
         }
 
@@ -104,8 +107,30 @@ class MainFragment(override val fragmentNavigationTag: String = "MainFragment") 
             }
         }
 
+        if (isServiceRunning(this.requireContext(), GeoPositionService::class.java)) {
+            binding.recordMyCoordsSwitch.isChecked = true
+        }
+        binding.recordMyCoordsSwitch.setOnCheckedChangeListener { _, isChecked ->
+            val context = this.requireContext()
+            if (isChecked) {
+                if (!isServiceRunning(context, GeoPositionService::class.java)) {
+                    ContextCompat.startForegroundService(context, Intent(context, GeoPositionService::class.java))
+                }
+            } else {
+                if (isServiceRunning(context, GeoPositionService::class.java)) {
+                    context.stopService(Intent(context, GeoPositionService::class.java))
+                }
+            }
+        }
+
         binding.recordMyCallsConstraintLayout.setOnClickListener {
             val intent = Intent(this.requireContext(), CallsActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.aboutAppTextView.setOnClickListener {
+            val intent = Intent(this.requireContext(), WebViewActivity::class.java)
+            intent.putExtra(SOURCE, "about.html")
             startActivity(intent)
         }
 

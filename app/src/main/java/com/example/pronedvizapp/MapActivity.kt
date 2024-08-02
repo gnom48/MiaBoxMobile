@@ -17,29 +17,22 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.EditorInfo
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.pronedvizapp.adapters.AddressesAdapter
-import com.example.pronedvizapp.bisness.geo.GeoService
+import com.example.pronedvizapp.bisness.geo.GeoPositionService
 import com.example.pronedvizapp.databinding.ActivityMapBinding
 import com.example.pronedvizapp.requests.DadataApi
 import com.example.pronedvizapp.requests.ServerApiAddress
-import com.example.pronedvizapp.requests.ServerApiTasks
-import com.example.pronedvizapp.requests.ServerApiUsers
 import com.example.pronedvizapp.requests.models.AddresInfo
 import com.example.pronedvizapp.requests.models.AddressResponse
 import com.example.pronedvizapp.requests.models.Coordinates
-import com.example.pronedvizapp.requests.models.Image
-import com.example.pronedvizapp.requests.models.Task
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
-import com.google.android.material.datepicker.MaterialStyledDatePickerDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.yandex.mapkit.Animation
 import com.yandex.mapkit.MapKitFactory
@@ -76,7 +69,6 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneId
 import java.time.ZoneOffset
-import java.util.Calendar
 import java.util.Locale
 
 class MapActivity : AppCompatActivity(), Session.SearchListener, UserLocationObjectListener, CameraListener {
@@ -163,11 +155,13 @@ class MapActivity : AppCompatActivity(), Session.SearchListener, UserLocationObj
 
         binding.setDateStartTextView.setOnClickListener {
             val year = selectedLocalDateTimeStartPeriod.year
-            val month = selectedLocalDateTimeStartPeriod.monthValue
+            val month = selectedLocalDateTimeStartPeriod.monthValue - 1 // Месяцы в DatePickerDialog начинаются с 0
             val day = selectedLocalDateTimeStartPeriod.dayOfMonth
 
             val datePickerDialog = DatePickerDialog(this, DatePickerDialog.OnDateSetListener { _, selectedYear, selectedMonth, selectedDay ->
-                if (LocalDateTime.of(selectedYear, selectedMonth + 1, selectedDay, selectedLocalDateTimeStartPeriod.hour, selectedLocalDateTimeStartPeriod.minute, selectedLocalDateTimeStartPeriod.second).isAfter(selectedLocalDateTimeEndPeriod)) {
+                val selectedDate = LocalDateTime.of(selectedYear, selectedMonth + 1, selectedDay, selectedLocalDateTimeStartPeriod.hour, selectedLocalDateTimeStartPeriod.minute, selectedLocalDateTimeStartPeriod.second)
+
+                if (selectedDate.isAfter(selectedLocalDateTimeEndPeriod)) {
                     MaterialAlertDialogBuilder(this@MapActivity)
                         .setMessage("Извините, выберите дату начала периода раньше даты окончания!")
                         .setPositiveButton("Ок") { dialog, _ ->
@@ -177,24 +171,25 @@ class MapActivity : AppCompatActivity(), Session.SearchListener, UserLocationObj
                         .show()
                     return@OnDateSetListener
                 }
-                val selectedDate = String.format(Locale.US, "%02d.%02d.%04d", selectedDay, selectedMonth + 1, selectedYear)
-                selectedLocalDateTimeStartPeriod = LocalDateTime.of(selectedYear, selectedMonth, selectedDay + 1, selectedLocalDateTimeStartPeriod.hour, selectedLocalDateTimeStartPeriod.minute, selectedLocalDateTimeStartPeriod.second)
-                binding.setDateStartTextView.text = selectedDate
-            }, year, month-1, day).apply {
+
+                selectedLocalDateTimeStartPeriod = selectedDate
+                binding.setDateStartTextView.text = String.format(Locale.US, "%02d.%02d.%04d", selectedDay, selectedMonth + 1, selectedYear)
+            }, year, month, day).apply {
                 datePicker.maxDate = selectedLocalDateTimeEndPeriod.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
             }
             datePickerDialog.setTitle("Начало периода")
-
             datePickerDialog.show()
         }
 
         binding.setDateEndTextView.setOnClickListener {
             val year = selectedLocalDateTimeEndPeriod.year
-            val month = selectedLocalDateTimeEndPeriod.monthValue
+            val month = selectedLocalDateTimeEndPeriod.monthValue - 1 // Месяцы в DatePickerDialog начинаются с 0
             val day = selectedLocalDateTimeEndPeriod.dayOfMonth
 
             val datePickerDialog = DatePickerDialog(this, DatePickerDialog.OnDateSetListener { _, selectedYear, selectedMonth, selectedDay ->
-                if (LocalDateTime.of(selectedYear, selectedMonth + 1, selectedDay, selectedLocalDateTimeEndPeriod.hour, selectedLocalDateTimeEndPeriod.minute, selectedLocalDateTimeEndPeriod.second).isBefore(selectedLocalDateTimeStartPeriod)) {
+                val selectedDate = LocalDateTime.of(selectedYear, selectedMonth + 1, selectedDay, selectedLocalDateTimeEndPeriod.hour, selectedLocalDateTimeEndPeriod.minute, selectedLocalDateTimeEndPeriod.second)
+
+                if (selectedDate.isBefore(selectedLocalDateTimeStartPeriod)) {
                     MaterialAlertDialogBuilder(this@MapActivity)
                         .setMessage("Извините, выберите дату окончания периода позже даты начала!")
                         .setPositiveButton("Ок") { dialog, _ ->
@@ -204,14 +199,13 @@ class MapActivity : AppCompatActivity(), Session.SearchListener, UserLocationObj
                         .show()
                     return@OnDateSetListener
                 }
-                val selectedDate = String.format(Locale.US, "%02d.%02d.%04d", selectedDay, selectedMonth + 1, selectedYear)
-                selectedLocalDateTimeEndPeriod = LocalDateTime.of(selectedYear, selectedMonth + 1, selectedDay, selectedLocalDateTimeEndPeriod.hour, selectedLocalDateTimeEndPeriod.minute, selectedLocalDateTimeEndPeriod.second)
-                binding.setDateEndTextView.text = selectedDate
-            }, year, month-1, day).apply {
+
+                selectedLocalDateTimeEndPeriod = selectedDate
+                binding.setDateEndTextView.text = String.format(Locale.US, "%02d.%02d.%04d", selectedDay, selectedMonth + 1, selectedYear)
+            }, year, month, day).apply {
                 datePicker.minDate = selectedLocalDateTimeStartPeriod.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
             }
             datePickerDialog.setTitle("Конец периода")
-
             datePickerDialog.show()
         }
 
@@ -253,13 +247,14 @@ class MapActivity : AppCompatActivity(), Session.SearchListener, UserLocationObj
             this.applicationContext) {addresses ->
 
             if (addresses.isEmpty()) {
-                binding.addressesListView.setBackgroundResource(R.drawable.no_data_img_background)
+                binding.noDataImageView.visibility = View.VISIBLE
+                binding.addressesListView.adapter = AddressesAdapter(this@MapActivity, arrayListOf())
             } else {
+                binding.noDataImageView.visibility = View.GONE
                 binding.addressesListView.adapter = AddressesAdapter(this@MapActivity, addresses.map { it.address })
                 binding.addressesListView.setOnItemClickListener { p0, p1, p2, p3 ->
                     // TODO: перемещение камеры на отметку на карте
                 }
-
             }
 
             val bitmapPoint = createBitmapFromVector(R.drawable.baseline_location_pin_24)
@@ -302,7 +297,7 @@ class MapActivity : AppCompatActivity(), Session.SearchListener, UserLocationObj
                 lifecycleScope.launch {
                     val res = getAddressByCoordsAsync(this@MapActivity, mLocation)
                     res.onSuccess { address ->
-                        val serverApiAddressAdditionResponse = GeoService.addAddressRecordAsync(
+                        val serverApiAddressAdditionResponse = GeoPositionService.addAddressRecordAsync(
                             applicationContext, AddresInfo(
                                 -1,
                                 MainStatic.currentUser!!.id,
@@ -330,27 +325,6 @@ class MapActivity : AppCompatActivity(), Session.SearchListener, UserLocationObj
             else -> super.onOptionsItemSelected(item)
         }
     }
-
-    public suspend fun getAddressByCoordsAsync(context: Context, mLocation: Location): kotlin.Result<AddressResponse> = coroutineScope {
-        val retrofit = Retrofit.Builder()
-            .baseUrl("http://suggestions.dadata.ru/suggestions/api/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        val dadataApi = retrofit.create(DadataApi::class.java)
-
-        return@coroutineScope try {
-            val response = dadataApi.getAddressByCoordinates(Coordinates(mLocation.latitude, mLocation.longitude)).await()
-            if (response != null) {
-                kotlin.Result.success(response)
-            } else {
-                kotlin.Result.failure(Exception("Ошибка получения данных"))
-            }
-        } catch (e: Exception) {
-            kotlin.Result.failure(e)
-        }
-    }
-
 
     private fun initLocationRequest(): LocationRequest {
         var request = LocationRequest.create()
@@ -458,7 +432,7 @@ class MapActivity : AppCompatActivity(), Session.SearchListener, UserLocationObj
 
     companion object {
 
-        public fun getAllAddresses(userId: Int, dateStart: Int, dateEnd: Int, context: Context, callback: (ArrayList<AddresInfo>) -> Unit) {
+        fun getAllAddresses(userId: Int, dateStart: Int, dateEnd: Int, context: Context, callback: (ArrayList<AddresInfo>) -> Unit) {
             val retrofit = Retrofit.Builder()
                 .baseUrl(context.getString(R.string.server_ip_address))
                 .addConverterFactory(GsonConverterFactory.create())
@@ -482,7 +456,25 @@ class MapActivity : AppCompatActivity(), Session.SearchListener, UserLocationObj
                 }
             })
         }
+
+        suspend fun getAddressByCoordsAsync(context: Context, mLocation: Location): kotlin.Result<AddressResponse> = coroutineScope {
+            val retrofit = Retrofit.Builder()
+                .baseUrl("http://suggestions.dadata.ru/suggestions/api/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+
+            val dadataApi = retrofit.create(DadataApi::class.java)
+
+            return@coroutineScope try {
+                val response = dadataApi.getAddressByCoordinates(Coordinates(mLocation.latitude, mLocation.longitude)).await()
+                if (response != null) {
+                    kotlin.Result.success(response)
+                } else {
+                    kotlin.Result.failure(Exception("Ошибка получения данных"))
+                }
+            } catch (e: Exception) {
+                kotlin.Result.failure(e)
+            }
+        }
     }
-
-
 }

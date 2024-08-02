@@ -6,22 +6,16 @@ import android.app.DatePickerDialog
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.content.res.Configuration
-import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.annotation.RequiresApi
-import com.example.pronedvizapp.IFragmentTag
-import com.example.pronedvizapp.MainActivity
 import com.example.pronedvizapp.MainStatic
 import com.example.pronedvizapp.R
 import com.example.pronedvizapp.databinding.FragmentCreateEditTaskBinding
 import com.example.pronedvizapp.notifications.NotificationApp
-import com.example.pronedvizapp.notifications.NotificationBroadcast
 import com.example.pronedvizapp.requests.ServerApiNotes
 import com.example.pronedvizapp.requests.models.Note
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -35,7 +29,6 @@ import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.util.Calendar
 import java.util.Locale
-import java.util.UUID
 
 
 class CreateEditNoteFragment: Fragment {
@@ -142,7 +135,7 @@ class CreateEditNoteFragment: Fragment {
                     intent ->
                         intent.putExtra("TITLE", "Напоминание")
                         intent.putExtra("CONTENT", newNote.title)
-                        PendingIntent.getBroadcast(this.requireContext(), newNote.notification_id, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+                        PendingIntent.getBroadcast(this.requireContext(), newNote.notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
                 }
                 alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, time, alarmIntent)
 
@@ -202,8 +195,8 @@ class CreateEditNoteFragment: Fragment {
                     binding.taskTitleEditText.text.toString(),
                     binding.taskDescEditText.text.toString(),
                     selectedLocalDateTime.toEpochSecond(ZoneOffset.UTC),
-                    noteToEdit!!.user_id,
-                    noteToEdit!!.notification_id
+                    noteToEdit!!.userId,
+                    noteToEdit!!.notificationId
                 )
 
                 // notifications

@@ -43,7 +43,6 @@ abstract class Work(val context: Context, val workType: WorkTasksTypes) {
 
     override fun toString(): String = "Duration = '$workDuration' | IsControlled = '$notificationId' | type = '${type()}'"
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun saveToDb() {
         val dbContext = LocalDb.getDb(context)
         val newWork = ActiveWorkOrm(
@@ -64,7 +63,6 @@ abstract class Work(val context: Context, val workType: WorkTasksTypes) {
     }
 
     @SuppressLint("NewApi", "ScheduleExactAlarm")
-    @RequiresApi(Build.VERSION_CODES.O)
     open fun start(_workDuration: Duration, _isControlled: Boolean) {
         workStartTime = LocalDateTime.now()
         workDuration = _workDuration
@@ -102,11 +100,7 @@ abstract class Work(val context: Context, val workType: WorkTasksTypes) {
         req.enqueue(object : Callback<Int?> {
             override fun onResponse(call: Call<Int?>, response: Response<Int?>) {
                 if (response.isSuccessful) {
-//                    Toast.makeText(context, "Ок", Toast.LENGTH_SHORT).show()
                     resultAddition = response.body()
-
-//                    val bottomNavigationView = (context as MainActivity).findViewById<BottomNavigationView>(R.id.bottomMenu)
-//                    bottomNavigationView?.selectedItemId = R.id.bottomMenuItemMain
                     return
                 }
                 resultAddition = null
@@ -134,7 +128,6 @@ class CustomeWork(val _context: Context, val _workType: WorkTasksTypes) : Work(_
     var desc: String = ""
 
     @SuppressLint("NewApi", "ScheduleExactAlarm")
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun start(_workDuration: Duration, _isControlled: Boolean) {
         workStartTime = LocalDateTime.now()
         workDuration = _workDuration
@@ -172,11 +165,7 @@ class CustomeWork(val _context: Context, val _workType: WorkTasksTypes) : Work(_
         req.enqueue(object : Callback<Int?> {
             override fun onResponse(call: Call<Int?>, response: Response<Int?>) {
                 if (response.isSuccessful) {
-//                    Toast.makeText(context, "Ок", Toast.LENGTH_SHORT).show()
                     resultAddition = response.body()
-
-//                    val bottomNavigationView = (context as MainActivity).findViewById<BottomNavigationView>(R.id.bottomMenu)
-//                    bottomNavigationView?.selectedItemId = R.id.bottomMenuItemMain
                     return
                 }
                 resultAddition = null

@@ -8,16 +8,13 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
-import android.opengl.Visibility
-import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Base64
+import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
 import com.example.pronedvizapp.authentication.AuthenticationActivity
 import com.example.pronedvizapp.bisness.CurrencyTextWatcher
@@ -25,19 +22,22 @@ import com.example.pronedvizapp.databinding.ActivityEditProfileBinding
 import com.example.pronedvizapp.databinding.EditProfileGenderDialogBinding
 import com.example.pronedvizapp.databinding.EditProfileNameDialogBinding
 import com.example.pronedvizapp.databinding.EditProfilePhoneDialogBinding
-import com.example.pronedvizapp.main.ProfileFragment.Companion.bindUserImageAsync
+import com.example.pronedvizapp.main.ProfileFragment.Companion.bindUserImageFileAsync
+import com.example.pronedvizapp.main.ProgressDialogModal
 import com.example.pronedvizapp.requests.ServerApiUsers
-import com.example.pronedvizapp.requests.models.Image
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import okhttp3.MediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
-import retrofit2.await
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileOutputStream
 import java.io.InputStream
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -217,7 +217,7 @@ class EditProfileActivity : AppCompatActivity() {
         })
 
         lifecycleScope.launch {
-            bindUserImageAsync(applicationContext, binding.avatarImageView)
+            bindUserImageFileAsync(applicationContext, binding.avatarImageView)
         }
 
         binding.avatarImageView.setOnClickListener {
@@ -238,47 +238,46 @@ class EditProfileActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        val progressDialog = ProgressDialogModal(this)
 
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null) {
-
-            //binding.progressBarContainerConstraintLayout.visibility = View.VISIBLE
-
+            progressDialog.show()
             lifecycleScope.launch {
-                val base64Bitmap = extractBitmapFromUri(data.data)
-                base64Bitmap?.let {
-                    val result = editAvatarImageAsync(
-                        applicationContext,
-                        Image(-1,  data.data.toString(), it),
-                        MainStatic.currentToken!!)
-                    result.onSuccess {
-                        Toast.makeText(applicationContext, "Аватар обновлен", Toast.LENGTH_SHORT).show()
-                        //binding.progressBarContainerConstraintLayout.visibility = View.GONE
-                        bindUserImageAsync(applicationContext, binding.avatarImageView)
-
-                    }
-                    result.onFailure {
-                        //binding.progressBarContainerConstraintLayout.visibility = View.GONE
+                val file = extractFileFormUri(applicationContext, data.data!!)
+                file?.let {
+                    val result = editAvatarImageFileAsync(
+                        this@EditProfileActivity.applicationContext,
+                        it,
+                        MainStatic.currentToken!!
+                    )
+                    if (result != null) {
+                        Toast.makeText(applicationContext, "Аватар обновлен (перезагрузите приложение)", Toast.LENGTH_SHORT).show()
+                        bindUserImageFileAsync(applicationContext, binding.avatarImageView)
+                        progressDialog.dismiss()
+                        MainStatic.currentUser!!.image = result
+                    } else {
                         Toast.makeText(applicationContext, "Ошибка загрузки картинки", Toast.LENGTH_SHORT).show()
+                        progressDialog.dismiss()
                     }
                 }
-                //binding.progressBarContainerConstraintLayout.visibility = View.GONE
             }
         }
     }
 
-    private fun extractBitmapFromUri(selectedImageUri: Uri?): String? {
-        if (selectedImageUri != null) {
-            val inputStream: InputStream? = contentResolver.openInputStream(selectedImageUri)
-            val bitmap = BitmapFactory.decodeStream(inputStream)
-
-            binding.avatarImageView.setImageBitmap(bitmap)
-            val byteArrayOutputStream = ByteArrayOutputStream()
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream)
-            val byteArray = byteArrayOutputStream.toByteArray()
-            val base64Bitmap = Base64.encodeToString(byteArray, Base64.DEFAULT)
-            return base64Bitmap
+    private fun extractFileFormUri(context: Context, uri: Uri): File? {
+        val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
+        return inputStream?.let {
+            val file = File(context.cacheDir, "temp_image.jpg")
+            val outputStream = FileOutputStream(file)
+            val buffer = ByteArray(1024)
+            var bytesRead: Int
+            while (it.read(buffer).also { bytesRead = it } != -1) {
+                outputStream.write(buffer, 0, bytesRead)
+            }
+            outputStream.close()
+            it.close()
+            file
         }
-        return null
     }
 
     companion object {
@@ -312,28 +311,27 @@ class EditProfileActivity : AppCompatActivity() {
             })
         }
 
-        public suspend fun editAvatarImageAsync(
+        public suspend fun editAvatarImageFileAsync(
             context: Context,
-            image: Image,
+            file: File,
             token: String
-        ): Result<Int?> = coroutineScope {
+        ): Int? {
             val retrofit = Retrofit.Builder()
                 .baseUrl(context.getString(R.string.server_ip_address))
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
 
-            val usersApi = retrofit.create(ServerApiUsers::class.java)
+            val api = retrofit.create(ServerApiUsers::class.java)
 
-            return@coroutineScope try {
-                val response = usersApi.setImageToUser(image, token).await()
-                if (response != null) {
-                    Result.success(response)
-                } else {
-                    Result.failure(Exception("Ошибка получения данных"))
-                }
-            } catch (e: Exception) {
-                Result.failure(e)
+            val requestFile = RequestBody.create(MediaType.parse("image/*"), file)
+            val part = MultipartBody.Part.createFormData("file", file.name, requestFile)
+
+            val response = api.setImageFileToUser(part, token)
+            Log.e("tag", "editAvatarImageFileAsync response = $response")
+            if (response.isSuccessful) {
+                return response.body()
             }
+            return null
         }
     }
 }

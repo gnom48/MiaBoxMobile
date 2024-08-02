@@ -20,7 +20,7 @@ class TeamsAdapter(val dataSource: UserTeamsWithInfo, val context: AllTeamsActiv
         val binding: TeamCardBinding = TeamCardBinding.bind(view)
 
         fun bind(item: UserTeamsWithInfoItem) {
-            binding.titleTextView.setText(item.team.name)
+            binding.titleTextView.text = item.team.name
 
             binding.detailsButton.setOnClickListener {
                 val intent = Intent(context, MyTeamDetailsActivity::class.java)

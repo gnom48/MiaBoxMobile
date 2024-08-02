@@ -4,13 +4,18 @@ import com.example.pronedvizapp.requests.models.Image
 import com.example.pronedvizapp.requests.models.Statistics
 import com.example.pronedvizapp.requests.models.StatisticsWithKpi
 import com.example.pronedvizapp.requests.models.User
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.ResponseBody
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.PUT
+import retrofit2.http.Part
 import retrofit2.http.Query
 
 interface ServerApiUsers {
@@ -55,15 +60,16 @@ interface ServerApiUsers {
         @Header("token-authorization") tokenAuthorization: String
     ): Call<StatisticsWithKpi?>
 
-    @POST("/user/set_image")
-    fun setImageToUser(
-        @Body image: Image,
+    @Multipart
+    @POST("/user/set_image_file")
+    suspend fun setImageFileToUser(
+        @Part file: MultipartBody.Part,
         @Header("token-authorization") tokenAuthorization: String
-    ): Call<Int?>
+    ): Response<Int?>
 
-    @GET("/user/get_image")
-    fun getImageByUser(
+    @GET("/user/get_image_file")
+    suspend fun getImageFileByUser(
         @Header("token-authorization") tokenAuthorization: String
-    ): Call<Image?>
+    ): Response<ResponseBody>
 
 }

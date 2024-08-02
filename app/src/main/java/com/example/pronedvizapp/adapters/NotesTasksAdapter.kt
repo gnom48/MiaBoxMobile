@@ -1,10 +1,8 @@
 package com.example.pronedvizapp.adapters
 
-import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pronedvizapp.R
 import com.example.pronedvizapp.databases.models.INotesAdapterTemplete
@@ -78,7 +76,7 @@ class NotesTasksAdapter(val context: MainActivity, var dataSource: ArrayList<INo
                 }
                 binding.detailsButton.visibility = View.INVISIBLE
 
-                val workDatetime = LocalDateTime.ofInstant(Instant.ofEpochSecond(item.date_time + item.duration_seconds), ZoneOffset.systemDefault()).minusHours(3).toLocalDate()
+                val workDatetime = LocalDateTime.ofInstant(Instant.ofEpochSecond(item.date_time + item.durationSeconds), ZoneOffset.systemDefault()).minusHours(3).toLocalDate()
                 if (ChronoUnit.DAYS.between(LocalDateTime.now().toLocalDate(), workDatetime) < 0.toLong()) {
                     binding.card.setBackgroundResource(R.drawable.note_card_others_res)
                     binding.indicatorPanel.setBackgroundResource(R.drawable.card_indicator_other_res)
@@ -91,9 +89,9 @@ class NotesTasksAdapter(val context: MainActivity, var dataSource: ArrayList<INo
                 }
 
                 binding.iconImageView.setImageResource(R.drawable.on_work_task_icon)
-                binding.titleTextView.setText(item.work_type)
+                binding.titleTextView.setText(item.workType)
                 binding.contentTextView.setText("Текущая рабочая задача")
-                val endTime = LocalDateTime.ofEpochSecond(item.date_time + item.duration_seconds, 0, ZoneOffset.UTC)
+                val endTime = LocalDateTime.ofEpochSecond(item.date_time + item.durationSeconds, 0, ZoneOffset.UTC)
                 if (LocalDateTime.now().isBefore(endTime)) {
                     val remainingDuration = Duration.between(LocalDateTime.now(), endTime)
 

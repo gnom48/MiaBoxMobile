@@ -28,7 +28,8 @@
                 android:layout_height="wrap_content">
 
                 <androidx.cardview.widget.CardView
-                    android:layout_margin="20dp"
+                    android:layout_marginVertical="10dp"
+                    android:layout_marginHorizontal="20dp"
                     android:layout_width="120dp"
                     android:layout_height="120dp"
                     app:cardCornerRadius="20dp">
@@ -166,15 +167,27 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/montserrat_light"
-                    android:text="Мои адреса"
+                    android:text="Записывать мои адреса"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/recordMyCoordsSwitch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    app:thumbTint="@color/switch_selector"
+                    android:layout_marginEnd="10dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/addressesDetailsImageView"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="TouchTargetSizeCheck,UseSwitchCompatOrMaterialXml" />
 
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_marginEnd="20dp"
+                    android:id="@+id/addressesDetailsImageView"
                     android:src="@drawable/baseline_arrow_forward_ios_24"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -208,11 +221,21 @@
                     android:layout_width="wrap_content"
                     android:layout_height="30dp"
                     app:thumbTint="@color/switch_selector"
-                    android:layout_marginEnd="20dp"
+                    android:layout_marginEnd="10dp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/callsDetailsImageView"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="TouchTargetSizeCheck,UseSwitchCompatOrMaterialXml" />
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:id="@+id/callsDetailsImageView"
+                    android:src="@drawable/baseline_arrow_forward_ios_24"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

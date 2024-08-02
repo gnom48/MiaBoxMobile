@@ -19,7 +19,10 @@ import androidx.core.app.NotificationCompat
 import com.example.pronedvizapp.InitialActivity
 import com.example.pronedvizapp.R
 import com.example.pronedvizapp.requests.ServerApiCalls
+import com.example.pronedvizapp.requests.models.TranscriptionTask
+import com.example.pronedvizapp.requests.models.TranscriptionTaskStatus
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import okhttp3.MediaType
 import okhttp3.MultipartBody
@@ -27,6 +30,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
 import okhttp3.RequestBody
+
 class CallRecordingService : Service() {
 
     private var phoneStateListener: PhoneStateListener? = null
@@ -175,26 +179,18 @@ class CallRecordingService : Service() {
         )
 
         return NotificationCompat.Builder(this, notificationChannelId)
-            .setContentTitle("Call Recording")
+            .setContentTitle("Запись звонков")
             .setContentText("Рабочие звонки будут записываться")
             .setSmallIcon(R.drawable.on_work_task_icon)
             .setContentIntent(pendingIntent)
+            .setAutoCancel(false)
+            .setOngoing(true)
             .build()
     }
 
     companion object {
 
         public const val DEBUG_TAG: String = "CallRecordingService"
-
-        public fun isServiceRunning(context: Context, serviceClass: Class<*>): Boolean {
-            val manager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-            for (service in manager.getRunningServices(Int.MAX_VALUE)) {
-                if (serviceClass.name == service.service.className) {
-                    return true
-                }
-            }
-            return false
-        }
 
         suspend fun uploadCallRecordAsync(file: File, phoneNumber: String, info: String, dateTime: Long, contactName: String, lengthSeconds: Int, callType: Int, context: Context): Int? {
             val retrofit = Retrofit.Builder()
@@ -224,6 +220,49 @@ class CallRecordingService : Service() {
             return null
         }
 
+        suspend fun orderCallTranscription(context: Context, userId: Int, recordId: Int, model: String = "base", tokenAuthorization: String?): Result<TranscriptionTask?> =
+            coroutineScope {
+                val retrofit = Retrofit.Builder()
+                    .baseUrl(context.getString(R.string.server_ip_address))
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build()
+
+                val callsApi = retrofit.create(ServerApiCalls::class.java)
+
+                return@coroutineScope try {
+                    val resp = callsApi.orderCallTranscription(userId, recordId, model, tokenAuthorization)
+                    if (resp.isSuccessful) {
+                        val response = resp.body()
+                        Result.success(response)
+                    } else {
+                        Result.failure(Exception("Response is not successful: ${resp.code()}"))
+                    }
+                } catch (e: Exception) {
+                    Result.failure(e)
+                }
+            }
+
+        suspend fun getOrderTranscriptionStatus(context: Context, taskId: String, tokenAuthorization: String?): Result<TranscriptionTaskStatus?> =
+            coroutineScope {
+                val retrofit = Retrofit.Builder()
+                    .baseUrl(context.getString(R.string.server_ip_address))
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build()
+
+                val callsApi = retrofit.create(ServerApiCalls::class.java)
+
+                return@coroutineScope try {
+                    val resp = callsApi.getOrderTranscriptionStatus(taskId, tokenAuthorization)
+                    if (resp.isSuccessful) {
+                        val response = resp.body()
+                        Result.success(response)
+                    } else {
+                        Result.failure(Exception("Response is not successful: ${resp.code()}"))
+                    }
+                } catch (e: Exception) {
+                    Result.failure(e)
+                }
+            }
     }
 }
 

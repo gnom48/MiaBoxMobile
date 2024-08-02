@@ -17,7 +17,6 @@ import androidx.lifecycle.lifecycleScope
 import com.example.pronedvizapp.authentication.AuthorizationFragment.Companion.getUserInfo
 import com.example.pronedvizapp.authentication.RegistrationFragment
 import com.example.pronedvizapp.bisness.calls.CallRecordingService
-import com.example.pronedvizapp.bisness.calls.CallRecordingService.Companion.isServiceRunning
 import com.example.pronedvizapp.requests.models.User
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
@@ -131,6 +130,7 @@ class InitialActivity : AppCompatActivity() {
                             editor.putString("LAST_LOGIN", login).apply()
                             editor.putString("LAST_PASSWORD", password).apply()
                             editor.putString("TOKEN", token).apply()
+                            editor.putInt("USER_ID", userFromServer!!.id).apply()
 
                             if(this@InitialActivity.intent.getBooleanExtra("IS_OLD_ENTER", true)) {
                                 val intent = Intent(this@InitialActivity, MainActivity::class.java)

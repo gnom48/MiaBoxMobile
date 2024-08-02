@@ -22,6 +22,8 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
 
     <application
         android:name=".MyApplication"
@@ -78,7 +80,7 @@
             android:foregroundServiceType="microphone"
             android:stopWithTask="false" />
         <service
-            android:name=".bisness.geo.GeoService"
+            android:name=".bisness.geo.GeoPositionService"
             android:enabled="true"
             android:exported="true"
             android:foregroundServiceType="location"
@@ -91,8 +93,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".WebViewActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
+            android:exported="false"/>
         <activity
             android:name=".MapActivity"
             android:exported="false"

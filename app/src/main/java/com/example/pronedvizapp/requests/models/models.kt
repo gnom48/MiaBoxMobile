@@ -1,13 +1,15 @@
 package com.example.pronedvizapp.requests.models
 
 import com.example.pronedvizapp.databases.models.INotesAdapterTemplete
+import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
-enum class UserTypes(val description: String) {
+enum class UserTypes(val description: String): Serializable {
     COMMERCIAL("Риелтер коммерческой недвижимости"),
     PRIVATE("Риелтер частной недвижимости")
 }
 
-enum class WorkTasksTypes(val description: String) {
+enum class WorkTasksTypes(val description: String): Serializable {
     FLYERS("Рассклейка"),
     CALLS("Обзвон"),
     SHOW("Показ объекта"),
@@ -20,107 +22,109 @@ enum class WorkTasksTypes(val description: String) {
 }
 
 data class Image(
-    var id: Int,
-    var name: String,
-    var data: String
-)
+    @SerializedName("id") var id: Int,
+    @SerializedName("name") var name: String,
+    @SerializedName("data") var data: String
+): Serializable
 
 data class User(
-    var id: Int,
-    var login: String,
-    var password: String,
-    var type: String,
-    var photo: String,
-    var name: String,
-    var gender: String?,
-    var birthday: Long?,
-    var phone: String?,
-    val reg_date: Long,
-    var image: Int
-)
+    @SerializedName("id") var id: Int,
+    @SerializedName("login") var login: String,
+    @SerializedName("password") var password: String,
+    @SerializedName("type") var type: String,
+    @SerializedName("photo") var photo: String,
+    @SerializedName("name") var name: String,
+    @SerializedName("gender") var gender: String?,
+    @SerializedName("birthday") var birthday: Long?,
+    @SerializedName("phone") var phone: String?,
+    @SerializedName("reg_date") val regDate: Long,
+    @SerializedName("image") var image: Int
+): Serializable
 
 data class Note(
-    override val id: Int,
-    val title: String,
-    val desc: String?,
-    override val date_time: Long,
-    val user_id: Int,
-    var notification_id: Int
-): INotesAdapterTemplete
+    @SerializedName("id") override val id: Int,
+    @SerializedName("title") val title: String,
+    @SerializedName("desc") val desc: String?,
+    @SerializedName("date_time") override val date_time: Long,
+    @SerializedName("user_id") val userId: Int,
+    @SerializedName("notification_id") var notificationId: Int
+): INotesAdapterTemplete, Serializable
 
 data class Task(
-    override val id: Int,
-    val work_type: String,
-    override val date_time: Long,
-    val desc: String?,
-    val duration_seconds: Int,
-    val user_id: Int,
-    var notification_id: Int
-): INotesAdapterTemplete
+    @SerializedName("id") override val id: Int,
+    @SerializedName("work_type") val workType: String,
+    @SerializedName("date_time") override val date_time: Long,
+    @SerializedName("desc") val desc: String?,
+    @SerializedName("duration_seconds") val durationSeconds: Int,
+    @SerializedName("user_id") val userId: Int,
+    @SerializedName("notification_id") var notificationId: Int
+): INotesAdapterTemplete, Serializable
 
 data class Team(
-    val id: Int,
-    val name: String,
-    val created_date_time: Long
-)
+    @SerializedName("id") val id: Int,
+    @SerializedName("name") val name: String,
+    @SerializedName("created_date_time") val createdDateTime: Long
+): Serializable
 
-enum class UserStatuses(val description: String) {
+enum class UserStatuses(val description: String): Serializable {
     OWNER("Владелец"),
     USER("Участник")
 }
 
 data class UserTeam(
-    val team_id: Int,
-    val user_id: Int,
-    val role: String
-)
+    @SerializedName("team_id") val teamId: Int,
+    @SerializedName("user_id") val userId: Int,
+    @SerializedName("role") val role: String
+): Serializable
 
 const val DAY_STATISTICS_PERIOD = "day"
 const val WEEK_STATISTICS_PERIOD = "week"
 const val MONTH_STATISTICS_PERIOD = "month"
 
 data class Statistics(
-    val user_id: Int,
-    var flyers: Int,
-    var calls: Int,
-    var shows: Int,
-    var meets: Int,
-    var deals: Int,
-    var deposits: Int,
-    var searches: Int,
-    var analytics: Int,
-    var others: Int
-)
+    @SerializedName("user_id") val userId: Int,
+    @SerializedName("flyers") var flyers: Int,
+    @SerializedName("calls") var calls: Int,
+    @SerializedName("shows") var shows: Int,
+    @SerializedName("meets") var meets: Int,
+    @SerializedName("deals") var deals: Int,
+    @SerializedName("deposits") var deposits: Int,
+    @SerializedName("searches") var searches: Int,
+    @SerializedName("analytics") var analytics: Int,
+    @SerializedName("others") var others: Int
+): Serializable
 
 data class StatisticsPeriods(
-    val day: Statistics,
-    val month: Statistics,
-    val week: Statistics
-)
+    @SerializedName("day") val day: Statistics,
+    @SerializedName("month") val month: Statistics,
+    @SerializedName("week") val week: Statistics
+): Serializable
 
 data class Member(
-    val statistics: StatisticsPeriods,
-    val user: User,
-    val role: UserStatuses
-)
+    @SerializedName("statistics") val statistics: StatisticsPeriods,
+    @SerializedName("calls") val calls: List<UsersCalls>,
+    @SerializedName("addresses") val addresses: List<AddresInfo>,
+    @SerializedName("user") val user: User,
+    @SerializedName("role") val role: UserStatuses
+): Serializable
 
 data class UserTeamsWithInfoItem(
-    val members: List<Member>,
-    val team: Team
-)
+    @SerializedName("members") val members: List<Member>,
+    @SerializedName("team") val team: Team
+): Serializable
 
-class UserTeamsWithInfo : ArrayList<UserTeamsWithInfoItem>()
+class UserTeamsWithInfo : ArrayList<UserTeamsWithInfoItem>(), Serializable
 
 data class AddresInfo(
-    val record_id: Int,
-    val user_id: Int,
-    val address: String,
-    val lat: Float,
-    val lon: Float,
-    val date_time: Int
-)
+    @SerializedName("record_id") val recordId: Int,
+    @SerializedName("user_id") val userId: Int,
+    @SerializedName("address") val address: String,
+    @SerializedName("lat") val lat: Float,
+    @SerializedName("lon") val lon: Float,
+    @SerializedName("date_time") val dateTime: Int
+): Serializable
 
-enum class UserKpiLevels(val description: String) {
+enum class UserKpiLevels(val description: String): Serializable {
     TRAINEE("Стажер"),
     SPECIALIST("Специалист"),
     EXPERT("Эксперт"),
@@ -128,40 +132,50 @@ enum class UserKpiLevels(val description: String) {
 }
 
 data class StatisticsWithKpi(
-    val user_id: Int,
-    var flyers: Int,
-    var calls: Int,
-    var shows: Int,
-    var meets: Int,
-    var deals: Int,
-    var deposits: Int,
-    var searches: Int,
-    var analytics: Int,
-    var others: Int,
-    var user_level: String,
-    var salary_percentage: Float
-)
+    @SerializedName("user_id") val userId: Int,
+    @SerializedName("flyers") var flyers: Int,
+    @SerializedName("calls") var calls: Int,
+    @SerializedName("shows") var shows: Int,
+    @SerializedName("meets") var meets: Int,
+    @SerializedName("deals") var deals: Int,
+    @SerializedName("deposits") var deposits: Int,
+    @SerializedName("searches") var searches: Int,
+    @SerializedName("analytics") var analytics: Int,
+    @SerializedName("others") var others: Int,
+    @SerializedName("user_level") var userLevel: String,
+    @SerializedName("salary_percentage") var salaryPercentage: Float
+): Serializable
 
 data class CallsRecords(
-    val id: Int,
-    val name: String,
-    val data: ByteArray
-)
+    @SerializedName("id") val id: Int,
+    @SerializedName("name") val name: String,
+    @SerializedName("data") val data: ByteArray
+): Serializable
 
 data class UsersCalls(
-    val user_id: Int,
-    val record_id: Int,
-    val info: String = "",
-    val date_time: Int,
-    val phone_number: String,
-    val contact_name: String,
-    val length_seconds: Int,
-    val call_type: Int,
-    val transcription: String = "no transcription"
-)
+    @SerializedName("user_id") val userId: Int,
+    @SerializedName("record_id") val recordId: Int,
+    @SerializedName("info") val info: String = "",
+    @SerializedName("date_time") val dateTime: Int,
+    @SerializedName("phone_number") val phoneNumber: String,
+    @SerializedName("contact_name") val contactName: String,
+    @SerializedName("length_seconds") val lengthSeconds: Int,
+    @SerializedName("call_type") val callType: Int,
+    @SerializedName("transcription") val transcription: String = "no transcription"
+): Serializable
+
+interface ITaskStatus {
+    val status: String
+}
 
 data class TranscriptionTask(
-    val transcription_task: String,
-    val date_time: Int,
-    val position: Int
-)
+    @SerializedName("task_id") val taskId: String,
+    @SerializedName("status") override val status: String
+): ITaskStatus, Serializable
+
+data class TranscriptionTaskStatus(
+    @SerializedName("status") override val status: String,
+    @SerializedName("file") val file: String,
+    @SerializedName("model") val model: String,
+    @SerializedName("result") val result: String
+): ITaskStatus, Serializable

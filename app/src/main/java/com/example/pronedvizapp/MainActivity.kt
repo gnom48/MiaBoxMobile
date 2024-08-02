@@ -1,6 +1,5 @@
 package com.example.pronedvizapp
 
-import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.Dialog
 import android.app.NotificationChannel
@@ -10,24 +9,12 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.work.Constraints
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.ExistingWorkPolicy
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.PeriodicWorkRequest
-import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkManager
-import androidx.work.await
-import com.example.pronedvizapp.bisness.geo.GeoService
-import com.example.pronedvizapp.bisness.geo.GeoServiceBroadcast
-import com.example.pronedvizapp.bisness.geo.GeoWorker
+import com.example.pronedvizapp.bisness.geo.GeoServiceWorker
 import com.example.pronedvizapp.databinding.ActivityMainBinding
 import com.example.pronedvizapp.databinding.FragmentActionResultBinding
 import com.example.pronedvizapp.main.CreateEditNoteFragment
@@ -39,7 +26,6 @@ import com.example.pronedvizapp.notifications.NotificationApp
 import com.example.pronedvizapp.requests.ServerApiUsers
 import com.example.pronedvizapp.requests.models.Statistics
 import com.example.pronedvizapp.requests.models.Task
-import com.example.pronedvizapp.requests.models.User
 import com.example.pronedvizapp.requests.models.WorkTasksTypes
 import com.google.android.material.navigation.NavigationBarView
 import kotlinx.coroutines.coroutineScope
@@ -49,9 +35,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.await
 import retrofit2.converter.gson.GsonConverterFactory
-import java.time.LocalDateTime
 import java.util.Calendar
-import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
 
@@ -76,7 +60,7 @@ class MainActivity : AppCompatActivity() {
             completedTasks.let { arr -> arr.forEach { showResultDialog(it, this) } }
         }
 
-        planPeriodicWork()
+        GeoServiceWorker.schedulePeriodicWork(this)
         //setMorningAlarm()
     }
 
@@ -99,84 +83,33 @@ class MainActivity : AppCompatActivity() {
         alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, time.timeInMillis, AlarmManager.INTERVAL_DAY, alarmIntent)
     }
 
-    @SuppressLint("ScheduleExactAlarm")
-    private fun planPeriodicWork() {
-        val workManager = WorkManager.getInstance(this.applicationContext)
-
-        workManager.getWorkInfosByTagLiveData(GeoService.DEBUG_TAG).observe(this) { workInfos ->
-            if (workInfos.isEmpty()) {
-                val constraints = Constraints.Builder()
-                    .setRequiresBatteryNotLow(false)
-                    .setRequiresDeviceIdle(false)
-                    .setRequiresCharging(false)
-                    .build()
-
-                val workRequest = PeriodicWorkRequestBuilder<GeoWorker>(60, TimeUnit.MINUTES)
-                    .setInitialDelay(5, TimeUnit.SECONDS)
-                    .setConstraints(constraints)
-                    .build()
-
-                workManager.enqueueUniquePeriodicWork(
-                    GeoService.DEBUG_TAG,
-                    ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE,
-                    workRequest
-                )
-                Log.d(GeoService.DEBUG_TAG, "scheduled")
-
-            } else {
-                Log.d(GeoService.DEBUG_TAG, "Work already scheduled")
-            }
-        }
-
-//        val alarmManager = this.applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-//
-//        val intent = Intent(this.applicationContext, GeoServiceBroadcast::class.java)
-//        val alarmIntent = PendingIntent.getBroadcast(
-//            this.applicationContext,
-//            0, intent,
-//            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-//        )
-//        alarmManager.setExactAndAllowWhileIdle(
-//            AlarmManager.RTC_WAKEUP,
-//            System.currentTimeMillis(),
-//            alarmIntent
-//        )
-//        alarmManager.setAlarmClock(AlarmManager.AlarmClockInfo(System.currentTimeMillis() + 5000L, alarmIntent), alarmIntent)
-//        Log.d(GeoService.DEBUG_TAG, "planned ${alarmManager.nextAlarmClock}")
-    }
-
     private fun initUi() {
         binding.gradientView.animateGradientColors()
 
         binding.bottomMenu.labelVisibilityMode = NavigationBarView.LABEL_VISIBILITY_LABELED
 
         binding.addNewNoteFloatingActionButton.setOnClickListener {
-//            loadFragment(CreateEditNoteFragment())
             showFragment("CreateEditNoteFragment")
         }
 
         binding.bottomMenu.setOnItemSelectedListener {
             when (it.itemId) {
                 R.id.bottomMenuItemWork -> {
-//                    loadFragment(WorkFragment())
                     showFragment("WorkFragment")
                     true
                 }
 
                 R.id.bottomMenuItemMain -> {
-//                    loadFragment(ProfileFragment())
                     showFragment("ProfileFragment")
                     true
                 }
 
                 R.id.bottomMenuItemNotes -> {
-//                    loadFragment(NotesFragment())
                     showFragment("NotesFragment")
                     true
                 }
 
                 R.id.bottomMenuItemProfile -> {
-//                    loadFragment(MainFragment())
                     showFragment("MainFragment")
                     true
                 }
@@ -188,14 +121,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun loadFragment(fragment: Fragment) {
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.mainContentFrame, fragment)
-        transaction.commit()
-    }
-
     private fun showFragment(tag: String) {
-        val fragmentTransaction = fragmentManager.beginTransaction()
+        val fragmentTransaction = this.fragmentManager.beginTransaction()
 
         val existingFragment = fragmentManager.findFragmentByTag(tag)
         if (existingFragment != null) {
@@ -258,15 +185,15 @@ class MainActivity : AppCompatActivity() {
 
             val dialogBinding = FragmentActionResultBinding.inflate(LayoutInflater.from(context))
 
-            dialogBinding.aboutActivityDescTextView1.setText("Как вы оцениваете результат своей работы в области ${currentTast.work_type}\n(${currentTast.desc})\n")
+            dialogBinding.aboutActivityDescTextView1.setText("Как вы оцениваете результат своей работы в области ${currentTast.workType}\n(${currentTast.desc})\n")
             dialogBinding.aboutActivityDescTextView2.setText("Отметьте нужные по вашему мнению пункты")
 
-            if (currentTast.work_type == WorkTasksTypes.FLYERS.description || currentTast.work_type == WorkTasksTypes.CALLS.description) {
+            if (currentTast.workType == WorkTasksTypes.FLYERS.description || currentTast.workType == WorkTasksTypes.CALLS.description) {
                 dialogBinding.countNumberPicker.visibility = View.VISIBLE
                 dialogBinding.countNumberPicker.maxValue = 50
                 dialogBinding.countNumberPicker.minValue = 0
                 dialogBinding.countNumberPicker.value = 1
-            } else if (currentTast.work_type == WorkTasksTypes.DEAL.description || currentTast.work_type == WorkTasksTypes.DEPOSIT.description || currentTast.work_type == WorkTasksTypes.MEET.description || currentTast.work_type == WorkTasksTypes.SHOW.description) {
+            } else if (currentTast.workType == WorkTasksTypes.DEAL.description || currentTast.workType == WorkTasksTypes.DEPOSIT.description || currentTast.workType == WorkTasksTypes.MEET.description || currentTast.workType == WorkTasksTypes.SHOW.description) {
                 dialogBinding.isConractSignedCheckBox.visibility = View.VISIBLE
             } else {
                 dialogBinding.resultImageView.visibility = View.VISIBLE
@@ -279,10 +206,10 @@ class MainActivity : AppCompatActivity() {
             var addValue = 1
 
             dialogBinding.goodActivityButton.setOnClickListener {
-                if (currentTast.work_type == WorkTasksTypes.FLYERS.description || currentTast.work_type == WorkTasksTypes.CALLS.description) {
+                if (currentTast.workType == WorkTasksTypes.FLYERS.description || currentTast.workType == WorkTasksTypes.CALLS.description) {
                     addValue = dialogBinding.countNumberPicker.value
                 }
-                MainActivity.editUserStatistics(context, currentTast.work_type, addValue, MainStatic.currentToken!!)
+                MainActivity.editUserStatistics(context, currentTast.workType, addValue, MainStatic.currentToken!!)
                 NotesFragment.deleteTask(context, MainStatic.currentToken!!, currentTast.id)
                 dialog.dismiss()
             }

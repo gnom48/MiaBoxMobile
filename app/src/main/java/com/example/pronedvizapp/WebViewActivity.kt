@@ -22,13 +22,21 @@ class WebViewActivity : AppCompatActivity() {
         }
 
         binding.mainWebView.settings.javaScriptEnabled = true
-
-        loadHtmlFromAssets("baza.html")
+        val src = intent.getStringExtra(SOURCE)
+        if (src != null) {
+            loadHtmlFromAssets(src)
+        } else {
+            loadHtmlFromAssets("not_found.html")
+        }
     }
 
     private fun loadHtmlFromAssets(fileName: String) {
         val inputStream = assets.open(fileName)
         val htmlContent = inputStream.bufferedReader().use { it.readText() }
         binding.mainWebView.loadDataWithBaseURL(null, htmlContent, "text/html", "UTF-8", null)
+    }
+
+    companion object {
+        const val SOURCE = "SOURCE"
     }
 }

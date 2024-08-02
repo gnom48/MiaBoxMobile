@@ -2,22 +2,15 @@ package com.example.pronedvizapp.main
 
 import android.app.AlarmManager
 import android.app.AlertDialog
-import android.app.Dialog
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
-import android.util.Log
-import android.util.Patterns
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.annotation.RequiresApi
-import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -113,7 +106,7 @@ class NotesFragment(override val fragmentNavigationTag: String = "NotesFragment"
                                 intent ->
                             intent.putExtra("TITLE", "Напоминание")
                             intent.putExtra("CONTENT", (objectToDelete as Note).title)
-                            PendingIntent.getBroadcast(this@NotesFragment.requireContext(), (objectToDelete as Note).notification_id, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+                            PendingIntent.getBroadcast(this@NotesFragment.requireContext(), (objectToDelete as Note).notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
                         }
                         alarmManager.cancel(alarmIntent)
                         deleteNote(this@NotesFragment.requireContext(), MainStatic.currentToken!!, objectToDelete.id)
@@ -121,8 +114,8 @@ class NotesFragment(override val fragmentNavigationTag: String = "NotesFragment"
                         val alarmIntent = Intent(this@NotesFragment.requireContext(), NotificationApp::class.java).let {
                                 intent ->
                             intent.putExtra("TITLE", "Уведомление")
-                            intent.putExtra("CONTENT", "Как прошла работа над ${(objectToDelete as Task).work_type}?")
-                            PendingIntent.getBroadcast(this@NotesFragment.requireContext(), (objectToDelete as Task).notification_id, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+                            intent.putExtra("CONTENT", "Как прошла работа над ${(objectToDelete as Task).workType}?")
+                            PendingIntent.getBroadcast(this@NotesFragment.requireContext(), (objectToDelete as Task).notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
                         }
                         alarmManager.cancel(alarmIntent)
                         deleteTask(this@NotesFragment.requireContext(), MainStatic.currentToken!!, objectToDelete.id)
@@ -314,7 +307,7 @@ class NotesFragment(override val fragmentNavigationTag: String = "NotesFragment"
                             val tasksList = response.body()?.filter {
                                 !LocalDateTime.now().isBefore(
                                     LocalDateTime.ofEpochSecond(
-                                        it.date_time + it.duration_seconds,
+                                        it.date_time + it.durationSeconds,
                                         0,
                                         ZoneOffset.UTC
                                     )

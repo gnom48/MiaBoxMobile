@@ -1,6 +1,7 @@
 package com.example.pronedvizapp.requests
 
 import com.example.pronedvizapp.requests.models.TranscriptionTask
+import com.example.pronedvizapp.requests.models.TranscriptionTaskStatus
 import com.example.pronedvizapp.requests.models.UsersCalls
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -10,7 +11,6 @@ import retrofit2.http.Header
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
-import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ServerApiCalls {
@@ -34,16 +34,18 @@ interface ServerApiCalls {
         @Header("token-authorization") tokenAuthorization: String
     ): Response<List<UsersCalls>>
 
-    @GET("calls/get_call_record_file/{record_id}")
-    suspend fun getCallRecordFile(
-        @Path("record_id") recordId: Int,
-        @Header("token-authorization") tokenAuthorization: String
-    ): Response<ByteArray>
-
-    @GET("calls/order_call_transcription/{record_id}")
+    @GET("calls/order_call_transcription")
     suspend fun orderCallTranscription(
-        @Path("record_id") recordId: Int,
-        @Header("token-authorization") tokenAuthorization: String
+        @Query("user_id") userId: Int,
+        @Query("record_id") recordId: Int,
+        @Query("model") model: String?,
+        @Header("token-authorization") tokenAuthorization: String?
     ): Response<TranscriptionTask>
+
+    @GET("calls/get_order_transcription_status")
+    suspend fun getOrderTranscriptionStatus(
+        @Query("task_id") taskId: String,
+        @Header("token-authorization") tokenAuthorization: String?
+    ): Response<TranscriptionTaskStatus>
 
 }

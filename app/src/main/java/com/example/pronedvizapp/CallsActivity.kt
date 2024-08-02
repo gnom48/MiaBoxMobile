@@ -60,31 +60,6 @@ class CallsActivity : AppCompatActivity() {
         }
     }
 
-    private fun groupCallsByDate(calls: List<UsersCalls>): List<CallsGroup> {
-        val callsByDate = mutableMapOf<LocalDate, MutableList<CallInfo>>()
-
-        for (call in calls) {
-            val date = Instant.ofEpochSecond(call.date_time.toLong()).atZone(ZoneId.systemDefault()).toLocalDate()
-            if (!callsByDate.containsKey(date)) {
-                callsByDate[date] = mutableListOf()
-            }
-            callsByDate[date]?.add(
-                CallInfo(
-                    lengthSeconds = call.length_seconds,
-                    callerName = call.contact_name,
-                    dateTime = call.date_time,
-                    transcription = call.transcription,
-                    phoneNumber = call.phone_number,
-                    userId = call.user_id,
-                    recordId = call.record_id,
-                    callType = call.call_type
-                )
-            )
-        }
-
-        return callsByDate.map { (date, calls) -> CallsGroup(date, calls) }
-    }
-
     private fun refreshCalls(callback: (ArrayList<UsersCalls>) -> Unit) {
         lifecycleScope.launch {
             val allCalls = getAllCallsByUserId(
@@ -108,6 +83,32 @@ class CallsActivity : AppCompatActivity() {
     }
 
     companion object {
+
+        public fun groupCallsByDate(calls: List<UsersCalls>): List<CallsGroup> {
+            val callsByDate = mutableMapOf<LocalDate, MutableList<CallInfo>>()
+
+            for (call in calls) {
+                val date = Instant.ofEpochSecond(call.dateTime.toLong()).atZone(ZoneId.systemDefault()).toLocalDate()
+                if (!callsByDate.containsKey(date)) {
+                    callsByDate[date] = mutableListOf()
+                }
+                callsByDate[date]?.add(
+                    CallInfo(
+                        lengthSeconds = call.lengthSeconds,
+                        callerName = call.contactName,
+                        dateTime = call.dateTime,
+                        transcription = call.transcription,
+                        phoneNumber = call.phoneNumber,
+                        userId = call.userId,
+                        recordId = call.recordId,
+                        callType = call.callType
+                    )
+                )
+            }
+
+            return callsByDate.map { (date, calls) -> CallsGroup(date, calls) }
+        }
+
 
         suspend fun getAllCallsByUserId(context: Context, userId: Int, token: String): Result<ArrayList<UsersCalls>?> =
             coroutineScope {

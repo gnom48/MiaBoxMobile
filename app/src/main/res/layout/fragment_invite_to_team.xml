@@ -56,10 +56,12 @@
         app:layout_constraintTop_toBottomOf="@+id/aboutActivityDescTextView" />
 
     <TextView
+        android:id="@+id/textOptional"
         style="@style/supportText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
+        android:overScrollMode="ifContentScrolls"
         android:text="Учтите, что данный QR-код приглашение действует не более 2 дней"
         android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
