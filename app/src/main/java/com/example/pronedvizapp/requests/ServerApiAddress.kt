@@ -1,7 +1,6 @@
 package com.example.pronedvizapp.requests
 
-import com.example.pronedvizapp.requests.models.AddresInfo
-import com.example.pronedvizapp.requests.models.Note
+import com.example.pronedvizapp.requests.models.AddressInfo
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -17,17 +16,17 @@ interface ServerApiAddress {
         @Query("date_start") dateStart: Int?,
         @Query("date_end") dateEnd: Int?,
         @Header("token-authorization") tokenAuthorization: String
-    ): Call<List<AddresInfo>>
+    ): Call<List<AddressInfo>>
 
     @GET("address/get_address_info_by_user_id")
     fun getAllUserAddresses(
         @Query("user_id") userId: Int,
         @Header("token-authorization") tokenAuthorization: String
-    ): Call<List<AddresInfo>>
+    ): Call<List<AddressInfo>>
 
     @POST("address/add_address_info")
     fun addAddressInfo(
-        @Body addressInfo: AddresInfo,
+        @Body addressInfo: AddressInfo,
         @Header("token-authorization") tokenAuthorization: String
     ): Call<Int?>
 

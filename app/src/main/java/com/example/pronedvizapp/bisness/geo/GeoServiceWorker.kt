@@ -24,6 +24,7 @@ import com.example.pronedvizapp.bisness.geo.GeoConsts.DEBUG_TAG
 import com.example.pronedvizapp.bisness.geo.GeoConsts.LAST_GEO_POINT_UNIX_PREF_TAG
 import com.example.pronedvizapp.bisness.geo.GeoConsts.MSG_GET_LOCATION
 import com.example.pronedvizapp.bisness.isServiceRunning
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.concurrent.TimeUnit
 
@@ -62,13 +63,18 @@ class GeoServiceWorker(private val context: Context, params: WorkerParameters) :
         }
 
         if (LocalDateTime.now().toLocalTime().hour > 19 || LocalDateTime.now().toLocalTime().hour < 7) {
+            if (isServiceRunning(context, GeoPositionService::class.java)) {
+                applicationContext.stopService(Intent(applicationContext, GeoPositionService::class.java))
+            }
             return Result.success()
         }
 
         if (preferences.contains(LAST_GEO_POINT_UNIX_PREF_TAG)) {
             val whenLastQuery = preferences.getLong(LAST_GEO_POINT_UNIX_PREF_TAG, 0L)
             if (((System.currentTimeMillis() / 1000) - whenLastQuery < 1 * 60 * 60 && whenLastQuery != 0L) ||
-                (LocalDateTime.now().toLocalTime().hour > 19 || LocalDateTime.now().toLocalTime().hour < 7)) {
+                (LocalDateTime.now().toLocalTime().hour > 19 ||
+                        LocalDateTime.now().toLocalTime().hour < 7) ||
+                LocalDate.now().dayOfWeek.value == 6 || LocalDate.now().dayOfWeek.value == 7) {
                 Log.d(DEBUG_TAG, "too early to geo sync from worker")
                 return Result.success()
             }

@@ -19,10 +19,9 @@ import com.example.pronedvizapp.InitialActivity
 import com.example.pronedvizapp.MapActivity
 import com.example.pronedvizapp.R
 import com.example.pronedvizapp.bisness.calls.CallRecordingService.Companion.DEBUG_TAG
-import com.example.pronedvizapp.bisness.geo.GeoConsts
 import com.example.pronedvizapp.bisness.geo.GeoConsts.LAST_GEO_POINT_UNIX_PREF_TAG
 import com.example.pronedvizapp.bisness.geo.GeoPositionService.Companion.addAddressRecordAsync
-import com.example.pronedvizapp.requests.models.AddresInfo
+import com.example.pronedvizapp.requests.models.AddressInfo
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
@@ -32,8 +31,11 @@ import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
-// Deprecated
-// больше не нужен
+// *************************************************** //
+//                     Deprecated                      //
+// *************************************************** //
+// больше не нужен (но останется как источник кода)    //
+// *************************************************** //
 class GeoWorker(private val context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
 
     private val geoService by lazy { LocationServices.getFusedLocationProviderClient(context) }
@@ -161,7 +163,7 @@ class GeoWorker(private val context: Context, params: WorkerParameters) : Corout
             addressResponse.onSuccess { address ->
                 Log.d(DEBUG_TAG, "addressResponse.onSuccess $address")
                 if (address != null && address.suggestions.isNotEmpty()) {
-                    val serverApiAddressAdditionResponse = addAddressRecordAsync(context, AddresInfo(
+                    val serverApiAddressAdditionResponse = addAddressRecordAsync(context, AddressInfo(
                         -1,
                         preferences.getInt("USER_ID", -1),
                         address.suggestions[0].value,

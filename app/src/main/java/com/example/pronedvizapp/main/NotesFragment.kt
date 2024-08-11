@@ -2,6 +2,7 @@ package com.example.pronedvizapp.main
 
 import android.app.AlarmManager
 import android.app.AlertDialog
+import android.app.DatePickerDialog
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -29,6 +30,7 @@ import com.example.pronedvizapp.requests.ServerApiNotes
 import com.example.pronedvizapp.requests.ServerApiTasks
 import com.example.pronedvizapp.requests.models.Note
 import com.example.pronedvizapp.requests.models.Task
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import retrofit2.Call
@@ -47,11 +49,10 @@ import java.util.Locale
 class NotesFragment(override val fragmentNavigationTag: String = "NotesFragment") : Fragment(), IFragmentTag {
 
     var dataSource = ArrayList<INotesAdapterTemplete>()
-    var tmp = ArrayList<INotesAdapterTemplete>()
+    var fildredDataSource = ArrayList<INotesAdapterTemplete>()
+    var selectedDate: LocalDateTime = LocalDateTime.now()
 
     lateinit var binding: FragmentNotesBinding
-
-    var selectedDate: LocalDateTime = LocalDateTime.now()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,12 +63,11 @@ class NotesFragment(override val fragmentNavigationTag: String = "NotesFragment"
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-
         binding = FragmentNotesBinding.inflate(inflater, container, false)
 
-        tmp = dataSource
-        tmp = ArrayList(tmp.filter { Instant.ofEpochSecond(it.date_time).atZone(ZoneId.systemDefault()).minusHours(3).toLocalDate() == selectedDate.toLocalDate() })
-        var notesTasksAdapter = NotesTasksAdapter(this.requireActivity() as MainActivity, tmp)
+        fildredDataSource = dataSource
+        fildredDataSource = ArrayList(fildredDataSource.filter { Instant.ofEpochSecond(it.date_time).atZone(ZoneId.systemDefault()).minusHours(3).toLocalDate() == selectedDate.toLocalDate() })
+        val notesTasksAdapter = NotesTasksAdapter(this.requireActivity() as MainActivity, fildredDataSource)
         val itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
             override fun onMove(
                 recyclerView: RecyclerView,
@@ -97,8 +97,8 @@ class NotesFragment(override val fragmentNavigationTag: String = "NotesFragment"
                         return@setOnDismissListener
                     }
 
-                    val objectToDelete = tmp[viewHolder.adapterPosition]
-                    tmp.remove(tmp[viewHolder.adapterPosition])
+                    val objectToDelete = fildredDataSource[viewHolder.adapterPosition]
+                    fildredDataSource.remove(fildredDataSource[viewHolder.adapterPosition])
                     val alarmManager = this@NotesFragment.requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
                     if (objectToDelete is Note) {
@@ -121,7 +121,7 @@ class NotesFragment(override val fragmentNavigationTag: String = "NotesFragment"
                         deleteTask(this@NotesFragment.requireContext(), MainStatic.currentToken!!, objectToDelete.id)
                     }
 
-                    binding.notesRecyclerView.adapter = NotesTasksAdapter(this@NotesFragment.requireActivity() as MainActivity, tmp)
+                    binding.notesRecyclerView.adapter = NotesTasksAdapter(this@NotesFragment.requireActivity() as MainActivity, fildredDataSource)
                 }
                 dialog.show()
             }
@@ -134,10 +134,20 @@ class NotesFragment(override val fragmentNavigationTag: String = "NotesFragment"
         binding.datesRecyclerView.adapter = DatesAdapter(object : OnDateItemClickListener {
             override fun onItemClick(date: LocalDateTime) {
                 selectedDate = date
-                binding.selectedDateTextView.setText(getFormattedDateString(date))
+                binding.selectedDateTextView.text = getFormattedDateString(date)
                 updateRecyclerViewAdapter()
             }
         })
+
+        binding.selectedDateTextView.setOnClickListener {
+            val datePickerDialog = DatePickerDialog(this.requireActivity(), DatePickerDialog.OnDateSetListener { _, selectedYear, selectedMonth, selectedDay ->
+                selectedDate = LocalDateTime.of(selectedYear, selectedMonth + 1, selectedDay, 0, 0, 0)
+                binding.selectedDateTextView.text = getFormattedDateString(selectedDate)
+                updateRecyclerViewAdapter()
+            }, selectedDate.year, selectedDate.monthValue, selectedDate.dayOfMonth)
+            datePickerDialog.setTitle("Выберите дату")
+            datePickerDialog.show()
+        }
 
         binding.rootSwipeRefreshLayout.setOnRefreshListener {
             updateRecyclerViewAdapter()
@@ -151,14 +161,14 @@ class NotesFragment(override val fragmentNavigationTag: String = "NotesFragment"
     private fun updateRecyclerViewAdapter() {
         refreshNotesTasks { unionList ->
             this@NotesFragment.dataSource = unionList
-            tmp = dataSource
-            tmp = ArrayList(tmp.filter { Instant.ofEpochSecond(it.date_time).atZone(ZoneId.systemDefault()).minusHours(3).toLocalDate() == selectedDate.toLocalDate() })
-            binding.notesRecyclerView.adapter = NotesTasksAdapter(this.requireActivity() as MainActivity, tmp)
+            fildredDataSource = dataSource
+            fildredDataSource = ArrayList(fildredDataSource.filter { Instant.ofEpochSecond(it.date_time).atZone(ZoneId.systemDefault()).minusHours(3).toLocalDate() == selectedDate.toLocalDate() })
+            binding.notesRecyclerView.adapter = NotesTasksAdapter(this.requireActivity() as MainActivity, fildredDataSource)
 
-            if (tmp.size == 0 || tmp.isEmpty() || tmp == null) {
-                binding.notesRecyclerView.setBackgroundResource(R.drawable.no_data_img_background)
+            if (fildredDataSource.size == 0 || fildredDataSource.isEmpty() || fildredDataSource == null) {
+                binding.noDataImageView.visibility = View.VISIBLE
             } else {
-                binding.notesRecyclerView.setBackgroundColor(Color.TRANSPARENT)
+                binding.noDataImageView.visibility = View.GONE
             }
             binding.rootSwipeRefreshLayout.isRefreshing = false
         }

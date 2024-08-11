@@ -86,7 +86,7 @@ abstract class Work(val context: Context, val workType: WorkTasksTypes) {
         }
 
         //saveToDb(context)
-        val newTask = Task(0, workType.description, workStartTime.toEpochSecond(ZoneOffset.UTC), "Работа", workDuration.toSeconds().toInt(), MainStatic.currentUser!!.id, notifId)
+        val newTask = Task(0, workType.description, workStartTime.toEpochSecond(ZoneOffset.UTC), "Работа", workDuration.seconds.toInt(), MainStatic.currentUser!!.id, notifId)
 
         val retrofit = Retrofit.Builder()
             .baseUrl(context.getString(R.string.server_ip_address))
@@ -151,7 +151,7 @@ class CustomeWork(val _context: Context, val _workType: WorkTasksTypes) : Work(_
         }
 
         //saveToDb(context)
-        val newTask = Task(0, workType.description, workStartTime.toEpochSecond(ZoneOffset.UTC), this.desc, workDuration.toSeconds().toInt(), MainStatic.currentUser!!.id, notifId)
+        val newTask = Task(0, workType.description, workStartTime.toEpochSecond(ZoneOffset.UTC), this.desc, workDuration.seconds.toInt(), MainStatic.currentUser!!.id, notifId)
 
         val retrofit = Retrofit.Builder()
             .baseUrl(context.getString(R.string.server_ip_address))

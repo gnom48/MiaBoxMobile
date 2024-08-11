@@ -25,7 +25,7 @@ import com.example.pronedvizapp.bisness.geo.GeoConsts.LAST_GEO_POINT_UNIX_PREF_T
 import com.example.pronedvizapp.bisness.geo.GeoConsts.MSG_GET_LOCATION
 import com.example.pronedvizapp.bisness.geo.GeoConsts.NOTIFICATION_ID
 import com.example.pronedvizapp.requests.ServerApiAddress
-import com.example.pronedvizapp.requests.models.AddresInfo
+import com.example.pronedvizapp.requests.models.AddressInfo
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.CoroutineScope
@@ -84,14 +84,13 @@ class GeoPositionService : Service() {
                             if (address != null && address.suggestions.isNotEmpty()) {
                                 val serverApiAddressAdditionResponse =
                                     addAddressRecordAsync(
-                                        this@GeoPositionService.applicationContext, AddresInfo(
+                                        this@GeoPositionService.applicationContext, AddressInfo(
                                             -1,
                                             preferences.getInt("USER_ID", -1),
                                             address.suggestions[0].value,
                                             location.latitude.toFloat(),
                                             location.longitude.toFloat(),
-                                            LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)
-                                                .toInt()
+                                            (System.currentTimeMillis() / 1000).toInt()
                                         )
                                     )
                                 serverApiAddressAdditionResponse.onSuccess {  res ->
@@ -160,7 +159,7 @@ class GeoPositionService : Service() {
 
     companion object {
 
-        suspend fun addAddressRecordAsync(context: Context, addressInfo: AddresInfo): Result<Int?> = coroutineScope {
+        suspend fun addAddressRecordAsync(context: Context, addressInfo: AddressInfo): Result<Int?> = coroutineScope {
             val retrofit = Retrofit.Builder()
                 .baseUrl(context.getString(R.string.server_ip_address))
                 .addConverterFactory(GsonConverterFactory.create())

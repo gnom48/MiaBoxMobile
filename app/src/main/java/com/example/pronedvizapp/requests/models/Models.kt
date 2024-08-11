@@ -32,7 +32,7 @@ data class User(
     @SerializedName("login") var login: String,
     @SerializedName("password") var password: String,
     @SerializedName("type") var type: String,
-    @SerializedName("photo") var photo: String,
+    @SerializedName("email") var email: String,
     @SerializedName("name") var name: String,
     @SerializedName("gender") var gender: String?,
     @SerializedName("birthday") var birthday: Long?,
@@ -81,6 +81,8 @@ const val DAY_STATISTICS_PERIOD = "day"
 const val WEEK_STATISTICS_PERIOD = "week"
 const val MONTH_STATISTICS_PERIOD = "month"
 
+interface IStatistic { }
+
 data class Statistics(
     @SerializedName("user_id") val userId: Int,
     @SerializedName("flyers") var flyers: Int,
@@ -92,7 +94,7 @@ data class Statistics(
     @SerializedName("searches") var searches: Int,
     @SerializedName("analytics") var analytics: Int,
     @SerializedName("others") var others: Int
-): Serializable
+): Serializable, IStatistic
 
 data class StatisticsPeriods(
     @SerializedName("day") val day: Statistics,
@@ -103,8 +105,9 @@ data class StatisticsPeriods(
 data class Member(
     @SerializedName("statistics") val statistics: StatisticsPeriods,
     @SerializedName("calls") val calls: List<UsersCalls>,
-    @SerializedName("addresses") val addresses: List<AddresInfo>,
+    @SerializedName("addresses") val addresses: List<AddressInfo>,
     @SerializedName("user") val user: User,
+    @SerializedName("kpi") val kpi: StatisticsWithKpi,
     @SerializedName("role") val role: UserStatuses
 ): Serializable
 
@@ -115,7 +118,7 @@ data class UserTeamsWithInfoItem(
 
 class UserTeamsWithInfo : ArrayList<UserTeamsWithInfoItem>(), Serializable
 
-data class AddresInfo(
+data class AddressInfo(
     @SerializedName("record_id") val recordId: Int,
     @SerializedName("user_id") val userId: Int,
     @SerializedName("address") val address: String,
@@ -144,7 +147,14 @@ data class StatisticsWithKpi(
     @SerializedName("others") var others: Int,
     @SerializedName("user_level") var userLevel: String,
     @SerializedName("salary_percentage") var salaryPercentage: Float
-): Serializable
+): Serializable, IStatistic
+
+data class Kpi(
+    @SerializedName("last_month_kpi") val lastMonthKpi: StatisticsWithKpi,
+    @SerializedName("current_month_kpi") val currentMonthKpi: Float,
+    @SerializedName("level") val userLevel: String,
+    @SerializedName("summary_deals") val summaryDeals: Int
+): Serializable, IStatistic
 
 data class CallsRecords(
     @SerializedName("id") val id: Int,

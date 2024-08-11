@@ -39,7 +39,6 @@ class WorkFragment(override var fragmentNavigationTag: String = "WorkFragment") 
     }
 
     @SuppressLint("ScheduleExactAlarm")
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
@@ -103,7 +102,7 @@ class WorkFragment(override var fragmentNavigationTag: String = "WorkFragment") 
             binding.setHoursNumberPicker.value = 1
             binding.setMinutesNumberPicker.value = 0
 
-            binding.aboutActivityNameTextView.setText(actualWork.workType.description)
+            binding.aboutActivityNameTextView.text = actualWork.workType.description
 
             val dialog = Dialog(this.requireContext())
             dialog.window?.setBackgroundDrawableResource(R.color.transparent0)
@@ -123,8 +122,8 @@ class WorkFragment(override var fragmentNavigationTag: String = "WorkFragment") 
             }
 
             binding.startActivityButton.setOnClickListener {
-                if (selectedDuration.toSeconds() >= 86400) {
-                    selectedDuration = Duration.ofSeconds(selectedDuration.toSeconds() - 86400)
+                if (selectedDuration.seconds >= 86400) {
+                    selectedDuration = Duration.ofSeconds(selectedDuration.seconds - 86400)
                 }
                 (actualWork as CustomeWork).desc = binding.aboutActivityDescEditText.text.toString()
                 (actualWork as CustomeWork).start(selectedDuration, !binding.dontNotifyCheckBox.isChecked)
@@ -149,7 +148,7 @@ class WorkFragment(override var fragmentNavigationTag: String = "WorkFragment") 
             binding.setHoursNumberPicker.value = 1
             binding.setMinutesNumberPicker.value = 0
 
-            binding.aboutActivityNameTextView.setText("Отдых")
+            binding.aboutActivityNameTextView.text = "Отдых"
             binding.aboutActivityDescEditText.hint = "Укажите почему вы пока не можете работать и выберите время для отдыха"
             binding.startActivityButton.text = "Отдыхать"
             binding.dontNotifyCheckBox.visibility = View.INVISIBLE
@@ -172,8 +171,8 @@ class WorkFragment(override var fragmentNavigationTag: String = "WorkFragment") 
             }
 
             binding.startActivityButton.setOnClickListener {
-                if (selectedDuration.toSeconds() >= 86400) {
-                    selectedDuration = Duration.ofSeconds(selectedDuration.toSeconds() - 86400)
+                if (selectedDuration.seconds >= 86400) {
+                    selectedDuration = Duration.ofSeconds(selectedDuration.seconds - 86400)
                 }
 
                 val workStartTime = LocalDateTime.now()
@@ -187,8 +186,8 @@ class WorkFragment(override var fragmentNavigationTag: String = "WorkFragment") 
                     intent.putExtra("CONTENT", "Пришло время поработать?")
                     PendingIntent.getBroadcast(context, System.currentTimeMillis().toInt(), intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
                 }
-                if (selectedDuration.toSeconds() >= 86400) {
-                    selectedDuration = Duration.ofSeconds(selectedDuration.toSeconds() - 86400)
+                if (selectedDuration.seconds >= 86400) {
+                    selectedDuration = Duration.ofSeconds(selectedDuration.seconds - 86400)
                 }
                 val time = selectedDuration.toMillis() + calendar.timeInMillis
                 alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, time, alarmIntent)
@@ -203,9 +202,7 @@ class WorkFragment(override var fragmentNavigationTag: String = "WorkFragment") 
         return binding.root
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun showCommitAlertDialog(actualWork: Work, desc: Int?) {
-
         val binding = FragmentAboutActivityBinding.inflate(LayoutInflater.from(this.requireContext()))
         var selectedDuration: Duration = Duration.ofHours((LocalTime.now().hour + 1).toLong()).plusMinutes(LocalTime.now().minute.toLong())
 
@@ -219,8 +216,8 @@ class WorkFragment(override var fragmentNavigationTag: String = "WorkFragment") 
         binding.setHoursNumberPicker.value = 1
         binding.setMinutesNumberPicker.value = 0
 
-        binding.aboutActivityDescTextView.setText(getText(desc!!))
-        binding.aboutActivityNameTextView.setText(actualWork.workType.description)
+        binding.aboutActivityDescTextView.text = getText(desc!!)
+        binding.aboutActivityNameTextView.text = actualWork.workType.description
 
         val dialog = Dialog(this.requireContext())
         dialog.window?.setBackgroundDrawableResource(R.color.transparent0)
@@ -240,8 +237,8 @@ class WorkFragment(override var fragmentNavigationTag: String = "WorkFragment") 
         }
 
         binding.startActivityButton.setOnClickListener {
-            if (selectedDuration.toSeconds() >= 86400) {
-                selectedDuration = Duration.ofSeconds(selectedDuration.toSeconds() - 86400)
+            if (selectedDuration.seconds >= 86400) {
+                selectedDuration = Duration.ofSeconds(selectedDuration.seconds - 86400)
             }
             actualWork.start(selectedDuration, !binding.dontNotifyCheckBox.isChecked)
             dialog.dismiss()

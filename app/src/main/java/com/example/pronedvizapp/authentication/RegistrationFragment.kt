@@ -3,6 +3,7 @@ package com.example.pronedvizapp.authentication
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.res.ColorStateList
 import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -19,6 +20,7 @@ import com.example.pronedvizapp.databinding.FragmentRegistrationBinding
 import com.example.pronedvizapp.requests.ServerApiUsers
 import com.example.pronedvizapp.requests.models.User
 import com.example.pronedvizapp.requests.models.UserTypes
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -29,22 +31,13 @@ import retrofit2.converter.gson.GsonConverterFactory
 class RegistrationFragment: Fragment() {
 
     lateinit var binding: FragmentRegistrationBinding
-
     private lateinit var preferences: SharedPreferences
-
-    public val userPhotoLinks: Array<String> = arrayOf(
-        "https://png.pngtree.com/png-clipart/20190421/ourmid/pngtree-creative-memphis-geometric-abstract-patterns-background-png-image_961379.jpg",
-        "https://fons.pibig.info/uploads/posts/2023-05/thumbs/1685404903_fons-pibig-info-p-graficheskie-figuri-fon-pinterest-40.jpg",
-        "https://fons.pibig.info/uploads/posts/2023-05/thumbs/1685404959_fons-pibig-info-p-graficheskie-figuri-fon-pinterest-52.jpg",
-        "https://fons.pibig.info/uploads/posts/2023-05/thumbs/1685404910_fons-pibig-info-p-graficheskie-figuri-fon-pinterest-31.jpg",
-        "https://fons.pibig.info/uploads/posts/2023-05/thumbs/1685404965_fons-pibig-info-p-graficheskie-figuri-fon-pinterest-77.jpg"
-    )
+    private var newUser: User = User(0, "", "", "", "", "", "", 0, "", 0, 0)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
@@ -52,14 +45,32 @@ class RegistrationFragment: Fragment() {
 
         binding = FragmentRegistrationBinding.inflate(inflater, container, false)
 
+        binding.privateButton.isChecked = true
+        updateButtonStyles(binding.privateButton, binding.commercialButton)
+        binding.toggleButtonGroup.addOnButtonCheckedListener { group, checkedId, isChecked ->
+            if (isChecked) {
+                val selectedButton = group.findViewById<MaterialButton>(checkedId)
+                val unselectedButton: MaterialButton
+                if (checkedId == R.id.commercialButton) {
+                    unselectedButton = binding.privateButton
+                    newUser.type = UserTypes.COMMERCIAL.description
+                } else {
+                    unselectedButton = binding.commercialButton
+                    newUser.type = UserTypes.PRIVATE.description
+                }
+
+                updateButtonStyles(selectedButton, unselectedButton)
+            }
+        }
+
         preferences = this.requireContext().getSharedPreferences("settings", Context.MODE_PRIVATE)
 
         binding.gradientView.animateGradientColors()
 
         binding.completeButton.setOnClickListener {
-            if (binding.enterUserLoginEditText.text.toString() == "" || binding.enterPasswordEditText.text.toString() == "" || binding.enterNameEditText.text.toString() == "" || binding.enterSurnameEditText.text.toString() == "") {
+            if (binding.enterUserLoginEditText.text.toString() == "" || binding.enterPasswordEditText.text.toString() == "" || binding.enterNameEditText.text.toString() == "") {
                 MaterialAlertDialogBuilder(this.requireContext())
-                    .setMessage("Возможно вы ввели некорректные данные, проверьте правильность заполнения всех полей и попробуйде снова!")
+                    .setMessage("Возможно вы ввели некорректные данные, проверьте правильность заполнения всех полей и попробуйте снова!")
                     .setPositiveButton("Ок") { dialog, _ ->
                         dialog.dismiss()
                     }
@@ -68,12 +79,12 @@ class RegistrationFragment: Fragment() {
                 return@setOnClickListener
             }
 
-            var newUser = User(0,
+            newUser = User(0,
                 binding.enterUserLoginEditText.text.toString(),
                 binding.enterPasswordEditText.text.toString(),
-                UserTypes.PRIVATE.description,
-                userPhotoLinks.random().toString(),
-                binding.enterNameEditText.text.toString() + " " + binding.enterSurnameEditText.text.toString(),
+                newUser.type,
+                "",
+                binding.enterNameEditText.text.toString(),
                 "",
                 0,
                 "",
@@ -140,6 +151,16 @@ class RegistrationFragment: Fragment() {
         }
 
         return binding.root
+    }
+
+    private fun updateButtonStyles(selectedButton: MaterialButton, unselectedButton: MaterialButton) {
+        selectedButton.setTextColor(resources.getColor(android.R.color.black))
+        selectedButton.backgroundTintList = resources.getColorStateList(android.R.color.white)
+
+        unselectedButton.setTextColor(resources.getColor(android.R.color.white))
+        unselectedButton.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.transparent0))
+        unselectedButton.strokeColor = resources.getColorStateList(android.R.color.white)
+        unselectedButton.strokeWidth = 2
     }
 
     companion object {

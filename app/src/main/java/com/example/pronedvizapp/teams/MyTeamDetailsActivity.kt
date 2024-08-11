@@ -11,8 +11,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.pronedvizapp.MainStatic
 import com.example.pronedvizapp.R
@@ -20,7 +18,6 @@ import com.example.pronedvizapp.adapters.TeamMembersAdapter
 import com.example.pronedvizapp.databinding.ActivityMyTeamDetailsBinding
 import com.example.pronedvizapp.databinding.FragmentInviteToTeamBinding
 import com.example.pronedvizapp.requests.ServerApiTeams
-import com.example.pronedvizapp.requests.models.Member
 import com.example.pronedvizapp.requests.models.UserTeamsWithInfoItem
 import com.google.gson.Gson
 import com.google.zxing.BarcodeFormat
@@ -42,7 +39,6 @@ class MyTeamDetailsActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMyTeamDetailsBinding
     lateinit var teamInfo: UserTeamsWithInfoItem
-    private lateinit var fragmentManager: FragmentManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -168,19 +164,5 @@ class MyTeamDetailsActivity : AppCompatActivity() {
         bindingDialog.closeImageButton.setOnClickListener {
             dialog.dismiss()
         }
-    }
-
-    fun showFullMemberInfoFragment(item: Member) {
-        fragmentManager = supportFragmentManager
-
-        val fragment: Fragment = FullMemberInfoFragment().apply {
-            arguments = Bundle().apply {
-                putSerializable("item", item)
-            }
-        }
-
-        val fragmentTransaction: androidx.fragment.app.FragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.add(android.R.id.content, fragment, "MEMBER_INFO")
-        fragmentTransaction.commit()
     }
 }

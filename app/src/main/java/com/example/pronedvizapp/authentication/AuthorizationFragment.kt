@@ -58,10 +58,6 @@ class AuthorizationFragment: Fragment() {
             binding.enterPasswordEditText.setText(preferences.getString("LAST_PASSWORD", ""))
         }
 
-//        if (binding.enterLoginEditText.text != null && binding.enterPasswordEditText.text != null) {
-//            binding.completeButton.performClick() // не работает -> теперь в InitialActivity
-//        }
-
         binding.completeButton.setOnClickListener {
 
             if (binding.enterLoginEditText.text.toString() == "" || binding.enterPasswordEditText.text.toString() == "") {

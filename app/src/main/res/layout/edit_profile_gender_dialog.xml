@@ -11,7 +11,7 @@
         android:layout_marginTop="30dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Изменить пол"
+        android:text="Выбрать пол"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -77,7 +77,7 @@
             android:layout_marginHorizontal="20dp"
             android:layout_marginVertical="20dp"
             android:background="@drawable/main_buttons_res"
-            android:text="  Сохранить  " />
+            android:text="  Сохранить  "/>
 
     </LinearLayout>
 

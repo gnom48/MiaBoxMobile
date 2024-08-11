@@ -52,7 +52,6 @@ class CreateEditNoteFragment: Fragment {
         super.onCreate(savedInstanceState)
     }
 
-    @SuppressLint("ScheduleExactAlarm")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
@@ -88,160 +87,14 @@ class CreateEditNoteFragment: Fragment {
             selectedLocalDateTime = LocalDateTime.of(selectedLocalDateTime.year, selectedLocalDateTime.month, selectedLocalDateTime.dayOfMonth, hourOfDay, minute, 0)
         }
 
-        // notifications
         alarmManager = this.requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
         binding.completeButton.setOnClickListener {
-            if (noteToEdit == null) {
-                //val dbContext = LocalDb.getDb(this.requireContext())
+            makeTaskWork()
+        }
 
-                if (binding.taskTitleEditText.text.toString() == "") {
-                    MaterialAlertDialogBuilder(this.requireContext())
-                        .setMessage("Возможно вы ввели некорректные данные, проверьте правильность заполнения всех полей и попробуйде снова (поле \"Название\" обязательно должно быть заполнено)!")
-                        .setPositiveButton("Ок") { dialog, _ ->
-                            dialog.dismiss()
-                        }
-                        .create()
-                        .show()
-                    return@setOnClickListener
-                }
-
-                if (LocalDateTime.now().isAfter(selectedLocalDateTime)) {
-                    MaterialAlertDialogBuilder(this.requireContext())
-                        .setMessage("Не стоит записывать заметки за прошедшие даты, лучше думать о будущем!")
-                        .setPositiveButton("Ок") { dialog, _ ->
-                            dialog.dismiss()
-                        }
-                        .create()
-                        .show()
-                    return@setOnClickListener
-                }
-
-                val calendar = Calendar.getInstance()
-                calendar.set(selectedLocalDateTime.year, selectedLocalDateTime.monthValue-1, selectedLocalDateTime.dayOfMonth, selectedLocalDateTime.hour, selectedLocalDateTime.minute)
-                val time = calendar.timeInMillis
-
-                val newNote = Note(
-                    0,
-                    binding.taskTitleEditText.text.toString(),
-                    binding.taskDescEditText.text.toString(),
-                    selectedLocalDateTime.toEpochSecond(ZoneOffset.UTC),
-                    MainStatic.currentUser!!.id,
-                    System.currentTimeMillis().toInt()
-                )
-
-                // notifications
-                val alarmIntent = Intent(this.requireContext(), NotificationApp::class.java).let {
-                    intent ->
-                        intent.putExtra("TITLE", "Напоминание")
-                        intent.putExtra("CONTENT", newNote.title)
-                        PendingIntent.getBroadcast(this.requireContext(), newNote.notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-                }
-                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, time, alarmIntent)
-
-//            var tViewModel = ViewModelProvider(this).get(DbViewModel::class.java)
-//            tViewModel.insertNote(newNote)
-
-                val retrofit = Retrofit.Builder()
-                    .baseUrl(this@CreateEditNoteFragment.requireContext().getString(R.string.server_ip_address))
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build()
-
-                val notesApi = retrofit.create(ServerApiNotes::class.java)
-
-                val req = notesApi.addNote(newNote, MainStatic.currentToken!!)
-                var resultAddition: Int? = null
-                req.enqueue(object : Callback<Int?> {
-                    override fun onResponse(call: Call<Int?>, response: Response<Int?>) {
-                        if (response.isSuccessful) {
-//                            Toast.makeText(this@CreateEditNoteFragment.requireContext(), "Ок", Toast.LENGTH_SHORT).show()
-                            resultAddition = response.body()
-
-                            activity?.supportFragmentManager?.beginTransaction()?.remove(this@CreateEditNoteFragment)?.commit()
-                            val bottomNavigationView = activity?.findViewById<BottomNavigationView>(
-                                R.id.bottomMenu
-                            )
-                            bottomNavigationView?.selectedItemId = R.id.bottomMenuItemNotes
-                            return
-                        }
-                        resultAddition = null
-                    }
-
-                    override fun onFailure(call: Call<Int?>, t: Throwable) {
-                        resultAddition = null
-                        Toast.makeText(this@CreateEditNoteFragment.requireContext(), "Ошибка записи", Toast.LENGTH_SHORT).show()
-                    }
-                })
-            } else {
-                //val dbContext = LocalDb.getDb(this.requireContext())
-
-                if (binding.taskTitleEditText.text.toString() == "") {
-                    MaterialAlertDialogBuilder(this.requireContext())
-                        .setMessage("Возможно вы ввели некорректные данные, проверьте правильность заполнения всех полей и попробуйде снова (поле \"Название\" обязательно должно быть заполнено)!")
-                        .setPositiveButton("Ок") { dialog, _ ->
-                            dialog.dismiss()
-                        }
-                        .create()
-                        .show()
-                    return@setOnClickListener
-                }
-
-                val calendar = Calendar.getInstance()
-                calendar.set(selectedLocalDateTime.year, selectedLocalDateTime.monthValue, selectedLocalDateTime.dayOfMonth, selectedLocalDateTime.hour, selectedLocalDateTime.minute)
-                val time = calendar.timeInMillis
-
-                var newNote = Note(
-                    noteToEdit!!.id,
-                    binding.taskTitleEditText.text.toString(),
-                    binding.taskDescEditText.text.toString(),
-                    selectedLocalDateTime.toEpochSecond(ZoneOffset.UTC),
-                    noteToEdit!!.userId,
-                    noteToEdit!!.notificationId
-                )
-
-                // notifications
-                val alarmIntent = Intent(context, NotificationApp::class.java).let {
-                        intent ->
-                    intent.putExtra("TITLE", newNote.title)
-                    intent.putExtra("CONTENT", newNote.desc)
-                    PendingIntent.getBroadcast(context, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-                }
-//                alarmManager.cancel(alarmIntent) // TODO: удалять уведомление
-                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, alarmIntent)
-
-//            var tViewModel = ViewModelProvider(this).get(DbViewModel::class.java)
-//            tViewModel.insertNote(newNote)
-
-                val retrofit = Retrofit.Builder()
-                    .baseUrl(this@CreateEditNoteFragment.requireContext().getString(R.string.server_ip_address))
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build()
-
-                val notesApi = retrofit.create(ServerApiNotes::class.java)
-
-                val req = notesApi.editNote(newNote, MainStatic.currentToken!!)
-                var resultAddition: Int? = null
-                req.enqueue(object : Callback<Void> {
-                    override fun onResponse(call: Call<Void>, response: Response<Void>) {
-                        if (response.isSuccessful) {
-//                            Toast.makeText(this@CreateEditNoteFragment.requireContext(), "Ок", Toast.LENGTH_SHORT).show()
-
-                            activity?.supportFragmentManager?.beginTransaction()?.remove(this@CreateEditNoteFragment)?.commit()
-                            val bottomNavigationView = activity?.findViewById<BottomNavigationView>(
-                                R.id.bottomMenu
-                            )
-                            bottomNavigationView?.selectedItemId = R.id.bottomMenuItemNotes
-                            return
-                        }
-                        Toast.makeText(this@CreateEditNoteFragment.requireContext(), "Не удалось сохранить", Toast.LENGTH_SHORT).show()
-                    }
-
-                    override fun onFailure(call: Call<Void>, t: Throwable) {
-                        resultAddition = null
-                        Toast.makeText(this@CreateEditNoteFragment.requireContext(), "Ошибка перезаписи", Toast.LENGTH_SHORT).show()
-                    }
-                })
-            }
+        binding.completeButtonDoubler.setOnClickListener {
+            makeTaskWork()
         }
 
         if (noteToEdit != null) {
@@ -258,5 +111,157 @@ class CreateEditNoteFragment: Fragment {
         }
 
         return binding.root
+    }
+
+    @SuppressLint("ScheduleExactAlarm")
+    private fun makeTaskWork() {
+        if (noteToEdit == null) {
+            //val dbContext = LocalDb.getDb(this.requireContext())
+
+            if (binding.taskTitleEditText.text.toString() == "") {
+                MaterialAlertDialogBuilder(this.requireContext())
+                    .setMessage("Возможно вы ввели некорректные данные, проверьте правильность заполнения всех полей и попробуйде снова (поле \"Название\" обязательно должно быть заполнено)!")
+                    .setPositiveButton("Ок") { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .create()
+                    .show()
+                return
+            }
+
+            if (LocalDateTime.now().isAfter(selectedLocalDateTime)) {
+                MaterialAlertDialogBuilder(this.requireContext())
+                    .setMessage("Не стоит записывать заметки за прошедшие даты, лучше думать о будущем!")
+                    .setPositiveButton("Ок") { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .create()
+                    .show()
+                return
+            }
+
+            val calendar = Calendar.getInstance()
+            calendar.set(selectedLocalDateTime.year, selectedLocalDateTime.monthValue-1, selectedLocalDateTime.dayOfMonth, selectedLocalDateTime.hour, selectedLocalDateTime.minute)
+            val time = calendar.timeInMillis
+
+            val newNote = Note(
+                0,
+                binding.taskTitleEditText.text.toString(),
+                binding.taskDescEditText.text.toString(),
+                selectedLocalDateTime.toEpochSecond(ZoneOffset.UTC),
+                MainStatic.currentUser!!.id,
+                System.currentTimeMillis().toInt()
+            )
+
+            // notifications
+            val alarmIntent = Intent(this.requireContext(), NotificationApp::class.java).let {
+                    intent ->
+                intent.putExtra("TITLE", "Напоминание")
+                intent.putExtra("CONTENT", newNote.title)
+                PendingIntent.getBroadcast(this.requireContext(), newNote.notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+            }
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, time, alarmIntent)
+
+//            var tViewModel = ViewModelProvider(this).get(DbViewModel::class.java)
+//            tViewModel.insertNote(newNote)
+
+            val retrofit = Retrofit.Builder()
+                .baseUrl(this@CreateEditNoteFragment.requireContext().getString(R.string.server_ip_address))
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+
+            val notesApi = retrofit.create(ServerApiNotes::class.java)
+
+            val req = notesApi.addNote(newNote, MainStatic.currentToken!!)
+            var resultAddition: Int? = null
+            req.enqueue(object : Callback<Int?> {
+                override fun onResponse(call: Call<Int?>, response: Response<Int?>) {
+                    if (response.isSuccessful) {
+//                            Toast.makeText(this@CreateEditNoteFragment.requireContext(), "Ок", Toast.LENGTH_SHORT).show()
+                        resultAddition = response.body()
+
+                        activity?.supportFragmentManager?.beginTransaction()?.remove(this@CreateEditNoteFragment)?.commit()
+                        val bottomNavigationView = activity?.findViewById<BottomNavigationView>(
+                            R.id.bottomMenu
+                        )
+                        bottomNavigationView?.selectedItemId = R.id.bottomMenuItemNotes
+                        return
+                    }
+                    resultAddition = null
+                }
+
+                override fun onFailure(call: Call<Int?>, t: Throwable) {
+                    resultAddition = null
+                    Toast.makeText(this@CreateEditNoteFragment.requireContext(), "Ошибка записи", Toast.LENGTH_SHORT).show()
+                }
+            })
+        } else {
+            //val dbContext = LocalDb.getDb(this.requireContext())
+
+            if (binding.taskTitleEditText.text.toString() == "") {
+                MaterialAlertDialogBuilder(this.requireContext())
+                    .setMessage("Возможно вы ввели некорректные данные, проверьте правильность заполнения всех полей и попробуйде снова (поле \"Название\" обязательно должно быть заполнено)!")
+                    .setPositiveButton("Ок") { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .create()
+                    .show()
+                return
+            }
+
+            val calendar = Calendar.getInstance()
+            calendar.set(selectedLocalDateTime.year, selectedLocalDateTime.monthValue, selectedLocalDateTime.dayOfMonth, selectedLocalDateTime.hour, selectedLocalDateTime.minute)
+            val time = calendar.timeInMillis
+
+            var newNote = Note(
+                noteToEdit!!.id,
+                binding.taskTitleEditText.text.toString(),
+                binding.taskDescEditText.text.toString(),
+                selectedLocalDateTime.toEpochSecond(ZoneOffset.UTC),
+                noteToEdit!!.userId,
+                noteToEdit!!.notificationId
+            )
+
+            // notifications
+            val alarmIntent = Intent(context, NotificationApp::class.java).let {
+                    intent ->
+                intent.putExtra("TITLE", newNote.title)
+                intent.putExtra("CONTENT", newNote.desc)
+                PendingIntent.getBroadcast(context, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+            }
+//                alarmManager.cancel(alarmIntent) // TODO: удалять уведомление
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, alarmIntent)
+
+//            var tViewModel = ViewModelProvider(this).get(DbViewModel::class.java)
+//            tViewModel.insertNote(newNote)
+
+            val retrofit = Retrofit.Builder()
+                .baseUrl(this@CreateEditNoteFragment.requireContext().getString(R.string.server_ip_address))
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+
+            val notesApi = retrofit.create(ServerApiNotes::class.java)
+
+            val req = notesApi.editNote(newNote, MainStatic.currentToken!!)
+            var resultAddition: Int? = null
+            req.enqueue(object : Callback<Void> {
+                override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                    if (response.isSuccessful) {
+                        activity?.supportFragmentManager?.beginTransaction()?.remove(this@CreateEditNoteFragment)?.commit()
+                        val bottomNavigationView = activity?.findViewById<BottomNavigationView>(
+                            R.id.bottomMenu
+                        )
+                        bottomNavigationView?.selectedItemId = R.id.bottomMenuItemNotes
+                        return
+                    }
+                    Toast.makeText(this@CreateEditNoteFragment.requireContext(), "Не удалось сохранить", Toast.LENGTH_SHORT).show()
+                }
+
+                override fun onFailure(call: Call<Void>, t: Throwable) {
+                    resultAddition = null
+                    Toast.makeText(this@CreateEditNoteFragment.requireContext(), "Ошибка перезаписи", Toast.LENGTH_SHORT).show()
+                }
+            })
+        }
     }
 }

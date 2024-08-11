@@ -23,8 +23,8 @@
     <string name="IMPORTANT_CHANNEL_NAME">ImportantNotificationChannel</string>
     <string name="IMPORTANT_CHANNEL_DESCRIPTION">Important notification channel description</string>
 
-        <string name="server_ip_address">http://31.129.104.54:8001/</string>
-<!--    <string name="server_ip_address">http://193.168.46.181:8001/</string>-->
+    <string name="server_ip_address">http://31.129.104.54:8001/</string>
+    <!--    <string name="server_ip_address">http://193.168.46.181:8001/</string>-->
 
     <string name="map_api_key">800bff94-5dc3-46b8-8baf-6e2b2a3d3e18</string>
     <string name="dadata_api_key">63fc0220f7a8411af1ec225a49ee35103be869c5</string>

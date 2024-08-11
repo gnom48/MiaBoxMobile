@@ -6,10 +6,13 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Environment
 import android.os.PowerManager
 import android.provider.Settings
+import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -20,6 +23,7 @@ import com.example.pronedvizapp.bisness.calls.CallRecordingService
 import com.example.pronedvizapp.requests.models.User
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
+import java.io.File
 
 const val PERMISSION_REQUEST_CODE_SUCCESS = 1
 class InitialActivity : AppCompatActivity() {
@@ -62,8 +66,12 @@ class InitialActivity : AppCompatActivity() {
             android.Manifest.permission.ACCESS_COARSE_LOCATION,
             android.Manifest.permission.POST_NOTIFICATIONS,
             android.Manifest.permission.SCHEDULE_EXACT_ALARM,
-            android.Manifest.permission.RECORD_AUDIO,
             android.Manifest.permission.READ_PHONE_STATE,
+            android.Manifest.permission.CAMERA,
+            android.Manifest.permission.READ_CONTACTS,
+            android.Manifest.permission.READ_MEDIA_AUDIO,
+            android.Manifest.permission.PROCESS_OUTGOING_CALLS,
+            android.Manifest.permission.READ_CALL_LOG,
             android.Manifest.permission.CAMERA,
             android.Manifest.permission.FOREGROUND_SERVICE
         )
@@ -74,8 +82,13 @@ class InitialActivity : AppCompatActivity() {
                 deniedPermissions.add(permission)
             }
         }
+        // Костыть для старых версий: при повышении minApiLevel - просто убрать
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            deniedPermissions.add(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+        }
 
         if (deniedPermissions.isNotEmpty()) {
+            Log.w("MiaBox", "Denied permissions: ${deniedPermissions.toTypedArray()}")
             MaterialAlertDialogBuilder(this)
                 .setTitle("Для полноценной работы приложения необходимо получить некоторые разрешения.")
                 .setMessage("Пожалуйста, разрешите доступ к вашим геоданным, камере и уведомлениям для работы приложения")
@@ -131,6 +144,9 @@ class InitialActivity : AppCompatActivity() {
                             editor.putString("LAST_PASSWORD", password).apply()
                             editor.putString("TOKEN", token).apply()
                             editor.putInt("USER_ID", userFromServer!!.id).apply()
+                            if (!preferences.contains("RECORDINGS_PATH")) {
+                                editor.putString("RECORDINGS_PATH", "Recordings/Call").apply()
+                            }
 
                             if(this@InitialActivity.intent.getBooleanExtra("IS_OLD_ENTER", true)) {
                                 val intent = Intent(this@InitialActivity, MainActivity::class.java)

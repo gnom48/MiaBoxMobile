@@ -14,12 +14,14 @@
        <TextView
            android:id="@+id/selectedDateTextView"
            style="@style/simpleText"
-           android:layout_width="match_parent"
+           android:layout_width="wrap_content"
            android:layout_height="40sp"
            android:layout_margin="10dp"
            android:layout_marginHorizontal="18dp"
+           android:gravity="center_vertical|center_horizontal"
+           android:paddingHorizontal="40dp"
            android:text="Сегодня"
-           android:textAlignment="center"
+           android:drawableRight="@drawable/baseline_calendar_month_24"
            app:layout_constraintEnd_toEndOf="parent"
            app:layout_constraintStart_toStartOf="parent"
            app:layout_constraintTop_toTopOf="parent" />
@@ -33,6 +35,19 @@
            app:layout_constraintEnd_toEndOf="parent"
            app:layout_constraintStart_toStartOf="parent"
            app:layout_constraintTop_toBottomOf="@+id/selectedDateTextView"/>
+
+       <ImageView
+           android:id="@+id/noDataImageView"
+           android:layout_width="200dp"
+           android:layout_height="200dp"
+           android:layout_margin="20dp"
+           android:scaleType="centerCrop"
+           android:src="@drawable/no_data_img"
+           android:visibility="visible"
+           app:layout_constraintBottom_toBottomOf="@id/rootSwipeRefreshLayout"
+           app:layout_constraintEnd_toEndOf="@id/rootSwipeRefreshLayout"
+           app:layout_constraintStart_toStartOf="@id/rootSwipeRefreshLayout"
+           app:layout_constraintTop_toTopOf="@id/rootSwipeRefreshLayout" />
 
        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
            android:id="@+id/rootSwipeRefreshLayout"
@@ -52,6 +67,6 @@
 
        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-       </androidx.constraintlayout.widget.ConstraintLayout>
+   </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>

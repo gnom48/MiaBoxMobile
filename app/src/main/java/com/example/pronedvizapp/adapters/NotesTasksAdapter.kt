@@ -89,15 +89,15 @@ class NotesTasksAdapter(val context: MainActivity, var dataSource: ArrayList<INo
                 }
 
                 binding.iconImageView.setImageResource(R.drawable.on_work_task_icon)
-                binding.titleTextView.setText(item.workType)
-                binding.contentTextView.setText("Текущая рабочая задача")
+                binding.titleTextView.text = item.workType
+                binding.contentTextView.text = "Текущая рабочая задача"
                 val endTime = LocalDateTime.ofEpochSecond(item.date_time + item.durationSeconds, 0, ZoneOffset.UTC)
                 if (LocalDateTime.now().isBefore(endTime)) {
                     val remainingDuration = Duration.between(LocalDateTime.now(), endTime)
 
-                    binding.timeTextView.setText("Ещё ${String.format("%02d:%02d", remainingDuration.toHours(), remainingDuration.toMinutesPart())}")
+                    binding.timeTextView.text = "Ещё ${String.format("%02d:%02d", remainingDuration.toHours(), remainingDuration.toMinutesPart())}"
                 } else {
-                    binding.timeTextView.setText("Завершено")
+                    binding.timeTextView.text = "Завершено"
                     binding.detailsButton.visibility = View.GONE
                     binding.completeTaskButton.visibility = View.VISIBLE
                     binding.completeTaskButton.setOnClickListener {

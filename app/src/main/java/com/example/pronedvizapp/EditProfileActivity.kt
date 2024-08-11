@@ -5,15 +5,14 @@ import android.app.DatePickerDialog
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Base64
+import android.provider.OpenableColumns
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import com.example.pronedvizapp.authentication.AuthenticationActivity
@@ -25,6 +24,7 @@ import com.example.pronedvizapp.databinding.EditProfilePhoneDialogBinding
 import com.example.pronedvizapp.main.ProfileFragment.Companion.bindUserImageFileAsync
 import com.example.pronedvizapp.main.ProgressDialogModal
 import com.example.pronedvizapp.requests.ServerApiUsers
+import com.example.pronedvizapp.requests.models.UserTypes
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
 import okhttp3.MediaType
@@ -158,6 +158,51 @@ class EditProfileActivity : AppCompatActivity() {
             }
         }
 
+        binding.editRielterTypeConstraintLayout.setOnClickListener {
+            val bindingDialog = EditProfileGenderDialogBinding.inflate(LayoutInflater.from(this))
+
+            bindingDialog.male.text = "Коммерческий"
+            bindingDialog.female.text = "Частный"
+            bindingDialog.nothing.visibility = View.GONE
+            bindingDialog.textView4.text = "Выбрать профиль риелтора"
+
+            val dialog = Dialog(this)
+            dialog.window?.setBackgroundDrawableResource(R.color.transparent0)
+            dialog.setContentView(bindingDialog.root)
+            dialog.show()
+            if (MainStatic.currentUser!!.type == UserTypes.COMMERCIAL.description) {
+                bindingDialog.male.isChecked = true
+                bindingDialog.female.isChecked = false
+            } else if (MainStatic.currentUser!!.type == UserTypes.PRIVATE.description) {
+                bindingDialog.female.isChecked = true
+                bindingDialog.male.isChecked = false
+            } else {
+                bindingDialog.nothing.isChecked = false
+                bindingDialog.male.isChecked = false
+            }
+
+            bindingDialog.cancelButton.setOnClickListener {
+                dialog.dismiss()
+            }
+
+            bindingDialog.radioGroup.setOnCheckedChangeListener { radioGroup, checkId ->
+                when(checkId) {
+                    bindingDialog.male.id -> {
+                        MainStatic.currentUser!!.type = UserTypes.COMMERCIAL.description
+                    }
+                    bindingDialog.female.id -> {
+                        MainStatic.currentUser!!.type = UserTypes.PRIVATE.description
+                    }
+                }
+            }
+
+            bindingDialog.saveButton.setOnClickListener {
+                EditProfileActivity.syncUserProfile(this)
+                showUserDataInFields()
+                dialog.dismiss()
+            }
+        }
+
         binding.editGenderConstraintLayout.setOnClickListener {
             val bindingDialog = EditProfileGenderDialogBinding.inflate(LayoutInflater.from(this))
 
@@ -207,14 +252,16 @@ class EditProfileActivity : AppCompatActivity() {
     }
 
     private fun showUserDataInFields() {
-        binding.nameToEditTextView.setText(MainStatic.currentUser!!.name)
-        binding.userNameTextView.setText(MainStatic.currentUser!!.name)
-        binding.phoneToEditTextView.setText(MainStatic.currentUser!!.phone)
-        binding.genderToEditTextView.setText(MainStatic.currentUser!!.gender)
-        binding.birthdayToEditTextView.setText(MainStatic.currentUser!!.birthday?.let {
+        binding.nameToEditTextView.text = MainStatic.currentUser!!.name
+        binding.userNameTextView.text = MainStatic.currentUser!!.name
+        binding.phoneToEditTextView.text = MainStatic.currentUser!!.phone
+        binding.genderToEditTextView.text = MainStatic.currentUser!!.gender
+        binding.birthdayToEditTextView.text = MainStatic.currentUser!!.birthday?.let {
             LocalDateTime.ofEpochSecond(
                 it, 0, ZoneOffset.UTC).toLocalDate().toString()
-        })
+        }
+        binding.emailTextView.text = if (MainStatic.currentUser!!.email == "") "Ваша почта" else MainStatic.currentUser!!.email
+        binding.rielterTypeToEditTextView.text = MainStatic.currentUser!!.type
 
         lifecycleScope.launch {
             bindUserImageFileAsync(applicationContext, binding.avatarImageView)
@@ -245,6 +292,7 @@ class EditProfileActivity : AppCompatActivity() {
             lifecycleScope.launch {
                 val file = extractFileFormUri(applicationContext, data.data!!)
                 file?.let {
+                    Log.d("tag", "filename = ${it.name}")
                     val result = editAvatarImageFileAsync(
                         this@EditProfileActivity.applicationContext,
                         it,
@@ -266,18 +314,33 @@ class EditProfileActivity : AppCompatActivity() {
 
     private fun extractFileFormUri(context: Context, uri: Uri): File? {
         val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
-        return inputStream?.let {
-            val file = File(context.cacheDir, "temp_image.jpg")
+        return inputStream?.let { input ->
+            val filename = getFileNameFromUri(context, uri)
+            val file = File(context.filesDir, "images/${MainStatic.currentUser!!.id}-$filename")
             val outputStream = FileOutputStream(file)
             val buffer = ByteArray(1024)
             var bytesRead: Int
-            while (it.read(buffer).also { bytesRead = it } != -1) {
+            while (input.read(buffer).also { bytes -> bytesRead = bytes } != -1) {
                 outputStream.write(buffer, 0, bytesRead)
             }
             outputStream.close()
-            it.close()
-            file
+            input.close()
+            return@let file
         }
+    }
+
+    private fun getFileNameFromUri(context: Context, uri: Uri): String? {
+        var fileName: String? = null
+        val cursor = context.contentResolver.query(uri, null, null, null, null)
+        cursor?.use {
+            if (it.moveToFirst()) {
+                val displayNameIndex = it.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                if (displayNameIndex != -1) {
+                    fileName = it.getString(displayNameIndex)
+                }
+            }
+        }
+        return fileName
     }
 
     companion object {
@@ -327,7 +390,6 @@ class EditProfileActivity : AppCompatActivity() {
             val part = MultipartBody.Part.createFormData("file", file.name, requestFile)
 
             val response = api.setImageFileToUser(part, token)
-            Log.e("tag", "editAvatarImageFileAsync response = $response")
             if (response.isSuccessful) {
                 return response.body()
             }

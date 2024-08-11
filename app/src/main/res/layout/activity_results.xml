@@ -76,46 +76,44 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <LinearLayout
+            <com.google.android.material.button.MaterialButtonToggleGroup
                 android:id="@+id/linearLayout6"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="20dp"
                 android:gravity="center"
                 android:orientation="horizontal"
-                app:layout_constraintTop_toBottomOf="@+id/textView9">
+                app:layout_constraintTop_toBottomOf="@+id/textView9"
+                android:layout_gravity="center"
+                app:singleSelection="true"
+                app:selectionRequired="true">
 
-                <androidx.appcompat.widget.AppCompatButton
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/dayButton"
-                    style="@style/customeButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
-                    android:background="@drawable/button_selector"
                     android:text="День"
-                    android:textColor="@color/button_text_selector" />
+                    app:cornerRadius="12dp"
+                    style="@style/UnselectedButtonStyle" />
 
-                <androidx.appcompat.widget.AppCompatButton
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/weekButton"
-                    style="@style/customeButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:background="@drawable/button_selector"
                     android:text="Неделя"
-                    android:textColor="@color/button_text_selector" />
+                    app:cornerRadius="12dp"
+                    style="@style/UnselectedButtonStyle" />
 
-                <androidx.appcompat.widget.AppCompatButton
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/monthButton"
-                    style="@style/customeButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:background="@drawable/button_selector"
                     android:text="Месяц"
-                    android:textColor="@color/button_text_selector" />
+                    app:cornerRadius="12dp"
+                    style="@style/UnselectedButtonStyle" />
 
-            </LinearLayout>
+            </com.google.android.material.button.MaterialButtonToggleGroup>
 
             <LinearLayout
                 android:id="@+id/linearLayout9"
@@ -126,7 +124,7 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="80dp"
+                    android:layout_height="70dp"
                     android:layout_marginHorizontal="30dp"
                     android:layout_marginVertical="10dp"
                     android:background="@drawable/main_buttons_res"
@@ -170,7 +168,7 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="80dp"
+                    android:layout_height="70dp"
                     android:layout_marginHorizontal="30dp"
                     android:layout_marginVertical="10dp"
                     android:background="@drawable/main_buttons_res"
@@ -214,7 +212,7 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="80dp"
+                    android:layout_height="70dp"
                     android:layout_marginHorizontal="30dp"
                     android:layout_marginVertical="10dp"
                     android:background="@drawable/main_buttons_res"
@@ -258,7 +256,7 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="80dp"
+                    android:layout_height="70dp"
                     android:layout_marginHorizontal="30dp"
                     android:layout_marginVertical="10dp"
                     android:background="@drawable/main_buttons_res"
@@ -300,6 +298,285 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:id="@+id/showAllLinearLayout"
+                    android:padding="10dp"
+                    android:layout_gravity="center_horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        style="@style/supportText"
+                        android:layout_marginEnd="5dp"
+                        android:text="Показать все"/>
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/baseline_arrow_forward_ios_24"
+                        android:rotation="90"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:visibility="gone"
+                    android:id="@+id/dopStatisticsLinearLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="70dp"
+                        android:layout_marginHorizontal="30dp"
+                        android:layout_marginVertical="10dp"
+                        android:background="@drawable/main_buttons_res"
+                        tools:layout_editor_absoluteX="30dp">
+
+                        <ImageView
+                            android:id="@+id/imgS"
+                            android:layout_width="40dp"
+                            android:layout_height="65dp"
+                            android:layout_marginHorizontal="20dp"
+                            android:src="@drawable/show_stats"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/countShowsTextView"
+                            style="@style/simpleText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="10dp"
+                            android:text="10"
+                            android:textSize="25sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/imgS"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/actionSNameTextView"
+                            style="@style/simpleText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="10dp"
+                            android:text="Показы"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/countShowsTextView"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="70dp"
+                        android:layout_marginHorizontal="30dp"
+                        android:layout_marginVertical="10dp"
+                        android:background="@drawable/main_buttons_res"
+                        app:layout_constraintTop_toBottomOf="@+id/linearLayout6"
+                        tools:layout_editor_absoluteX="30dp">
+
+                        <ImageView
+                            android:id="@+id/imgM"
+                            android:layout_width="40dp"
+                            android:layout_height="65dp"
+                            android:layout_marginHorizontal="20dp"
+                            android:src="@drawable/meet_stats"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/countMeetsTextView"
+                            style="@style/simpleText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="10dp"
+                            android:text="10"
+                            android:textSize="25sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/imgM"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/actionMNameTextView"
+                            style="@style/simpleText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="10dp"
+                            android:text="Встречи"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/countMeetsTextView"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="70dp"
+                        android:layout_marginHorizontal="30dp"
+                        android:layout_marginVertical="10dp"
+                        android:background="@drawable/main_buttons_res"
+                        app:layout_constraintTop_toBottomOf="@+id/linearLayout6"
+                        tools:layout_editor_absoluteX="30dp">
+
+                        <ImageView
+                            android:id="@+id/imgDep"
+                            android:layout_width="40dp"
+                            android:layout_height="65dp"
+                            android:layout_marginHorizontal="20dp"
+                            android:src="@drawable/deposit_stats"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/countDepositsTextView"
+                            style="@style/simpleText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="10dp"
+                            android:text="10"
+                            android:textSize="25sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/imgDep"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/actionDepNameTextView"
+                            style="@style/simpleText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="10dp"
+                            android:text="Задатки"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/countDepositsTextView"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="70dp"
+                        android:layout_marginHorizontal="30dp"
+                        android:layout_marginVertical="10dp"
+                        android:background="@drawable/main_buttons_res"
+                        app:layout_constraintTop_toBottomOf="@+id/linearLayout6"
+                        tools:layout_editor_absoluteX="30dp">
+
+                        <ImageView
+                            android:id="@+id/imgSearch"
+                            android:layout_width="40dp"
+                            android:layout_height="65dp"
+                            android:layout_marginHorizontal="20dp"
+                            android:src="@drawable/search_stats"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/countSearchTextView"
+                            style="@style/simpleText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="10dp"
+                            android:text="10"
+                            android:textSize="25sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/imgSearch"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/actionSearchNameTextView"
+                            style="@style/simpleText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="10dp"
+                            android:text="Поиск"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/countSearchTextView"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="70dp"
+                        android:layout_marginHorizontal="30dp"
+                        android:layout_marginVertical="10dp"
+                        android:background="@drawable/main_buttons_res"
+                        app:layout_constraintTop_toBottomOf="@+id/linearLayout6"
+                        tools:layout_editor_absoluteX="30dp">
+
+                        <ImageView
+                            android:id="@+id/imgO"
+                            android:layout_width="40dp"
+                            android:layout_height="65dp"
+                            android:layout_marginHorizontal="20dp"
+                            android:src="@drawable/others_stats"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/countOthersTextView"
+                            style="@style/simpleText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="10dp"
+                            android:text="10"
+                            android:textSize="25sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/imgO"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/actionONameTextView"
+                            style="@style/simpleText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="10dp"
+                            android:text="Другое"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/countOthersTextView"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <LinearLayout
+                        android:visibility="visible"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:id="@+id/hideDopLinearLayout"
+                        android:padding="10dp"
+                        android:layout_gravity="center_horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            style="@style/supportText"
+                            android:layout_marginEnd="5dp"
+                            android:text="Скрыть"/>
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:src="@drawable/baseline_arrow_forward_ios_24"
+                            android:rotation="270"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
             </LinearLayout>
 
             <LinearLayout
@@ -318,7 +595,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/linearLayout9">
 
                 <LinearLayout
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="5dp"
                     android:gravity="center"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -329,8 +606,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="5dp"
-                        android:text="KPI = "
-                        android:textSize="25sp" />
+                        android:text="KPI = "/>
 
                     <TextView
                         android:id="@+id/kpiTextView"
@@ -340,20 +616,19 @@
                         android:layout_marginHorizontal="5dp"
                         android:text="87"
                         android:textColor="#5BAF5B"
-                        android:textSize="25sp" />
+                        android:textSize="22sp" />
 
                     <TextView
                         style="@style/simpleText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="5dp"
-                        android:text="%"
-                        android:textSize="25sp" />
+                        android:text="%" />
 
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="5dp"
                     android:gravity="center"
                     android:layout_marginVertical="10dp"
                     android:layout_width="match_parent"
@@ -375,7 +650,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="5dp"
                         android:text="СПЕЦИАЛИСТ"
-                        android:textSize="20sp" />
+                        android:textSize="18sp" />
 
                 </LinearLayout>
 

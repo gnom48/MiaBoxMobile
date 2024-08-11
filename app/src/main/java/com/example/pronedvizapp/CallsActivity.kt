@@ -8,10 +8,12 @@ import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.pronedvizapp.adapters.CallsAdapter
+import com.example.pronedvizapp.adapters.CallsAdapter.Companion.getAllUserCallsRecords
 import com.example.pronedvizapp.bisness.calls.CallInfo
 import com.example.pronedvizapp.bisness.calls.CallsGroup
 import com.example.pronedvizapp.databinding.ActivityCallsBinding
 import com.example.pronedvizapp.requests.ServerApiCalls
+import com.example.pronedvizapp.requests.models.CallsRecords
 import com.example.pronedvizapp.requests.models.UsersCalls
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -31,7 +33,7 @@ class CallsActivity : AppCompatActivity() {
         binding = ActivityCallsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.recyclerView.adapter = CallsAdapter(this, listOf())
+        binding.recyclerView.adapter = CallsAdapter(this, listOf(), listOf())
         binding.recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
         binding.rootSwipeRefreshLayout.setOnRefreshListener {
@@ -46,10 +48,10 @@ class CallsActivity : AppCompatActivity() {
     }
 
     private fun updateRecyclerViewAdapter() {
-        refreshCalls { calls ->
+        refreshCalls { calls, records ->
             this@CallsActivity.dataSource = calls
             binding.recyclerView.layoutManager = LinearLayoutManager(this@CallsActivity, LinearLayoutManager.VERTICAL, false)
-            binding.recyclerView.adapter = CallsAdapter(this, groupCallsByDate(calls))
+            binding.recyclerView.adapter = CallsAdapter(this, groupCallsByDate(calls), records)
 
             if (calls.isEmpty() || calls == null) {
                 binding.recyclerView.setBackgroundResource(R.drawable.no_data_img_background)
@@ -60,7 +62,7 @@ class CallsActivity : AppCompatActivity() {
         }
     }
 
-    private fun refreshCalls(callback: (ArrayList<UsersCalls>) -> Unit) {
+    private fun refreshCalls(callback: (ArrayList<UsersCalls>, ArrayList<CallsRecords>) -> Unit) {
         lifecycleScope.launch {
             val allCalls = getAllCallsByUserId(
                 this@CallsActivity,
@@ -68,16 +70,33 @@ class CallsActivity : AppCompatActivity() {
                 MainStatic.currentToken!!
             )
 
-            allCalls.onSuccess {
-                if (it != null) {
-                    callback(it)
+            allCalls.onSuccess { userCalls ->
+                if (userCalls != null) {
+
+                    val allRecords = getAllUserCallsRecords(
+                        this@CallsActivity,
+                        MainStatic.currentUser!!.id,
+                        MainStatic.currentToken!!
+                    )
+
+                    allRecords.onSuccess {  userRecords ->
+                        if (userRecords != null) {
+                            callback(userCalls, userRecords as ArrayList<CallsRecords>)
+                        } else {
+                            callback(userCalls, arrayListOf())
+                        }
+                    }
+                    allRecords.onFailure {
+                        callback(userCalls, arrayListOf())
+                    }
+
                 } else {
-                    callback(arrayListOf())
+                    callback(arrayListOf(), arrayListOf())
                 }
             }
             allCalls.onFailure {
                 Toast.makeText(this@CallsActivity, "Не удалось обновить: ${it.message}", Toast.LENGTH_SHORT).show()
-                callback(arrayListOf())
+                callback(arrayListOf(), arrayListOf())
             }
         }
     }
@@ -106,7 +125,8 @@ class CallsActivity : AppCompatActivity() {
                 )
             }
 
-            return callsByDate.map { (date, calls) -> CallsGroup(date, calls) }
+            val res = callsByDate.map { (date, calls) -> CallsGroup(date, calls) }
+            return res.sortedByDescending { it.date }
         }
 
 

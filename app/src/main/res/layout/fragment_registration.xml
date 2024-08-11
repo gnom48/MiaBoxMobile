@@ -35,7 +35,8 @@
         android:layout_marginBottom="20dp"
         android:background="@color/transparent0"
         android:contentDescription="go back"
-        android:src="@drawable/back_arrow_icon" />
+        android:src="@drawable/back_arrow_icon"
+        tools:ignore="TouchTargetSizeCheck" />
 
     <ScrollView
         android:layout_below="@+id/titleTextView"
@@ -61,39 +62,77 @@
 
                 <EditText
                     android:id="@+id/enterNameEditText"
+                    style="@style/lightHintEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:hint="ФИО"
+                    android:singleLine="true"
+                    tools:ignore="TouchTargetSizeCheck" />
+
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
                     android:singleLine="true"
-                    android:hint="Имя"
-                    style="@style/lightHintEditText" />
+                    android:text="Профиль риелтора:"
+                    style="@style/simpleText" />
+
+                <com.google.android.material.button.MaterialButtonToggleGroup
+                    android:id="@+id/toggleButtonGroup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    app:singleSelection="true"
+                    app:selectionRequired="true">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/privateButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Частный"
+                        app:cornerRadius="8dp"
+                        style="@style/UnselectedButtonStyle" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/commercialButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Коммерческий"
+                        app:cornerRadius="8dp"
+                        style="@style/UnselectedButtonStyle" />
+
+                </com.google.android.material.button.MaterialButtonToggleGroup>
 
                 <EditText
-                    android:id="@+id/enterSurnameEditText"
+                    android:id="@+id/enterUserEmailEditText"
+                    style="@style/lightHintEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
+                    android:hint="Электронная почта"
                     android:singleLine="true"
-                    android:hint="Фамилия"
-                    style="@style/lightHintEditText" />
+                    tools:ignore="TouchTargetSizeCheck" />
 
                 <EditText
                     android:id="@+id/enterUserLoginEditText"
                     style="@style/lightHintEditText"
-                    android:singleLine="true"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
-                    android:hint="Логин" />
+                    android:hint="Логин"
+                    android:singleLine="true"
+                    tools:ignore="TouchTargetSizeCheck" />
 
                 <EditText
                     android:id="@+id/enterPasswordEditText"
+                    style="@style/lightHintEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
-                    android:singleLine="true"
                     android:hint="Пароль"
-                    style="@style/lightHintEditText" />
+                    android:singleLine="true"
+                    tools:ignore="TouchTargetSizeCheck" />
 
             </LinearLayout>
 

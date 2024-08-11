@@ -26,7 +26,7 @@ import com.example.pronedvizapp.bisness.geo.GeoPositionService
 import com.example.pronedvizapp.databinding.ActivityMapBinding
 import com.example.pronedvizapp.requests.DadataApi
 import com.example.pronedvizapp.requests.ServerApiAddress
-import com.example.pronedvizapp.requests.models.AddresInfo
+import com.example.pronedvizapp.requests.models.AddressInfo
 import com.example.pronedvizapp.requests.models.AddressResponse
 import com.example.pronedvizapp.requests.models.Coordinates
 import com.google.android.gms.location.LocationCallback
@@ -251,7 +251,7 @@ class MapActivity : AppCompatActivity(), Session.SearchListener, UserLocationObj
                 binding.addressesListView.adapter = AddressesAdapter(this@MapActivity, arrayListOf())
             } else {
                 binding.noDataImageView.visibility = View.GONE
-                binding.addressesListView.adapter = AddressesAdapter(this@MapActivity, addresses.map { it.address })
+                binding.addressesListView.adapter = AddressesAdapter(this@MapActivity, ArrayList(addresses.sortedByDescending { it.dateTime }))
                 binding.addressesListView.setOnItemClickListener { p0, p1, p2, p3 ->
                     // TODO: перемещение камеры на отметку на карте
                 }
@@ -298,7 +298,7 @@ class MapActivity : AppCompatActivity(), Session.SearchListener, UserLocationObj
                     val res = getAddressByCoordsAsync(this@MapActivity, mLocation)
                     res.onSuccess { address ->
                         val serverApiAddressAdditionResponse = GeoPositionService.addAddressRecordAsync(
-                            applicationContext, AddresInfo(
+                            applicationContext, AddressInfo(
                                 -1,
                                 MainStatic.currentUser!!.id,
                                 address.suggestions[0].value,
@@ -432,7 +432,7 @@ class MapActivity : AppCompatActivity(), Session.SearchListener, UserLocationObj
 
     companion object {
 
-        fun getAllAddresses(userId: Int, dateStart: Int, dateEnd: Int, context: Context, callback: (ArrayList<AddresInfo>) -> Unit) {
+        fun getAllAddresses(userId: Int, dateStart: Int, dateEnd: Int, context: Context, callback: (ArrayList<AddressInfo>) -> Unit) {
             val retrofit = Retrofit.Builder()
                 .baseUrl(context.getString(R.string.server_ip_address))
                 .addConverterFactory(GsonConverterFactory.create())
@@ -441,18 +441,18 @@ class MapActivity : AppCompatActivity(), Session.SearchListener, UserLocationObj
             val addressApi = retrofit.create(ServerApiAddress::class.java)
 
             val resp = addressApi.getUserAddressesByPeriod(userId, dateStart, dateEnd, MainStatic.currentToken!!)
-            resp.enqueue(object : Callback<List<AddresInfo>> {
-                override fun onResponse(call: Call<List<AddresInfo>>, response: retrofit2.Response<List<AddresInfo>>) {
+            resp.enqueue(object : Callback<List<AddressInfo>> {
+                override fun onResponse(call: Call<List<AddressInfo>>, response: retrofit2.Response<List<AddressInfo>>) {
                     if (response.isSuccessful) {
                         response.body()?.let { callback(ArrayList(it)) }
                         return
                     }
 
-                    callback(arrayListOf<AddresInfo>())
+                    callback(arrayListOf<AddressInfo>())
                 }
 
-                override fun onFailure(call: Call<List<AddresInfo>>, t: Throwable) {
-                    callback(arrayListOf<AddresInfo>())
+                override fun onFailure(call: Call<List<AddressInfo>>, t: Throwable) {
+                    callback(arrayListOf<AddressInfo>())
                 }
             })
         }

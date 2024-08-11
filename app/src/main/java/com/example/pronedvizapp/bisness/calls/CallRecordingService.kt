@@ -8,6 +8,7 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Environment
 import android.os.IBinder
@@ -21,8 +22,11 @@ import com.example.pronedvizapp.R
 import com.example.pronedvizapp.requests.ServerApiCalls
 import com.example.pronedvizapp.requests.models.TranscriptionTask
 import com.example.pronedvizapp.requests.models.TranscriptionTaskStatus
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import okhttp3.MediaType
 import okhttp3.MultipartBody
@@ -30,17 +34,19 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
 import okhttp3.RequestBody
+import java.time.LocalDate
 
 class CallRecordingService : Service() {
 
     private var phoneStateListener: PhoneStateListener? = null
-    //private var callRecorder: CallRecorder? = null
     private val notificationChannelId = "call_recording_channel"
     private var lastState: Int = -1
 
     private var callStartTime: Long = 0
     private var callEndTime: Long = 0
     private var callType: Int = 0
+
+    private val preferences: SharedPreferences by lazy { getSharedPreferences("settings", Context.MODE_PRIVATE) }
 
     override fun onCreate() {
         super.onCreate()
@@ -55,8 +61,6 @@ class CallRecordingService : Service() {
                         lastState = TelephonyManager.CALL_STATE_RINGING
                     }
                     TelephonyManager.CALL_STATE_OFFHOOK -> {
-//                        callRecorder = CallRecorder(this@CallRecordingService)
-//                        callRecorder?.startRecording()
                         lastState = TelephonyManager.CALL_STATE_OFFHOOK
                         callStartTime = System.currentTimeMillis() / 1000
                         callEndTime = 0
@@ -65,21 +69,19 @@ class CallRecordingService : Service() {
                         if (lastState == TelephonyManager.CALL_STATE_OFFHOOK){
                             callEndTime = System.currentTimeMillis() / 1000
                             Log.d(DEBUG_TAG, "Трубка положена")
-//                            if (callRecorder != null) {
-//                                callRecorder?.stopRecording()
-//                            }
                             lastState = TelephonyManager.CALL_STATE_IDLE
-
-                            Thread.sleep(3000) // ?
                             try {
-                                val recordingFile = getLastCallRecordingFile()
-                                if (recordingFile != null) {
-                                    GlobalScope.launch {
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    delay(3000)
+                                    val recordingFile = getLastCallRecordingFile(preferences.getString("RECORDINGS_PATH", null))
+                                    Log.d(DEBUG_TAG, "файл: $recordingFile")
+                                    if (recordingFile != null) {
+                                        Log.d(DEBUG_TAG, "$recordingFile | $phoneNumber | ${(callEndTime - callStartTime).toInt()}")
                                         val result = uploadCallRecordAsync(
                                             recordingFile,
                                             phoneNumber!!,
-                                            "info",
-                                            System.currentTimeMillis(),
+                                            "no info",
+                                            System.currentTimeMillis() / 1000,
                                             getContactName(phoneNumber, this@CallRecordingService.applicationContext),
                                             (callEndTime - callStartTime).toInt(),
                                             callType,
@@ -110,38 +112,71 @@ class CallRecordingService : Service() {
     }
 
     fun getContactName(phoneNumber: String, context: Context): String {
-        val uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber))
-        val projection = arrayOf(ContactsContract.PhoneLookup.DISPLAY_NAME)
-        var contactName: String = "Неизвестный"
-        val cursor = context.contentResolver.query(uri, projection, null, null, null)
+        try {
+            val uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber))
+            val projection = arrayOf(ContactsContract.PhoneLookup.DISPLAY_NAME)
+            var contactName: String = UNKNOWN_CALLER
+            val cursor = context.contentResolver.query(uri, projection, null, null, null)
 
-        if (cursor != null) {
-            if (cursor.moveToFirst()) {
-                val index = cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME)
-                if (index < 0) {
-                    return contactName
+            if (cursor != null) {
+                if (cursor.moveToFirst()) {
+                    val index = cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME)
+                    if (index < 0) {
+                        return contactName
+                    }
+                    contactName = cursor.getString(index)
                 }
-                contactName = cursor.getString(index)
+                cursor.close()
             }
-            cursor.close()
-        }
 
-        return contactName
+            return contactName
+        } catch (e: Exception) {
+            return UNKNOWN_CALLER
+        }
     }
 
-    private fun getLastCallRecordingFile(): File? {
-        val directory = File(Environment.getExternalStorageDirectory(), "Recordings/Call")
+    private fun getLastCallRecordingFile(recordingsPath: String?): File? {
+        if (recordingsPath == "" || recordingsPath == null) {
+            return null
+        }
+        val directory = File(Environment.getExternalStorageDirectory(), recordingsPath) //"Recordings/Call")
         if (!directory.exists() || !directory.isDirectory) {
             return null
         }
         val files = directory.listFiles()
         if (files.isEmpty()) {
+            Log.e(DEBUG_TAG, "Recording file not found within timeout")
             return null
         }
-        val lastFile = files.maxByOrNull { it.lastModified() }
-        return lastFile
+        return files.maxByOrNull { it.lastModified() }
     }
 
+    private suspend fun getCurrentCallRecordFile(): File? {
+        val directory = File(Environment.getExternalStorageDirectory(), "Recordings/Call")
+        if (!directory.exists() || !directory.isDirectory) {
+            return null
+        }
+
+        val timeoutMillis = 30000L
+        val startTime = System.currentTimeMillis()
+
+        while (System.currentTimeMillis() - startTime < timeoutMillis) {
+            val files = directory.listFiles().toMutableList()
+            files.sortByDescending { it.lastModified() }
+            if (files != null) {
+                for (file in files) {
+                    val nowDate = LocalDate.now()
+                    if (file.name.matches(Regex("Запись вызовов_*_${nowDate.year}${nowDate.monthValue}${nowDate.dayOfMonth}_\\d{6}.m4a"))) {
+                        return file
+                    }
+                }
+            }
+            delay(5000)
+        }
+
+        Log.e(DEBUG_TAG, "Recording file not found within timeout")
+        return null
+    }
 
     override fun onBind(intent: Intent): IBinder? {
         return null
@@ -190,11 +225,13 @@ class CallRecordingService : Service() {
 
     companion object {
 
+        public const val UNKNOWN_CALLER: String = "Неизвестный"
+
         public const val DEBUG_TAG: String = "CallRecordingService"
 
         suspend fun uploadCallRecordAsync(file: File, phoneNumber: String, info: String, dateTime: Long, contactName: String, lengthSeconds: Int, callType: Int, context: Context): Int? {
             val retrofit = Retrofit.Builder()
-                .baseUrl(context.getString(R.string.server_ip_address))
+                .baseUrl(context.getString(R.string.server_ip_address) )//+ "?info=$info&phone_number=$phoneNumber&date_time=$dateTime&contact_name=$contactName&length_seconds=$lengthSeconds&call_type=$callType")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
 
@@ -205,14 +242,8 @@ class CallRecordingService : Service() {
 
                 val requestFile = RequestBody.create(MediaType.parse("audio/*"), file) // video
                 val part = MultipartBody.Part.createFormData("file", file.name, requestFile)
-                val infoBody = RequestBody.create(MediaType.parse("text/plain"), info)
-                val phoneNumberBody = RequestBody.create(MediaType.parse("text/plain"), phoneNumber)
-                val dateTimeBody = RequestBody.create(MediaType.parse("text/plain"), dateTime.toString())
-                val contactNameBody = RequestBody.create(MediaType.parse("text/plain"), contactName)
-                val lengthSecondsBody = RequestBody.create(MediaType.parse("text/plain"), lengthSeconds.toString())
-                val callTypeBody = RequestBody.create(MediaType.parse("text/plain"), callType.toString())
 
-                val response = api.addCallInfo(part, infoBody, phoneNumberBody, dateTimeBody, contactNameBody, lengthSecondsBody, callTypeBody, token)
+                val response = api.addCallInfoParams(part, info, phoneNumber, dateTime, contactName, lengthSeconds, callType, token)
                 if (response.isSuccessful) {
                     return response.body()
                 }

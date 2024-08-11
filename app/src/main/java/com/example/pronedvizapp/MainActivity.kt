@@ -181,19 +181,19 @@ class MainActivity : AppCompatActivity() {
             notificationManager.createNotificationChannel(channelI)
         }
 
-        public fun showResultDialog(currentTast: Task, context: Context) {
+        public fun showResultDialog(currentTask: Task, context: Context) {
 
             val dialogBinding = FragmentActionResultBinding.inflate(LayoutInflater.from(context))
 
-            dialogBinding.aboutActivityDescTextView1.setText("Как вы оцениваете результат своей работы в области ${currentTast.workType}\n(${currentTast.desc})\n")
-            dialogBinding.aboutActivityDescTextView2.setText("Отметьте нужные по вашему мнению пункты")
+            dialogBinding.aboutActivityDescTextView1.text = "Как вы оцениваете результат своей работы в области ${currentTask.workType}\n(${currentTask.desc})\n"
+            dialogBinding.aboutActivityDescTextView2.text = "Отметьте нужные по вашему мнению пункты"
 
-            if (currentTast.workType == WorkTasksTypes.FLYERS.description || currentTast.workType == WorkTasksTypes.CALLS.description) {
+            if (currentTask.workType == WorkTasksTypes.FLYERS.description || currentTask.workType == WorkTasksTypes.CALLS.description) {
                 dialogBinding.countNumberPicker.visibility = View.VISIBLE
                 dialogBinding.countNumberPicker.maxValue = 50
                 dialogBinding.countNumberPicker.minValue = 0
                 dialogBinding.countNumberPicker.value = 1
-            } else if (currentTast.workType == WorkTasksTypes.DEAL.description || currentTast.workType == WorkTasksTypes.DEPOSIT.description || currentTast.workType == WorkTasksTypes.MEET.description || currentTast.workType == WorkTasksTypes.SHOW.description) {
+            } else if (currentTask.workType == WorkTasksTypes.DEPOSIT.description || currentTask.workType == WorkTasksTypes.MEET.description || currentTask.workType == WorkTasksTypes.SHOW.description) {
                 dialogBinding.isConractSignedCheckBox.visibility = View.VISIBLE
             } else {
                 dialogBinding.resultImageView.visibility = View.VISIBLE
@@ -206,18 +206,19 @@ class MainActivity : AppCompatActivity() {
             var addValue = 1
 
             dialogBinding.goodActivityButton.setOnClickListener {
-                if (currentTast.workType == WorkTasksTypes.FLYERS.description || currentTast.workType == WorkTasksTypes.CALLS.description) {
+                if (currentTask.workType == WorkTasksTypes.FLYERS.description || currentTask.workType == WorkTasksTypes.CALLS.description) {
                     addValue = dialogBinding.countNumberPicker.value
                 }
-                MainActivity.editUserStatistics(context, currentTast.workType, addValue, MainStatic.currentToken!!)
-                NotesFragment.deleteTask(context, MainStatic.currentToken!!, currentTast.id)
+                MainActivity.editUserStatistics(context, currentTask.workType, addValue, MainStatic.currentToken!!)
+                NotesFragment.deleteTask(context, MainStatic.currentToken!!, currentTask.id)
                 dialog.dismiss()
             }
 
             dialogBinding.badActivityButton.setOnClickListener {
                 dialog.dismiss()
-                NotesFragment.deleteTask(context, MainStatic.currentToken!!, currentTast.id)
+                NotesFragment.deleteTask(context, MainStatic.currentToken!!, currentTask.id)
                 val intent = Intent(context, WebViewActivity::class.java)
+                intent.putExtra(WebViewActivity.SOURCE, "baza.html")
                 context.startActivity(intent)
             }
 

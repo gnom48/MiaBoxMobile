@@ -1,6 +1,7 @@
 package com.example.pronedvizapp.requests
 
 import com.example.pronedvizapp.requests.models.Image
+import com.example.pronedvizapp.requests.models.Kpi
 import com.example.pronedvizapp.requests.models.Statistics
 import com.example.pronedvizapp.requests.models.StatisticsWithKpi
 import com.example.pronedvizapp.requests.models.User
@@ -58,7 +59,7 @@ interface ServerApiUsers {
     @GET("/user/statistics/get_kpi")
     fun getStatisticsWithKpi(
         @Header("token-authorization") tokenAuthorization: String
-    ): Call<StatisticsWithKpi?>
+    ): Call<Kpi?>
 
     @Multipart
     @POST("/user/set_image_file")
