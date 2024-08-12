@@ -21,7 +21,9 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.time.Instant
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.ZoneId
+import java.time.ZoneOffset
 
 class CallsActivity : AppCompatActivity() {
 
@@ -51,7 +53,8 @@ class CallsActivity : AppCompatActivity() {
         refreshCalls { calls, records ->
             this@CallsActivity.dataSource = calls
             binding.recyclerView.layoutManager = LinearLayoutManager(this@CallsActivity, LinearLayoutManager.VERTICAL, false)
-            binding.recyclerView.adapter = CallsAdapter(this, groupCallsByDate(calls), records)
+            val callsGroups = groupCallsByDate(calls)
+            binding.recyclerView.adapter = CallsAdapter(this, callsGroups, records)
 
             if (calls.isEmpty() || calls == null) {
                 binding.recyclerView.setBackgroundResource(R.drawable.no_data_img_background)
@@ -107,11 +110,14 @@ class CallsActivity : AppCompatActivity() {
             val callsByDate = mutableMapOf<LocalDate, MutableList<CallInfo>>()
 
             for (call in calls) {
-                val date = Instant.ofEpochSecond(call.dateTime.toLong()).atZone(ZoneId.systemDefault()).toLocalDate()
-                if (!callsByDate.containsKey(date)) {
-                    callsByDate[date] = mutableListOf()
+//                val date = Instant.ofEpochSecond(call.dateTime.toLong()).atZone(ZoneId.systemDefault()).toLocalDate()
+                val localDateTime = LocalDateTime.ofEpochSecond(call.dateTime.toLong(), 0, ZoneOffset.UTC)
+                localDateTime.plusHours(3)
+                val localDate = localDateTime.toLocalDate()
+                if (!callsByDate.containsKey(localDate)) {
+                    callsByDate[localDate] = mutableListOf()
                 }
-                callsByDate[date]?.add(
+                callsByDate[localDate]?.add(
                     CallInfo(
                         lengthSeconds = call.lengthSeconds,
                         callerName = call.contactName,
@@ -126,7 +132,10 @@ class CallsActivity : AppCompatActivity() {
             }
 
             val res = callsByDate.map { (date, calls) -> CallsGroup(date, calls) }
-            return res.sortedByDescending { it.date }
+//            val sortedRes = res.sortedByDescending { it.date }
+//            return sortedRes
+            // TODO: какой-то странный баг - после сортировки появляется no tanscription
+            return res
         }
 
 

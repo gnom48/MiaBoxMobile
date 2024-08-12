@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/move_role_to_owner"
+        android:title="Сделать администратором" />
+    <item
+        android:id="@+id/move_role_to_user"
+        android:title="Сделать участником" />
+    <item
+        android:id="@+id/remove_from_team"
+        android:title="Сделать участником" />
+</menu>

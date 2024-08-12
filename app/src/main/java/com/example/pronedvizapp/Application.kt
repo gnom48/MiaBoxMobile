@@ -7,6 +7,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.RequiresApi
@@ -14,7 +15,10 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ProcessLifecycleOwner
+import com.example.pronedvizapp.notifications.FirebaseInstanceIdService
 import com.example.pronedvizapp.notifications.NotificationBroadcast
+import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.google.firebase.messaging.FirebaseMessaging
 import java.time.LocalDateTime
 import java.util.Calendar
 
@@ -25,13 +29,27 @@ class MyApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         registerAppLifecycleObserver()
+        registerFirebaseFunctions()
+    }
+
+    private fun registerFirebaseFunctions() {
+        FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true)
+
+        FirebaseMessaging.getInstance().subscribeToTopic("broadcast")
+            .addOnCompleteListener { task ->
+                var msg = "msg_subscribed"
+                if (!task.isSuccessful) {
+                    msg = "msg_subscribe_failed"
+                }
+                Log.d(FirebaseInstanceIdService.DEBUG_TAG, msg)
+            }
     }
 
     private fun registerAppLifecycleObserver() {
         ProcessLifecycleOwner.get().lifecycle.addObserver(object : LifecycleObserver {
             @SuppressLint("ScheduleExactAlarm")
             @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-            fun onAppBackgrounded() {
+            fun onAppStopped() {
                 val calendar = Calendar.getInstance()
                 val localDateTime = LocalDateTime.now()
                 calendar.set(localDateTime.year, localDateTime.monthValue-1, localDateTime.dayOfMonth, localDateTime.hour+2, localDateTime.minute)

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "655783136881",
+    "project_id": "miabox-firebase",
+    "storage_bucket": "miabox-firebase.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:655783136881:android:0c38197b8d828d062215d0",
+        "android_client_info": {
+          "package_name": "com.example.pronedvizapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyArsNVS7bHvtcPH7GeqDLwFe1a2YquVhzw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -43,7 +43,7 @@
                 style="@style/simpleText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_margin="5dp"
                 android:text="Как прошло [активность] ... ?"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -54,8 +54,8 @@
                 style="@style/simpleText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:text="Как прошло [активность] ... ?"
+                android:layout_margin="5dp"
+                android:text="Оцените свои действия: ... "
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/aboutActivityDescTextView1" />
@@ -84,6 +84,21 @@
                 app:layout_constraintStart_toStartOf="parent"
                 android:theme="@style/NumberPickerStyle" />
 
+            <EditText
+                android:id="@+id/countEditText"
+                style="@style/lightHintEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:hint="Количество ..."
+                android:inputType="number"
+                android:minHeight="48dp"
+                android:theme="@style/NumberPickerStyle"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/isConractSignedCheckBox" />
+
             <ImageView
                 android:layout_gravity="center"
                 android:visibility="gone"
@@ -104,7 +119,7 @@
         android:id="@+id/linearLayout7"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
+        android:layout_margin="5dp"
         android:gravity="center"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -116,18 +131,27 @@
             style="@style/customeButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="20dp"
+            android:layout_margin="10dp"
             android:background="@drawable/main_buttons_res"
-            android:text="Хорошо" />
+            android:text="Успех" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/postpondActivityButton"
+            style="@style/customeButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@drawable/main_buttons_res"
+            android:text="Перенос" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/badActivityButton"
             style="@style/customeButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="20dp"
+            android:layout_margin="10dp"
             android:background="@drawable/main_buttons_res"
-            android:text="Плохо" />
+            android:text="Провал" />
 
     </LinearLayout>
 

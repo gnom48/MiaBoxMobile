@@ -17,7 +17,7 @@ import java.time.temporal.ChronoUnit
 import com.example.pronedvizapp.main.CreateEditNoteFragment
 import com.example.pronedvizapp.MainActivity
 
-class NotesTasksAdapter(val context: MainActivity, var dataSource: ArrayList<INotesAdapterTemplete>): //, val actionListener: INotesTasksActionListener):
+class NotesTasksAdapter(val context: MainActivity, private var dataSource: ArrayList<INotesAdapterTemplete>):
     RecyclerView.Adapter<NotesTasksAdapter.NoteViewHolder>() {
 
     init {
@@ -53,20 +53,18 @@ class NotesTasksAdapter(val context: MainActivity, var dataSource: ArrayList<INo
                     binding.indicatorPanel.setBackgroundResource(R.drawable.card_indicator_other_res)
                 }
 
-                binding.titleTextView.setText(item.title)
+                binding.titleTextView.text = item.title
                 item.desc?.let {
                     if (item.desc.length > 70) {
-                        binding.contentTextView.setText(it.substring(0, 70) + "...")
+                        binding.contentTextView.text = it.substring(0, 70) + "..."
                         return@let
                     }
-                    binding.contentTextView.setText(it)
+                    binding.contentTextView.text = it
                 }
-                binding.timeTextView.setText(
-                    LocalDateTime.ofInstant(
-                        Instant.ofEpochSecond(item.date_time),
-                        ZoneOffset.UTC
-                    ).toLocalTime().toString()
-                )
+                binding.timeTextView.text = LocalDateTime.ofInstant(
+                    Instant.ofEpochSecond(item.date_time),
+                    ZoneOffset.UTC
+                ).toLocalTime().toString()
 
             } else if (mItem is Task) {
                 val item = mItem as Task
@@ -101,7 +99,7 @@ class NotesTasksAdapter(val context: MainActivity, var dataSource: ArrayList<INo
                     binding.detailsButton.visibility = View.GONE
                     binding.completeTaskButton.visibility = View.VISIBLE
                     binding.completeTaskButton.setOnClickListener {
-                        MainActivity.showResultDialog(item, context)
+                        MainActivity.showResultDialog(item, context, context)
                     }
                 }
             }

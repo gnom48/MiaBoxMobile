@@ -108,7 +108,7 @@ data class Member(
     @SerializedName("addresses") val addresses: List<AddressInfo>,
     @SerializedName("user") val user: User,
     @SerializedName("kpi") val kpi: StatisticsWithKpi,
-    @SerializedName("role") val role: UserStatuses
+    @SerializedName("role") var role: UserStatuses
 ): Serializable
 
 data class UserTeamsWithInfoItem(
@@ -171,7 +171,7 @@ data class UsersCalls(
     @SerializedName("contact_name") val contactName: String,
     @SerializedName("length_seconds") val lengthSeconds: Int,
     @SerializedName("call_type") val callType: Int,
-    @SerializedName("transcription") val transcription: String = "no transcription"
+    @SerializedName("transcription") val transcription: String
 ): Serializable
 
 interface ITaskStatus {

@@ -136,6 +136,7 @@ class CallRecordingService : Service() {
     }
 
     private fun getLastCallRecordingFile(recordingsPath: String?): File? {
+        Log.d(DEBUG_TAG, "files path: $recordingsPath")
         if (recordingsPath == "" || recordingsPath == null) {
             return null
         }
@@ -144,38 +145,12 @@ class CallRecordingService : Service() {
             return null
         }
         val files = directory.listFiles()
+        Log.d(DEBUG_TAG, "files in dir: ${files.map { it.name }}")
         if (files.isEmpty()) {
             Log.e(DEBUG_TAG, "Recording file not found within timeout")
             return null
         }
         return files.maxByOrNull { it.lastModified() }
-    }
-
-    private suspend fun getCurrentCallRecordFile(): File? {
-        val directory = File(Environment.getExternalStorageDirectory(), "Recordings/Call")
-        if (!directory.exists() || !directory.isDirectory) {
-            return null
-        }
-
-        val timeoutMillis = 30000L
-        val startTime = System.currentTimeMillis()
-
-        while (System.currentTimeMillis() - startTime < timeoutMillis) {
-            val files = directory.listFiles().toMutableList()
-            files.sortByDescending { it.lastModified() }
-            if (files != null) {
-                for (file in files) {
-                    val nowDate = LocalDate.now()
-                    if (file.name.matches(Regex("Запись вызовов_*_${nowDate.year}${nowDate.monthValue}${nowDate.dayOfMonth}_\\d{6}.m4a"))) {
-                        return file
-                    }
-                }
-            }
-            delay(5000)
-        }
-
-        Log.e(DEBUG_TAG, "Recording file not found within timeout")
-        return null
     }
 
     override fun onBind(intent: Intent): IBinder? {

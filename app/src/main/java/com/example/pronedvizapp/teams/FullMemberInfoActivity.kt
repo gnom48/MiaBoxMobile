@@ -70,7 +70,7 @@ class FullMemberInfoActivity : AppCompatActivity() {
 
             allRecords.onSuccess { userRecords ->
                 if (userRecords != null) {
-                    groupedCalls.sortedByDescending { it.date }
+//                    groupedCalls.sortedByDescending { it.date } // TODO: аналогичная ошибка
                     binding.callsRecyclerView.adapter = CallsAdapter(this@FullMemberInfoActivity, groupedCalls, userRecords)
                 } else {
                     binding.callsRecyclerView.adapter = CallsAdapter(this@FullMemberInfoActivity, groupedCalls, listOf())

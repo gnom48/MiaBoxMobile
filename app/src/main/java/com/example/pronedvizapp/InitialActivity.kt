@@ -82,7 +82,7 @@ class InitialActivity : AppCompatActivity() {
                 deniedPermissions.add(permission)
             }
         }
-        // Костыть для старых версий: при повышении minApiLevel - просто убрать
+        // Костыль для старых версий: при повышении minApiLevel - просто убрать
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             deniedPermissions.add(android.Manifest.permission.READ_EXTERNAL_STORAGE)
         }
@@ -91,7 +91,7 @@ class InitialActivity : AppCompatActivity() {
             Log.w("MiaBox", "Denied permissions: ${deniedPermissions.toTypedArray()}")
             MaterialAlertDialogBuilder(this)
                 .setTitle("Для полноценной работы приложения необходимо получить некоторые разрешения.")
-                .setMessage("Пожалуйста, разрешите доступ к вашим геоданным, камере и уведомлениям для работы приложения")
+                .setMessage("Пожалуйста, разрешите доступ к вашим геоданным, камере, уведомлениям и другим функциям для работы приложения")
                 .setPositiveButton("Ок"){ _,_ ->
                     ActivityCompat.requestPermissions(
                         this,

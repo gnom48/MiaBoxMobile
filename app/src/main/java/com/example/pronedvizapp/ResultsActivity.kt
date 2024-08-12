@@ -41,7 +41,7 @@ class ResultsActivity : AppCompatActivity() {
             }
         }
 
-        binding.dayButton.isSelected = true
+//        binding.dayButton.isSelected = true
 
         binding.linearLayout6.addOnButtonCheckedListener { group, checkedId, isChecked ->
             if (isChecked) {
@@ -78,6 +78,12 @@ class ResultsActivity : AppCompatActivity() {
         }
 
         showResultsByPeriod(DAY_STATISTICS_PERIOD)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        binding.linearLayout6.check(R.id.privateButton)
+        updateButtonStyles(binding.dayButton, binding.weekButton, binding.monthButton)
     }
 
     private fun updateButtonStyles(selectedButton: MaterialButton, unselectedButton1: MaterialButton, unselectedButton2: MaterialButton) {

@@ -2,6 +2,8 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("kotlin-kapt")
+    id("com.google.gms.google-services")
+    id("com.google.firebase.crashlytics")
 }
 
 android {
@@ -53,17 +55,10 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
-    // picasso
-    implementation("com.squareup.picasso:picasso:2.8")
-
     // retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.retrofit2:adapter-rxjava3:2.9.0")
-
-    // rxjava
-    implementation("io.reactivex.rxjava3:rxjava:3.0.13")
-    implementation("io.reactivex.rxjava3:rxandroid:3.0.0")
 
     // room
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
@@ -82,13 +77,18 @@ dependencies {
     // geo
     implementation("com.google.android.gms:play-services-location:21.0.1")
 
-    // works
+    // workmanager
     implementation("androidx.work:work-runtime-ktx:2.9.0")
 
     // qr code
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
     implementation("com.google.zxing:core:3.4.1")
 
-    // work manager
-    implementation("androidx.work:work-runtime-ktx:2.7.0")
+    // Firebase
+    implementation(platform("com.google.firebase:firebase-bom:33.1.2"))
+    implementation("com.google.firebase:firebase-messaging-ktx")
+    implementation("com.google.firebase:firebase-analytics-ktx")
+    implementation("com.google.firebase:firebase-crashlytics")
+    implementation("com.google.firebase:firebase-analytics")
+
 }

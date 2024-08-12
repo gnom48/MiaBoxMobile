@@ -54,9 +54,9 @@ class CallsInGroupAdapter(private val context: Context, private val callsInfo: L
         val binding = CallListviewItemBinding.bind(view)
         binding.phoneNumberTextView.text = callsInfo[position].phoneNumber
         if (callsInfo[position].callerName != null && callsInfo[position].callerName != "Неизвестный") {
-            binding.phoneNumberTextView.text = binding.phoneNumberTextView.text.toString() + "(${callsInfo[position].callerName})"
+            binding.phoneNumberTextView.text = binding.phoneNumberTextView.text.toString() + " (${callsInfo[position].callerName})"
         }
-        binding.dateTimeTextView.text = unixDateTimeToString(callsInfo[position].dateTime)
+        binding.dateTimeTextView.text = unixDateTimeToString(callsInfo[position].dateTime + 60 * 60 * 3)
         binding.lengthSecondsTextView.text = getFormattedTimeLength(callsInfo[position].lengthSeconds)
         binding.transcriptionButtonTextView.setOnClickListener {
             if (callsInfo[position].transcription != null && callsInfo[position].transcription != "" && callsInfo[position].transcription != NO_TRANSCRIPTION) {
@@ -263,6 +263,7 @@ class CallsInGroupAdapter(private val context: Context, private val callsInfo: L
 
         public fun unixDateTimeToString(unixDateTime: Int): String {
             val dateTime = LocalDateTime.ofEpochSecond(unixDateTime.toLong(), 0, ZoneOffset.UTC)
+//            dateTime.plusHours(3)
             val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
             return dateTime.format(formatter)
         }

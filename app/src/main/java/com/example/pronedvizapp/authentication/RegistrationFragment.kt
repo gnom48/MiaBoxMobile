@@ -45,8 +45,6 @@ class RegistrationFragment: Fragment() {
 
         binding = FragmentRegistrationBinding.inflate(inflater, container, false)
 
-        binding.privateButton.isChecked = true
-        updateButtonStyles(binding.privateButton, binding.commercialButton)
         binding.toggleButtonGroup.addOnButtonCheckedListener { group, checkedId, isChecked ->
             if (isChecked) {
                 val selectedButton = group.findViewById<MaterialButton>(checkedId)
@@ -83,12 +81,12 @@ class RegistrationFragment: Fragment() {
                 binding.enterUserLoginEditText.text.toString(),
                 binding.enterPasswordEditText.text.toString(),
                 newUser.type,
-                "",
+                binding.enterUserEmailEditText.text.toString(),
                 binding.enterNameEditText.text.toString(),
                 "",
                 0,
                 "",
-                0,
+                System.currentTimeMillis() / 1000,
                 1
             )
 
@@ -151,6 +149,12 @@ class RegistrationFragment: Fragment() {
         }
 
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        binding.toggleButtonGroup.check(R.id.privateButton)
+        updateButtonStyles(binding.privateButton, binding.commercialButton)
     }
 
     private fun updateButtonStyles(selectedButton: MaterialButton, unselectedButton: MaterialButton) {

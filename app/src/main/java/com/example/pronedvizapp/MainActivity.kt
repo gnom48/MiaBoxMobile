@@ -1,14 +1,13 @@
 package com.example.pronedvizapp
 
-import android.app.AlarmManager
 import android.app.Dialog
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import androidx.annotation.RequiresApi
@@ -22,12 +21,15 @@ import com.example.pronedvizapp.main.MainFragment
 import com.example.pronedvizapp.main.NotesFragment
 import com.example.pronedvizapp.main.ProfileFragment
 import com.example.pronedvizapp.main.WorkFragment
-import com.example.pronedvizapp.notifications.NotificationApp
+import com.example.pronedvizapp.notifications.FirebaseInstanceIdService
 import com.example.pronedvizapp.requests.ServerApiUsers
+import com.example.pronedvizapp.requests.models.Note
 import com.example.pronedvizapp.requests.models.Statistics
 import com.example.pronedvizapp.requests.models.Task
 import com.example.pronedvizapp.requests.models.WorkTasksTypes
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.navigation.NavigationBarView
+import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.coroutineScope
 import retrofit2.Call
 import retrofit2.Callback
@@ -35,7 +37,8 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.await
 import retrofit2.converter.gson.GsonConverterFactory
-import java.util.Calendar
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 
 class MainActivity : AppCompatActivity() {
 
@@ -57,30 +60,19 @@ class MainActivity : AppCompatActivity() {
         binding.bottomMenu.selectedItemId = R.id.bottomMenuItemMain
 
         NotesFragment.getCompletedTasksCurrentUser(this) { completedTasks ->
-            completedTasks.let { arr -> arr.forEach { showResultDialog(it, this) } }
+            completedTasks.let { arr -> arr.forEach { showResultDialog(it, this, this) } }
         }
+
+//        FirebaseMessaging.getInstance().subscribeToTopic("broadcast")
+//            .addOnCompleteListener { task ->
+//                var msg = "msg_subscribed"
+//                if (!task.isSuccessful) {
+//                    msg = "msg_subscribe_failed"
+//                }
+//                Log.d(FirebaseInstanceIdService.DEBUG_TAG, msg)
+//            }
 
         GeoServiceWorker.schedulePeriodicWork(this)
-        //setMorningAlarm()
-    }
-
-    private fun setMorningAlarm() {
-        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val alarmIntent = Intent(this.applicationContext, NotificationApp::class.java).let {
-                intent ->
-            intent.putExtra("TITLE", "Напоминание")
-            intent.putExtra("CONTENT", "Пора зайти в приложение и решить, чем сегодня заниматься")
-            PendingIntent.getBroadcast(this.applicationContext, 480, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-        }
-        var time = Calendar.getInstance()
-        time.set(Calendar.HOUR_OF_DAY, 12)
-        time.set(Calendar.MINUTE, 39)
-        time.set(Calendar.SECOND, 0)
-        if (time.timeInMillis < Calendar.getInstance().timeInMillis) {
-            //time.add(Calendar.DAY_OF_MONTH, 1)
-        }
-//        alarmManager.cancel(alarmIntent)
-        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, time.timeInMillis, AlarmManager.INTERVAL_DAY, alarmIntent)
     }
 
     private fun initUi() {
@@ -158,8 +150,7 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
 
-        public fun createNotificationChannels(context: Context)
-        {
+        public fun createNotificationChannels(context: Context) {
             val nameNI = context.resources.getString(R.string.NOT_IMPORTANT_CHANNEL_NAME)
             val descNI = context.resources.getString(R.string.NOT_IMPORTANT_CHANNEL_DESCRIPTION)
             val importanceNI = NotificationManager.IMPORTANCE_HIGH
@@ -181,22 +172,22 @@ class MainActivity : AppCompatActivity() {
             notificationManager.createNotificationChannel(channelI)
         }
 
-        public fun showResultDialog(currentTask: Task, context: Context) {
-
+        fun showResultDialog(task: Task, context: Context, owner: MainActivity) {
             val dialogBinding = FragmentActionResultBinding.inflate(LayoutInflater.from(context))
 
-            dialogBinding.aboutActivityDescTextView1.text = "Как вы оцениваете результат своей работы в области ${currentTask.workType}\n(${currentTask.desc})\n"
-            dialogBinding.aboutActivityDescTextView2.text = "Отметьте нужные по вашему мнению пункты"
+            dialogBinding.aboutActivityDescTextView1.text = "Как вы оцениваете результат своей работы в области \"${task.workType}\" (${task.desc})?"
 
-            if (currentTask.workType == WorkTasksTypes.FLYERS.description || currentTask.workType == WorkTasksTypes.CALLS.description) {
-                dialogBinding.countNumberPicker.visibility = View.VISIBLE
-                dialogBinding.countNumberPicker.maxValue = 50
-                dialogBinding.countNumberPicker.minValue = 0
-                dialogBinding.countNumberPicker.value = 1
-            } else if (currentTask.workType == WorkTasksTypes.DEPOSIT.description || currentTask.workType == WorkTasksTypes.MEET.description || currentTask.workType == WorkTasksTypes.SHOW.description) {
+            if (task.workType == WorkTasksTypes.FLYERS.description || task.workType == WorkTasksTypes.CALLS.description) {
+                dialogBinding.aboutActivityDescTextView2.text = "Введите количественный показатель:"
+                dialogBinding.countEditText.visibility = View.VISIBLE
+//                dialogBinding.countNumberPicker.visibility = View.VISIBLE
+
+            } else if (task.workType == WorkTasksTypes.DEPOSIT.description || task.workType == WorkTasksTypes.MEET.description || task.workType == WorkTasksTypes.SHOW.description) {
+                dialogBinding.aboutActivityDescTextView2.text = "Как прошло общение с клиентом:"
                 dialogBinding.isConractSignedCheckBox.visibility = View.VISIBLE
             } else {
-                dialogBinding.resultImageView.visibility = View.VISIBLE
+                dialogBinding.aboutActivityDescTextView2.text = "Каков результат сделки:"
+//                dialogBinding.resultImageView.visibility = View.VISIBLE
             }
 
             val dialog = Dialog(context)
@@ -206,20 +197,50 @@ class MainActivity : AppCompatActivity() {
             var addValue = 1
 
             dialogBinding.goodActivityButton.setOnClickListener {
-                if (currentTask.workType == WorkTasksTypes.FLYERS.description || currentTask.workType == WorkTasksTypes.CALLS.description) {
-                    addValue = dialogBinding.countNumberPicker.value
+                if (task.workType == WorkTasksTypes.FLYERS.description || task.workType == WorkTasksTypes.CALLS.description) {
+                    addValue = dialogBinding.countEditText.text.toString().toInt()
+//                    addValue = dialogBinding.countNumberPicker.value
+                } else if (task.workType == WorkTasksTypes.DEPOSIT.description || task.workType == WorkTasksTypes.MEET.description || task.workType == WorkTasksTypes.SHOW.description) {
+                    addValue = if (dialogBinding.isConractSignedCheckBox.isChecked) 1 else 0
                 }
-                MainActivity.editUserStatistics(context, currentTask.workType, addValue, MainStatic.currentToken!!)
-                NotesFragment.deleteTask(context, MainStatic.currentToken!!, currentTask.id)
+                MainActivity.editUserStatistics(context, task.workType, addValue, MainStatic.currentToken!!)
+                NotesFragment.deleteTask(context, MainStatic.currentToken!!, task.id)
                 dialog.dismiss()
             }
 
             dialogBinding.badActivityButton.setOnClickListener {
                 dialog.dismiss()
-                NotesFragment.deleteTask(context, MainStatic.currentToken!!, currentTask.id)
-                val intent = Intent(context, WebViewActivity::class.java)
-                intent.putExtra(WebViewActivity.SOURCE, "baza.html")
-                context.startActivity(intent)
+                NotesFragment.deleteTask(context, MainStatic.currentToken!!, task.id)
+
+                MaterialAlertDialogBuilder(context)
+                    .setMessage("Рекомендуется почитать обучающие материалы для того, чтобы в следующий раз достигнуть успеха.")
+                    .setPositiveButton("Да, спасибо") { materialAlertDialog, _ ->
+                        materialAlertDialog.dismiss()
+                        val intent = Intent(context, WebViewActivity::class.java)
+                        intent.putExtra(WebViewActivity.SOURCE, "baza.html")
+                        context.startActivity(intent)
+                    }
+                    .create()
+                    .show()
+            }
+
+            dialogBinding.postpondActivityButton.setOnClickListener {
+                dialog.dismiss()
+                MaterialAlertDialogBuilder(context)
+                    .setMessage("Рекомендуется сделать заметку, чтобы не забыть о том, что встреча перенесена.")
+                    .setPositiveButton("Да") { materialAlertDialog, _ ->
+                        materialAlertDialog.dismiss()
+//                        owner.showFragment("CreateEditNoteFragment")
+                        val fragment = CreateEditNoteFragment(Note(0, "${task.workType} с ...", "По предмету ...", LocalDateTime.now().toEpochSecond(ZoneOffset.UTC), MainStatic.currentUser!!.id, 0))
+                        val transaction = owner.supportFragmentManager.beginTransaction()
+                        transaction.replace(R.id.mainContentFrame, fragment)
+                        transaction.commit()
+                    }
+                    .setNegativeButton("Нет, спасибо") { materialAlertDialog, _ ->
+                        materialAlertDialog.dismiss()
+                    }
+                    .create()
+                    .show()
             }
 
             dialog.show()

@@ -18,6 +18,7 @@ import com.example.pronedvizapp.adapters.TeamMembersAdapter
 import com.example.pronedvizapp.databinding.ActivityMyTeamDetailsBinding
 import com.example.pronedvizapp.databinding.FragmentInviteToTeamBinding
 import com.example.pronedvizapp.requests.ServerApiTeams
+import com.example.pronedvizapp.requests.models.UserStatuses
 import com.example.pronedvizapp.requests.models.UserTeamsWithInfoItem
 import com.google.gson.Gson
 import com.google.zxing.BarcodeFormat
@@ -50,7 +51,8 @@ class MyTeamDetailsActivity : AppCompatActivity() {
         teamInfo = Gson().fromJson<UserTeamsWithInfoItem>(intent.getStringExtra("data"), UserTeamsWithInfoItem::class.java)
         binding.teamNameTextView.text = teamInfo.team.name
 
-        binding.recyclerView.adapter = TeamMembersAdapter(teamInfo.members, this, this)
+        val aboutMeInTeam = teamInfo.members.find { it.user.id == MainStatic.currentUser!!.id }
+        binding.recyclerView.adapter = TeamMembersAdapter(teamInfo.members, this, this, aboutMeInTeam!!.role == UserStatuses.OWNER, teamInfo.team)
         binding.recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
         binding.goBackPanel.setOnClickListener {
@@ -59,9 +61,6 @@ class MyTeamDetailsActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-//        val t: MenuItem = findViewById(R.id.leaveTeamMenuItem)
-//        t.isVisible = true
-        // TODO: сюда припихнуть администрирование по правам
         menuInflater.inflate(R.menu.team_optional_menu_res, menu)
         return true
     }
