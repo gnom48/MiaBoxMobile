@@ -292,32 +292,36 @@ class MapActivity : AppCompatActivity(), Session.SearchListener, UserLocationObj
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return  when (item.itemId) {
+        return when (item.itemId) {
             R.id.unqueueImHereMenuItem -> {
                 lifecycleScope.launch {
-                    val res = getAddressByCoordsAsync(this@MapActivity, mLocation)
-                    res.onSuccess { address ->
-                        val serverApiAddressAdditionResponse = GeoPositionService.addAddressRecordAsync(
-                            applicationContext, AddressInfo(
-                                -1,
-                                MainStatic.currentUser!!.id,
-                                address.suggestions[0].value,
-                                mLocation!!.latitude.toFloat(),
-                                mLocation!!.longitude.toFloat(),
-                                LocalDateTime.now().toEpochSecond(ZoneOffset.UTC).toInt()
+                    try {
+                        val res = getAddressByCoordsAsync(this@MapActivity, mLocation)
+                        res.onSuccess { address ->
+                            val serverApiAddressAdditionResponse = GeoPositionService.addAddressRecordAsync(
+                                applicationContext, AddressInfo(
+                                    -1,
+                                    MainStatic.currentUser!!.id,
+                                    if (address.suggestions.isEmpty()) "Не определен" else address.suggestions[0].value,
+                                    mLocation!!.latitude.toFloat(),
+                                    mLocation!!.longitude.toFloat(),
+                                    LocalDateTime.now().toEpochSecond(ZoneOffset.UTC).toInt()
+                                )
                             )
-                        )
-                        serverApiAddressAdditionResponse.onSuccess {
-                            Toast.makeText(this@MapActivity.applicationContext, "Адрес записан", Toast.LENGTH_SHORT).show()
+                            serverApiAddressAdditionResponse.onSuccess {
+                                Toast.makeText(this@MapActivity.applicationContext, "Адрес записан", Toast.LENGTH_SHORT).show()
+                            }
+                            serverApiAddressAdditionResponse.onFailure { e ->
+                                Log.e("MiaBox", "${e.message.toString()} | $address")
+                                Toast.makeText(this@MapActivity.applicationContext, "Ошибка отправки данных на сервер", Toast.LENGTH_SHORT).show()
+                            }
                         }
-                        serverApiAddressAdditionResponse.onFailure { e ->
-                            Log.e("MiaBox", "${e.message.toString()} | $address")
-                            Toast.makeText(this@MapActivity.applicationContext, "Ошибка отправки данных на сервер", Toast.LENGTH_SHORT).show()
+                        res.onFailure {
+                            Log.e("MiaBox", it.message.toString())
+                            Toast.makeText(this@MapActivity.applicationContext, "Ошибка запроса к стороннему API: ${it.message.toString()}", Toast.LENGTH_SHORT).show()
                         }
-                    }
-                    res.onFailure {
-                        Log.e("MiaBox", it.message.toString())
-                        Toast.makeText(this@MapActivity.applicationContext, "Ошибка запроса к стороннему API: ${it.message.toString()}", Toast.LENGTH_SHORT).show()
+                    } catch (e: Exception) {
+                        Toast.makeText(this@MapActivity.applicationContext, "Ошибка геолокации", Toast.LENGTH_SHORT).show()
                     }
                 }
                 true
@@ -457,7 +461,7 @@ class MapActivity : AppCompatActivity(), Session.SearchListener, UserLocationObj
             })
         }
 
-        suspend fun getAddressByCoordsAsync(context: Context, mLocation: Location): kotlin.Result<AddressResponse> = coroutineScope {
+        suspend fun getAddressByCoordsAsync(context: Context, mLocation: Location?): kotlin.Result<AddressResponse> = coroutineScope {
             val retrofit = Retrofit.Builder()
                 .baseUrl("http://suggestions.dadata.ru/suggestions/api/")
                 .addConverterFactory(GsonConverterFactory.create())
@@ -466,7 +470,7 @@ class MapActivity : AppCompatActivity(), Session.SearchListener, UserLocationObj
             val dadataApi = retrofit.create(DadataApi::class.java)
 
             return@coroutineScope try {
-                val response = dadataApi.getAddressByCoordinates(Coordinates(mLocation.latitude, mLocation.longitude)).await()
+                val response = dadataApi.getAddressByCoordinates(Coordinates(mLocation!!.latitude, mLocation!!.longitude)).await()
                 if (response != null) {
                     kotlin.Result.success(response)
                 } else {

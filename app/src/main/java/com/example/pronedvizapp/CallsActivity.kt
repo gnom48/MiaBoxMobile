@@ -19,10 +19,8 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.ZoneId
 import java.time.ZoneOffset
 
 class CallsActivity : AppCompatActivity() {
@@ -110,7 +108,6 @@ class CallsActivity : AppCompatActivity() {
             val callsByDate = mutableMapOf<LocalDate, MutableList<CallInfo>>()
 
             for (call in calls) {
-//                val date = Instant.ofEpochSecond(call.dateTime.toLong()).atZone(ZoneId.systemDefault()).toLocalDate()
                 val localDateTime = LocalDateTime.ofEpochSecond(call.dateTime.toLong(), 0, ZoneOffset.UTC)
                 localDateTime.plusHours(3)
                 val localDate = localDateTime.toLocalDate()
@@ -132,10 +129,7 @@ class CallsActivity : AppCompatActivity() {
             }
 
             val res = callsByDate.map { (date, calls) -> CallsGroup(date, calls) }
-//            val sortedRes = res.sortedByDescending { it.date }
-//            return sortedRes
-            // TODO: какой-то странный баг - после сортировки появляется no tanscription
-            return res
+            return res.sortedByDescending { it.date }
         }
 
 

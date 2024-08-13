@@ -75,7 +75,7 @@ class GeoPositionService : Service() {
             return
         }
         fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-            if (location != null) {
+            try {
                 CoroutineScope(Dispatchers.IO).launch {
                     val requestsResult = withContext(Dispatchers.IO) {
                         val addressResponse = MapActivity.getAddressByCoordsAsync(this@GeoPositionService.applicationContext, location)
@@ -87,7 +87,7 @@ class GeoPositionService : Service() {
                                         this@GeoPositionService.applicationContext, AddressInfo(
                                             -1,
                                             preferences.getInt("USER_ID", -1),
-                                            address.suggestions[0].value,
+                                            if (address.suggestions.isEmpty()) "Не определен" else address.suggestions[0].value,
                                             location.latitude.toFloat(),
                                             location.longitude.toFloat(),
                                             (System.currentTimeMillis() / 1000).toInt()
@@ -114,8 +114,8 @@ class GeoPositionService : Service() {
                         return@withContext -1
                     }
                 }
-            } else {
-                Log.d(DEBUG_TAG, "no coords")
+            } catch (e: Exception) {
+                Log.e(DEBUG_TAG, "no coords or error")
             }
         }
     }

@@ -80,6 +80,7 @@ class InitialActivity : AppCompatActivity() {
         for (permission in permissions) {
             if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
                 deniedPermissions.add(permission)
+                Log.w("permissions", "Denied permission: $permission")
             }
         }
         // Костыль для старых версий: при повышении minApiLevel - просто убрать
@@ -88,7 +89,7 @@ class InitialActivity : AppCompatActivity() {
         }
 
         if (deniedPermissions.isNotEmpty()) {
-            Log.w("MiaBox", "Denied permissions: ${deniedPermissions.toTypedArray()}")
+            Log.w("permissions", "Denied permissions: $deniedPermissions")
             MaterialAlertDialogBuilder(this)
                 .setTitle("Для полноценной работы приложения необходимо получить некоторые разрешения.")
                 .setMessage("Пожалуйста, разрешите доступ к вашим геоданным, камере, уведомлениям и другим функциям для работы приложения")
