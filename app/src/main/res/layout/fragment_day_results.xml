@@ -1,0 +1,526 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="10dp"
+    android:background="@drawable/no_tansparent_rounded_corners"
+    android:id="@+id/resultsRoot">
+
+    <ImageButton
+        android:id="@+id/closeImageButton"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="end"
+        android:layout_margin="9dp"
+        android:background="@color/transparent0"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/close_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/aboutActivityNameTextView"
+        style="@style/simpleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/montserrat_bold"
+        android:text="Результаты дня"
+        android:textSize="22sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/closeImageButton" />
+
+    <ScrollView
+        android:id="@+id/scrollViewer"
+        android:layout_width="match_parent"
+        android:layout_height="500dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="15dp"
+        android:contentDescription="content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/aboutActivityNameTextView">
+
+        <LinearLayout
+            android:id="@+id/linearLayout9"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout6">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Подведение итогов дня"
+                style="@style/simpleText"
+                android:id="@+id/resultsTextView"
+                android:layout_margin="5dp"/>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:id="@+id/aCont"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginVertical="10dp"
+                android:background="@drawable/main_buttons_res"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout6"
+                tools:layout_editor_absoluteX="30dp">
+
+                <ImageView
+                    android:id="@+id/imgA"
+                    android:layout_width="40dp"
+                    android:layout_height="65dp"
+                    android:layout_marginHorizontal="20dp"
+                    android:src="@drawable/analytics_stats"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/countAnalyticsTextView"
+                    style="@style/simpleText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:text="10"
+                    android:textSize="25sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/imgA"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/actionANameTextView"
+                    style="@style/simpleText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:text="Аналитика"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/countAnalyticsTextView"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:id="@+id/cCont"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginVertical="10dp"
+                android:background="@drawable/main_buttons_res"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout6"
+                tools:layout_editor_absoluteX="30dp">
+
+                <ImageView
+                    android:id="@+id/imgC"
+                    android:layout_width="40dp"
+                    android:layout_height="65dp"
+                    android:layout_marginHorizontal="20dp"
+                    android:src="@drawable/calls_stats"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/countCallsTextView"
+                    style="@style/simpleText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:text="6"
+                    android:textSize="25sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/imgC"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/actionCNameTextView"
+                    style="@style/simpleText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:text="Звонки"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/countCallsTextView"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:id="@+id/fCont"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginVertical="10dp"
+                android:background="@drawable/main_buttons_res"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout6"
+                tools:layout_editor_absoluteX="30dp">
+
+                <ImageView
+                    android:id="@+id/imgF"
+                    android:layout_width="40dp"
+                    android:layout_height="65dp"
+                    android:layout_marginHorizontal="20dp"
+                    android:src="@drawable/flyers_stats"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/countFlyersTextView"
+                    style="@style/simpleText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:text="40"
+                    android:textSize="25sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/imgF"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/actionFNameTextView"
+                    style="@style/simpleText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:text="Расклейка"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/countFlyersTextView"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/dCont"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginVertical="10dp"
+                android:background="@drawable/main_buttons_res"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout6"
+                tools:layout_editor_absoluteX="30dp">
+
+                <ImageView
+                    android:id="@+id/imgD"
+                    android:layout_width="40dp"
+                    android:layout_height="65dp"
+                    android:layout_marginHorizontal="20dp"
+                    android:src="@drawable/deal_stats"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/countDealsTextView"
+                    style="@style/simpleText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:text="10"
+                    android:textSize="25sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/imgD"
+                    app:layout_constraintStart_toEndOf="@+id/imgD"
+                    app:layout_constraintTop_toTopOf="@+id/imgD"/>
+
+                <TextView
+                    android:id="@+id/actionDNameTextView"
+                    style="@style/simpleText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:text="Сделки"
+                    app:layout_constraintBottom_toBottomOf="@+id/countDealsTextView"
+                    app:layout_constraintStart_toEndOf="@id/countDealsTextView"
+                    app:layout_constraintTop_toTopOf="@+id/countDealsTextView" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="10dp"
+                    android:orientation="vertical"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/countDealsTextView"
+                    app:layout_constraintTop_toBottomOf="@+id/countDealsTextView">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/subCountDealsRentTextView"
+                            style="@style/supportText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="0" />
+
+                        <TextView
+                            android:id="@+id/subActionDRNameTextView"
+                            style="@style/supportText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:layout_marginTop="19dp"
+                            android:text="Аренда" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/subCountDealsSaleTextView"
+                            style="@style/supportText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="0" />
+
+                        <TextView
+                            android:id="@+id/subActionDSNameTextView"
+                            style="@style/supportText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="Продажа" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/shCont"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginVertical="10dp"
+                android:background="@drawable/main_buttons_res"
+                tools:layout_editor_absoluteX="30dp">
+
+                <ImageView
+                    android:id="@+id/imgS"
+                    android:layout_width="40dp"
+                    android:layout_height="65dp"
+                    android:layout_marginHorizontal="20dp"
+                    android:src="@drawable/show_stats"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/countShowsTextView"
+                    style="@style/simpleText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:text="10"
+                    android:textSize="25sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/imgS"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/actionSNameTextView"
+                    style="@style/simpleText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:text="Показы"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/countShowsTextView"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/mCont"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginVertical="10dp"
+                android:background="@drawable/main_buttons_res"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout6"
+                tools:layout_editor_absoluteX="30dp">
+
+                <ImageView
+                    android:id="@+id/imgM"
+                    android:layout_width="40dp"
+                    android:layout_height="65dp"
+                    android:layout_marginHorizontal="20dp"
+                    android:src="@drawable/meet_stats"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/countMeetsTextView"
+                    style="@style/simpleText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:text="10"
+                    android:textSize="25sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/imgM"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/actionMNameTextView"
+                    style="@style/simpleText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:text="Встречи"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/countMeetsTextView"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/depCont"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginVertical="10dp"
+                android:background="@drawable/main_buttons_res"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout6"
+                tools:layout_editor_absoluteX="30dp">
+
+                <ImageView
+                    android:id="@+id/imgDep"
+                    android:layout_width="40dp"
+                    android:layout_height="65dp"
+                    android:layout_marginHorizontal="20dp"
+                    android:src="@drawable/deposit_stats"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/countDepositsTextView"
+                    style="@style/simpleText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:text="10"
+                    android:textSize="25sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/imgDep"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/actionDepNameTextView"
+                    style="@style/simpleText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:text="Задатки"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/countDepositsTextView"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/searchCont"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginVertical="10dp"
+                android:background="@drawable/main_buttons_res"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout6"
+                tools:layout_editor_absoluteX="30dp">
+
+                <ImageView
+                    android:id="@+id/imgSearch"
+                    android:layout_width="40dp"
+                    android:layout_height="65dp"
+                    android:layout_marginHorizontal="20dp"
+                    android:src="@drawable/search_stats"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/countSearchTextView"
+                    style="@style/simpleText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:text="10"
+                    android:textSize="25sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/imgSearch"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/actionSearchNameTextView"
+                    style="@style/simpleText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:text="Поиск"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/countSearchTextView"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/oCont"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginVertical="10dp"
+                android:background="@drawable/main_buttons_res"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout6"
+                tools:layout_editor_absoluteX="30dp">
+
+                <ImageView
+                    android:id="@+id/imgO"
+                    android:layout_width="40dp"
+                    android:layout_height="65dp"
+                    android:layout_marginHorizontal="20dp"
+                    android:src="@drawable/others_stats"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/countOthersTextView"
+                    style="@style/simpleText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:text="10"
+                    android:textSize="25sp"
+                    app:layout_constraintStart_toEndOf="@id/imgO"
+                    app:layout_constraintTop_toTopOf="@id/imgO"
+                    app:layout_constraintBottom_toBottomOf="@id/imgO" />
+
+                <TextView
+                    android:id="@+id/actionONameTextView"
+                    style="@style/simpleText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:text="Другое"
+                    app:layout_constraintStart_toEndOf="@id/countOthersTextView"
+                    app:layout_constraintTop_toTopOf="@id/imgO"
+                    app:layout_constraintBottom_toBottomOf="@id/imgO" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

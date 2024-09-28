@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:elevation="8dp"
+    android:layout_margin="10dp"
+    android:layout_height="160dp"
+    android:background="@color/transparent0">
+
+    <View
+        android:orientation="horizontal"
+        android:layout_width="5dp"
+        android:background="@drawable/rounded_corners_res"
+        app:layout_constraintTop_toTopOf="@id/card"
+        app:layout_constraintBottom_toBottomOf="@id/card"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_height="match_parent"
+        android:id="@+id/indicatorPanel"
+        android:layout_marginVertical="20dp"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/card"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="15dp"
+        android:background="@drawable/note_card_others_res"
+        android:padding="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.8"
+        app:layout_constraintStart_toEndOf="@id/indicatorPanel"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0">
+
+        <TextView
+            android:id="@+id/titleTextView"
+            style="@style/simpleText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/montserrat_medium"
+            android:text="Название"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/timeTextView"
+            style="@style/simpleText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/montserrat_light"
+            android:text="10:00"
+            app:layout_constraintBottom_toTopOf="@+id/contentTextView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/contentTextView"
+            style="@style/simpleText"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginTop="-10dp"
+            android:text="Контент"
+            app:layout_constraintBottom_toTopOf="@+id/iconImageView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/titleTextView" />
+
+        <ImageView
+            android:id="@+id/iconImageView"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_margin="7dp"
+            android:src="@drawable/task_planned_icon"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/detailsButton"
+            style="@style/customeButton"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_margin="5dp"
+            android:background="@drawable/main_buttons_res"
+            android:drawableRight="@drawable/baseline_arrow_forward_ios_24"
+            android:text="Изменить"
+            android:textSize="12sp"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:ignore="TouchTargetSizeCheck" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/completeTaskButton"
+            style="@style/customeButton"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_margin="5dp"
+            android:background="@drawable/main_buttons_res"
+            android:drawableRight="@drawable/baseline_done_all_24"
+            android:text="Готово  "
+            android:textSize="12sp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:ignore="TouchTargetSizeCheck" />
+
+        <LinearLayout
+            android:id="@+id/taskCompleteButtonsPanel"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="5dp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/goodTaskCompleteButton"
+                style="@style/customeButton"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_marginHorizontal="10dp"
+                android:background="@drawable/main_buttons_res"
+                android:text="Хорошо"
+                android:textColor="@color/green"
+                android:textSize="12sp" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/badTaskCompleteButton"
+                style="@style/customeButton"
+                android:layout_marginHorizontal="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:background="@drawable/main_buttons_res"
+                android:text="Хорошо"
+                android:textColor="@color/red"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

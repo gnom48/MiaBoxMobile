@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="10dp"
+    android:background="@drawable/no_tansparent_rounded_corners"
+    android:id="@+id/resultsRoot">
+
+    <TextView
+        android:id="@+id/aboutActivityNameTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="70dp"
+        android:text="Результат работы"
+        style="@style/simpleText"
+        android:textSize="22sp"
+        android:fontFamily="@font/montserrat_bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ScrollView
+        android:id="@+id/scrollViewer"
+        android:layout_width="match_parent"
+        android:layout_height="410dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="15dp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout7"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/aboutActivityNameTextView">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/aboutActivityDescTextView1"
+                style="@style/simpleText"
+                android:textAlignment="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:text="Как прошло [активность] ... ?"/>
+
+            <TextView
+                android:id="@+id/aboutActivityDescTextView2"
+                android:textAlignment="center"
+                style="@style/simpleText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:text="Оцените свои действия: ... "/>
+
+<!--            <CheckBox-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Заключили договор"-->
+<!--                android:checked="false"-->
+<!--                android:visibility="gone"-->
+<!--                style="@style/simpleText"-->
+<!--                app:layout_constraintTop_toBottomOf="@+id/aboutActivityDescTextView2"-->
+<!--                android:id="@+id/isConractSignedCheckBox"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                android:layout_margin="10dp"/>-->
+
+            <RadioGroup
+                android:id="@+id/contractStatusRadioGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_margin="10dp">
+
+                <RadioButton
+                    android:id="@+id/noContractRadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Не заключили договор"
+                    android:checked="true"
+                    style="@style/simpleText"/>
+
+                <RadioButton
+                    android:id="@+id/regularContractRadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Заключили договор"
+                    style="@style/simpleText"/>
+
+                <RadioButton
+                    android:id="@+id/exclusiveContractRadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Заключили эксклюзивный договор"
+                    style="@style/simpleText"/>
+            </RadioGroup>
+
+            <NumberPicker
+                android:id="@+id/countNumberPicker"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:theme="@style/NumberPickerStyle" />
+
+            <EditText
+                android:id="@+id/countEditText"
+                android:textAlignment="center"
+                style="@style/lightHintEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:hint="Количество ..."
+                android:inputType="number"
+                android:minHeight="48dp"
+                android:theme="@style/NumberPickerStyle"
+                android:visibility="gone"/>
+
+            <ImageView
+                android:layout_gravity="center"
+                android:visibility="gone"
+                android:src="@mipmap/ic_launcher_round"
+                android:layout_marginTop="20dp"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:id="@+id/resultImageView"/>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/linearLayout7"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/goodActivityButton"
+            style="@style/customeButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@drawable/main_buttons_res"
+            android:text="Успех" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/postpondActivityButton"
+            style="@style/customeButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@drawable/main_buttons_res"
+            android:text="Перенос" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/badActivityButton"
+            style="@style/customeButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@drawable/main_buttons_res"
+            android:text="Провал" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

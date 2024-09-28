@@ -1,0 +1,878 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black_background"
+    tools:context=".ResultsActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/constraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/panels_background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/goBackPanel"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/goBackImageButton"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_margin="20dp"
+                android:background="@color/transparent0"
+                android:src="@drawable/back_arrow_icon"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <TextView
+                style="@style/simpleText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:text="Назад"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/goBackImageButton"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="50dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/textView9"
+                style="@style/simpleText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:text="Результаты"
+                android:textSize="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/linearLayout6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="20dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toBottomOf="@+id/textView9"
+                android:layout_gravity="center"
+                app:singleSelection="true"
+                app:selectionRequired="true">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/dayButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:text="День"
+                    app:cornerRadius="12dp"
+                    style="@style/UnselectedButtonStyle" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/weekButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Неделя"
+                    app:cornerRadius="12dp"
+                    style="@style/UnselectedButtonStyle" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/monthButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Месяц"
+                    app:cornerRadius="12dp"
+                    style="@style/UnselectedButtonStyle" />
+
+            </com.google.android.material.button.MaterialButtonToggleGroup>
+
+            <LinearLayout
+                android:id="@+id/linearLayout9"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout6">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:layout_marginHorizontal="30dp"
+                    android:layout_marginVertical="10dp"
+                    android:background="@drawable/main_buttons_res"
+                    app:layout_constraintTop_toBottomOf="@+id/linearLayout6"
+                    tools:layout_editor_absoluteX="30dp">
+
+                    <ImageView
+                        android:id="@+id/imgA"
+                        android:layout_width="40dp"
+                        android:layout_height="65dp"
+                        android:layout_marginHorizontal="20dp"
+                        android:src="@drawable/analytics_stats"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/countAnalyticsTextView"
+                        style="@style/simpleText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="10dp"
+                        android:text="0"
+                        android:textSize="25sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/imgA"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/actionANameTextView"
+                        style="@style/simpleText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="10dp"
+                        android:text="Аналитика"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/countAnalyticsTextView"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:layout_marginHorizontal="30dp"
+                    android:layout_marginVertical="10dp"
+                    android:background="@drawable/main_buttons_res"
+                    app:layout_constraintTop_toBottomOf="@+id/linearLayout6"
+                    tools:layout_editor_absoluteX="30dp">
+
+                    <ImageView
+                        android:id="@+id/imgC"
+                        android:layout_width="40dp"
+                        android:layout_height="65dp"
+                        android:layout_marginHorizontal="20dp"
+                        android:src="@drawable/calls_stats"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/countCallsTextView"
+                        style="@style/simpleText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="10dp"
+                        android:text="0"
+                        android:textSize="25sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/imgC"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/actionCNameTextView"
+                        style="@style/simpleText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="10dp"
+                        android:text="Звонки"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/countCallsTextView"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:layout_marginHorizontal="30dp"
+                    android:layout_marginVertical="10dp"
+                    android:background="@drawable/main_buttons_res"
+                    app:layout_constraintTop_toBottomOf="@+id/linearLayout6"
+                    tools:layout_editor_absoluteX="30dp">
+
+                    <ImageView
+                        android:id="@+id/imgF"
+                        android:layout_width="40dp"
+                        android:layout_height="65dp"
+                        android:layout_marginHorizontal="20dp"
+                        android:src="@drawable/flyers_stats"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/countFlyersTextView"
+                        style="@style/simpleText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="10dp"
+                        android:text="0"
+                        android:textSize="25sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/imgF"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/actionFNameTextView"
+                        style="@style/simpleText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="10dp"
+                        android:text="Расклейка"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/countFlyersTextView"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="30dp"
+                    android:layout_marginVertical="10dp"
+                    android:background="@drawable/main_buttons_res"
+                    app:layout_constraintTop_toBottomOf="@+id/linearLayout6"
+                    tools:layout_editor_absoluteX="30dp">
+
+                    <ImageView
+                        android:id="@+id/imgD"
+                        android:layout_width="40dp"
+                        android:layout_height="65dp"
+                        android:layout_marginHorizontal="20dp"
+                        android:src="@drawable/deal_stats"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/countDealsTextView"
+                        style="@style/simpleText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="10dp"
+                        android:text="0"
+                        android:textSize="25sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/imgD"
+                        app:layout_constraintStart_toEndOf="@+id/imgD"
+                        app:layout_constraintTop_toTopOf="@+id/imgD"/>
+
+                    <TextView
+                        android:id="@+id/actionDNameTextView"
+                        style="@style/simpleText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="10dp"
+                        android:text="Сделки"
+                        app:layout_constraintBottom_toBottomOf="@+id/countDealsTextView"
+                        app:layout_constraintStart_toEndOf="@id/countDealsTextView"
+                        app:layout_constraintTop_toTopOf="@+id/countDealsTextView" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="10dp"
+                        android:orientation="vertical"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/countDealsTextView"
+                        app:layout_constraintTop_toBottomOf="@+id/countDealsTextView">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/subCountDealsRentTextView"
+                                style="@style/supportText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:text="0" />
+
+                            <TextView
+                                android:id="@+id/subActionDRNameTextView"
+                                style="@style/supportText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:layout_marginTop="19dp"
+                                android:text="Аренда" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/subCountDealsSaleTextView"
+                                style="@style/supportText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:text="0" />
+
+                            <TextView
+                                android:id="@+id/subActionDSNameTextView"
+                                style="@style/supportText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:text="Продажа" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:id="@+id/showAllLinearLayout"
+                    android:padding="10dp"
+                    android:layout_gravity="center_horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        style="@style/supportText"
+                        android:layout_marginEnd="5dp"
+                        android:text="Показать все"/>
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/baseline_arrow_forward_ios_24"
+                        android:rotation="90"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:visibility="gone"
+                    tools:visibility="visible"
+                    android:id="@+id/dopStatisticsLinearLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="70dp"
+                        android:layout_marginHorizontal="30dp"
+                        android:layout_marginVertical="10dp"
+                        android:background="@drawable/main_buttons_res"
+                        tools:layout_editor_absoluteX="30dp">
+
+                        <ImageView
+                            android:id="@+id/imgS"
+                            android:layout_width="40dp"
+                            android:layout_height="65dp"
+                            android:layout_marginHorizontal="20dp"
+                            android:src="@drawable/show_stats"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/countShowsTextView"
+                            style="@style/simpleText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="10dp"
+                            android:text="0"
+                            android:textSize="25sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/imgS"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/actionSNameTextView"
+                            style="@style/simpleText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="10dp"
+                            android:text="Показы"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/countShowsTextView"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="70dp"
+                        android:layout_marginHorizontal="30dp"
+                        android:layout_marginVertical="10dp"
+                        android:background="@drawable/main_buttons_res"
+                        app:layout_constraintTop_toBottomOf="@+id/linearLayout6"
+                        tools:layout_editor_absoluteX="30dp">
+
+                        <ImageView
+                            android:id="@+id/imgM"
+                            android:layout_width="40dp"
+                            android:layout_height="65dp"
+                            android:layout_marginHorizontal="20dp"
+                            android:src="@drawable/meet_stats"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/countMeetsTextView"
+                            style="@style/simpleText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="10dp"
+                            android:text="0"
+                            android:textSize="25sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/imgM"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/actionMNameTextView"
+                            style="@style/simpleText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="10dp"
+                            android:text="Встречи"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/countMeetsTextView"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="70dp"
+                        android:layout_marginHorizontal="30dp"
+                        android:layout_marginVertical="10dp"
+                        android:background="@drawable/main_buttons_res"
+                        app:layout_constraintTop_toBottomOf="@+id/linearLayout6"
+                        tools:layout_editor_absoluteX="30dp">
+
+                        <ImageView
+                            android:id="@+id/imgDep"
+                            android:layout_width="40dp"
+                            android:layout_height="65dp"
+                            android:layout_marginHorizontal="20dp"
+                            android:src="@drawable/deposit_stats"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/countDepositsTextView"
+                            style="@style/simpleText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="10dp"
+                            android:text="0"
+                            android:textSize="25sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/imgDep"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/actionDepNameTextView"
+                            style="@style/simpleText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="10dp"
+                            android:text="Задатки"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/countDepositsTextView"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="30dp"
+                        android:layout_marginVertical="10dp"
+                        android:background="@drawable/main_buttons_res"
+                        app:layout_constraintTop_toBottomOf="@+id/linearLayout6"
+                        tools:layout_editor_absoluteX="30dp">
+
+                        <ImageView
+                            android:id="@+id/imgContr"
+                            android:layout_width="40dp"
+                            android:layout_height="65dp"
+                            android:layout_marginHorizontal="20dp"
+                            android:src="@drawable/deal_stats"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/countContrTextView"
+                            style="@style/simpleText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="10dp"
+                            android:text="0"
+                            android:textSize="25sp"
+                            app:layout_constraintBottom_toBottomOf="@+id/imgContr"
+                            app:layout_constraintStart_toEndOf="@+id/imgContr"
+                            app:layout_constraintTop_toTopOf="@+id/imgContr"/>
+
+                        <TextView
+                            android:id="@+id/actionContrNameTextView"
+                            style="@style/simpleText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="10dp"
+                            android:text="Договоры"
+                            app:layout_constraintBottom_toBottomOf="@+id/countContrTextView"
+                            app:layout_constraintStart_toEndOf="@id/countContrTextView"
+                            app:layout_constraintTop_toTopOf="@+id/countContrTextView" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginVertical="10dp"
+                            android:orientation="vertical"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="@+id/countContrTextView"
+                            app:layout_constraintTop_toBottomOf="@+id/countContrTextView">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/subCountContrRegularTextView"
+                                    style="@style/supportText"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_margin="5dp"
+                                    android:text="0" />
+
+                                <TextView
+                                    android:id="@+id/subActionCRNameTextView"
+                                    style="@style/supportText"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_margin="5dp"
+                                    android:layout_marginTop="19dp"
+                                    android:text="Обычные" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/subCountContrExcTextView"
+                                    style="@style/supportText"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_margin="5dp"
+                                    android:text="0" />
+
+                                <TextView
+                                    android:id="@+id/subActionCENameTextView"
+                                    style="@style/supportText"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_margin="5dp"
+                                    android:text="Эксклюзивные" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="70dp"
+                        android:layout_marginHorizontal="30dp"
+                        android:layout_marginVertical="10dp"
+                        android:background="@drawable/main_buttons_res"
+                        app:layout_constraintTop_toBottomOf="@+id/linearLayout6"
+                        tools:layout_editor_absoluteX="30dp">
+
+                        <ImageView
+                            android:id="@+id/imgSearch"
+                            android:layout_width="40dp"
+                            android:layout_height="65dp"
+                            android:layout_marginHorizontal="20dp"
+                            android:src="@drawable/search_stats"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/countSearchTextView"
+                            style="@style/simpleText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="10dp"
+                            android:text="0"
+                            android:textSize="25sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/imgSearch"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/actionSearchNameTextView"
+                            style="@style/simpleText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="10dp"
+                            android:text="Поиск"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/countSearchTextView"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="30dp"
+                        android:layout_marginVertical="10dp"
+                        android:background="@drawable/main_buttons_res"
+                        app:layout_constraintTop_toBottomOf="@+id/linearLayout6">
+
+                        <ImageView
+                            android:id="@+id/imgO"
+                            android:layout_width="40dp"
+                            android:layout_height="65dp"
+                            android:layout_marginHorizontal="20dp"
+                            android:src="@drawable/others_stats"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/countOthersTextView"
+                            style="@style/simpleText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="10dp"
+                            android:text="0"
+                            android:textSize="25sp"
+                            app:layout_constraintStart_toEndOf="@id/imgO"
+                            app:layout_constraintTop_toTopOf="@id/imgO"
+                            app:layout_constraintBottom_toBottomOf="@id/imgO" />
+
+                        <TextView
+                            android:id="@+id/actionONameTextView"
+                            style="@style/simpleText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="10dp"
+                            android:text="Другое"
+                            app:layout_constraintStart_toEndOf="@id/countOthersTextView"
+                            app:layout_constraintTop_toTopOf="@id/imgO"
+                            app:layout_constraintBottom_toBottomOf="@id/imgO" />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:id="@+id/showCompletedCustomeTasksImageButton"
+                            android:src="@drawable/baseline_arrow_forward_ios_24"
+                            android:rotation="90"
+                            android:layout_marginEnd="10dp"
+                            app:layout_constraintTop_toTopOf="@id/imgO"
+                            app:layout_constraintBottom_toBottomOf="@id/imgO"
+                            app:layout_constraintEnd_toEndOf="parent"/>
+
+                        <ListView
+                            android:layout_marginVertical="10dp"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginEnd="10dp"
+                            android:visibility="gone"
+                            tools:visibility="visible"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/completedTasksListView"
+                            app:layout_constraintTop_toBottomOf="@id/imgO"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"/>
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <LinearLayout
+                        android:visibility="visible"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:id="@+id/hideDopLinearLayout"
+                        android:padding="10dp"
+                        android:layout_gravity="center_horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            style="@style/supportText"
+                            android:layout_marginEnd="5dp"
+                            android:text="Скрыть"/>
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:src="@drawable/baseline_arrow_forward_ios_24"
+                            android:rotation="270"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/constraintLayout3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="30dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/kpi_res"
+                android:gravity="center"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout9">
+
+                <LinearLayout
+                    android:layout_marginTop="5dp"
+                    android:gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/simpleText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="5dp"
+                        android:text="Текущий KPI = "/>
+
+                    <TextView
+                        android:id="@+id/currentKpiTextView"
+                        style="@style/simpleText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="5dp"
+                        android:text="0"
+                        android:textColor="#5BAF5B"
+                        android:textSize="22sp" />
+
+                    <TextView
+                        style="@style/simpleText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="5dp"
+                        android:text="%" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_marginTop="5dp"
+                    android:gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/supportText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="5dp"
+                        android:text="Прошлый мес. KPI = "/>
+
+                    <TextView
+                        android:id="@+id/lastMonthKpiTextView"
+                        style="@style/supportText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="2dp"
+                        android:text="0"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        style="@style/supportText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="5dp"
+                        android:text="%" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_marginTop="5dp"
+                    android:gravity="center"
+                    android:layout_marginVertical="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/simpleText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="5dp"
+                        android:text="Уровень:"/>
+
+                    <TextView
+                        android:id="@+id/kpiLevelTextView"
+                        style="@style/simpleText"
+                        android:layout_marginStart="7dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="5dp"
+                        android:text="СТАЖЕР"
+                        android:textSize="18sp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

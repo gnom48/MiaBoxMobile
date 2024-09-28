@@ -1,0 +1,450 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:background="@color/black"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".main.WorkFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:background="@drawable/blur_bottom_res"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/topPanelLinearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/currentLocationTextView"
+            style="@style/simpleText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:text="MiaBox"
+            android:fontFamily="@font/montserrat_bold"
+            android:textSize="26sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tw"
+            style="@style/simpleText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:text="Работа"
+            android:textSize="24sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/currentLocationTextView" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ScrollView
+        android:layout_marginTop="20sp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/topPanelLinearLayout">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:layout_gravity="center_horizontal"
+            android:orientation="vertical"
+            android:id="@+id/buttonsPanelLinearLayout">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_marginHorizontal="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:layout_marginVertical="10dp"
+                    android:id="@+id/analyticsConstraintLayout"
+                    android:background="@drawable/main_buttons_res"
+                    app:layout_constraintTop_toBottomOf="@+id/linearLayout6"
+                    tools:layout_editor_absoluteX="30dp">
+
+                    <ImageView
+                        android:id="@+id/imgA"
+                        android:layout_width="40dp"
+                        android:layout_height="65dp"
+                        android:layout_marginHorizontal="20dp"
+                        android:src="@drawable/analytics_stats"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/textView10"
+                        style="@style/simpleText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="15dp"
+                        android:text="АНАЛИТИКА"
+                        app:layout_constraintStart_toEndOf="@+id/imgA"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        style="@style/supportText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="Анализируйте рынок"
+                        app:layout_constraintStart_toStartOf="@+id/textView10"
+                        app:layout_constraintTop_toBottomOf="@+id/textView10" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:id="@+id/callsConstraintLayout"
+                    android:layout_marginVertical="10dp"
+                    android:background="@drawable/main_buttons_res"
+                    app:layout_constraintTop_toBottomOf="@+id/linearLayout6"
+                    tools:layout_editor_absoluteX="30dp">
+
+                    <ImageView
+                        android:id="@+id/imgC"
+                        android:layout_width="40dp"
+                        android:layout_height="65dp"
+                        android:layout_marginHorizontal="20dp"
+                        android:src="@drawable/calls_stats"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/textViewC"
+                        style="@style/simpleText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="15dp"
+                        android:text="ОБЗВОН"
+                        app:layout_constraintStart_toEndOf="@+id/imgC"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        style="@style/supportText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="Совершайте звонки "
+                        app:layout_constraintStart_toStartOf="@+id/textViewC"
+                        app:layout_constraintTop_toBottomOf="@+id/textViewC" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:id="@+id/showConstraintLayout"
+                    android:layout_marginVertical="10dp"
+                    android:background="@drawable/main_buttons_res"
+                    app:layout_constraintTop_toBottomOf="@+id/linearLayout6"
+                    tools:layout_editor_absoluteX="30dp">
+
+                    <ImageView
+                        android:id="@+id/imgS"
+                        android:layout_width="40dp"
+                        android:layout_height="65dp"
+                        android:layout_marginHorizontal="20dp"
+                        android:src="@drawable/flyers_stats"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/textViewS"
+                        style="@style/simpleText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="15dp"
+                        android:text="ПОКАЗ"
+                        app:layout_constraintStart_toEndOf="@+id/imgS"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        style="@style/supportText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="Показывайте объекты"
+                        app:layout_constraintStart_toStartOf="@+id/textViewS"
+                        app:layout_constraintTop_toBottomOf="@+id/textViewS" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:id="@+id/flyersConstraintLayout"
+                    android:layout_marginVertical="10dp"
+                    android:background="@drawable/main_buttons_res"
+                    app:layout_constraintTop_toBottomOf="@+id/linearLayout6"
+                    tools:layout_editor_absoluteX="30dp">
+
+                    <ImageView
+                        android:id="@+id/imgF"
+                        android:layout_width="40dp"
+                        android:layout_height="65dp"
+                        android:layout_marginHorizontal="20dp"
+                        android:src="@drawable/flyers_stats"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/textViewF"
+                        style="@style/simpleText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="15dp"
+                        android:text="РАСКЛЕЙКА"
+                        app:layout_constraintStart_toEndOf="@+id/imgF"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        style="@style/supportText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="Расклеивайте объявления"
+                        app:layout_constraintStart_toStartOf="@+id/textViewF"
+                        app:layout_constraintTop_toBottomOf="@+id/textViewF" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:id="@+id/searchConstraintLayout"
+                    android:layout_marginVertical="10dp"
+                    android:background="@drawable/main_buttons_res"
+                    app:layout_constraintTop_toBottomOf="@+id/linearLayout6"
+                    tools:layout_editor_absoluteX="30dp">
+
+                    <ImageView
+                        android:id="@+id/imgSE"
+                        android:layout_width="40dp"
+                        android:layout_height="65dp"
+                        android:layout_marginHorizontal="20dp"
+                        android:src="@drawable/search_stats"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/textViewSE"
+                        style="@style/simpleText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="15dp"
+                        android:text="ПОИСК"
+                        app:layout_constraintStart_toEndOf="@+id/imgSE"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        style="@style/supportText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="Находите новые объекты"
+                        app:layout_constraintStart_toStartOf="@+id/textViewSE"
+                        app:layout_constraintTop_toBottomOf="@+id/textViewSE" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:id="@+id/dealConstraintLayout"
+                    android:layout_marginVertical="10dp"
+                    android:background="@drawable/main_buttons_res"
+                    app:layout_constraintTop_toBottomOf="@+id/linearLayout6"
+                    tools:layout_editor_absoluteX="30dp">
+
+                    <ImageView
+                        android:id="@+id/imgD"
+                        android:layout_width="40dp"
+                        android:layout_height="65dp"
+                        android:layout_marginHorizontal="20dp"
+                        android:src="@drawable/deal_stats"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/textViewD"
+                        style="@style/simpleText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="15dp"
+                        android:text="СДЕЛКА"
+                        app:layout_constraintStart_toEndOf="@+id/imgD"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        style="@style/supportText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="Заключайте сделки"
+                        app:layout_constraintStart_toStartOf="@+id/textViewD"
+                        app:layout_constraintTop_toBottomOf="@+id/textViewD" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:id="@+id/meetConstraintLayout"
+                    android:layout_marginVertical="10dp"
+                    android:background="@drawable/main_buttons_res"
+                    app:layout_constraintTop_toBottomOf="@+id/linearLayout6"
+                    tools:layout_editor_absoluteX="30dp">
+
+                    <ImageView
+                        android:id="@+id/imgM"
+                        android:layout_width="40dp"
+                        android:layout_height="65dp"
+                        android:layout_marginHorizontal="20dp"
+                        android:src="@drawable/meet_stats"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/textViewM"
+                        style="@style/simpleText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="15dp"
+                        android:text="ВСТРЕЧА"
+                        app:layout_constraintStart_toEndOf="@+id/imgM"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        style="@style/supportText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="Встречайтесь с клиентами"
+                        app:layout_constraintStart_toStartOf="@+id/textViewM"
+                        app:layout_constraintTop_toBottomOf="@+id/textViewM" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:id="@+id/depositConstraintLayout"
+                    android:layout_marginVertical="10dp"
+                    android:background="@drawable/main_buttons_res"
+                    app:layout_constraintTop_toBottomOf="@+id/linearLayout6"
+                    tools:layout_editor_absoluteX="30dp">
+
+                    <ImageView
+                        android:id="@+id/imgDE"
+                        android:layout_width="40dp"
+                        android:layout_height="65dp"
+                        android:layout_marginHorizontal="20dp"
+                        android:src="@drawable/deposit_stats"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/textViewDE"
+                        style="@style/simpleText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="15dp"
+                        android:text="ЗАДАТОК"
+                        app:layout_constraintStart_toEndOf="@+id/imgDE"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        style="@style/supportText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="Выходите на задаток"
+                        app:layout_constraintStart_toStartOf="@+id/textViewDE"
+                        app:layout_constraintTop_toBottomOf="@+id/textViewDE" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:id="@+id/customeWorkConstraintLayout"
+                    android:layout_marginVertical="10dp"
+                    android:background="@drawable/main_buttons_res"
+                    app:layout_constraintTop_toBottomOf="@+id/linearLayout6"
+                    tools:layout_editor_absoluteX="30dp">
+
+                    <ImageView
+                        android:id="@+id/imgO"
+                        android:layout_width="40dp"
+                        android:layout_height="65dp"
+                        android:layout_marginHorizontal="20dp"
+                        android:src="@drawable/others_stats"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/textViewO"
+                        style="@style/simpleText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="15dp"
+                        android:text="ДРУГОЕ"
+                        app:layout_constraintStart_toEndOf="@+id/imgO"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        style="@style/supportText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="Добавьте свою задачу"
+                        app:layout_constraintStart_toStartOf="@+id/textViewO"
+                        app:layout_constraintTop_toBottomOf="@+id/textViewO" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <TextView
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/unable_to_work"
+                    android:layout_marginTop="30dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:id="@+id/unableToWorkTextView"
+                    android:textAlignment="center"
+                    style="@style/simpleText"
+                    android:layout_marginBottom="90dp"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

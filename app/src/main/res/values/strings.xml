@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">MiaBox</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="goToRegistrationText"><u>Нет аккаунта? Зарегистрироваться</u></string>
+    <string name="goToAuthorizationText"><u>Уже есть аккаунт? Войти</u></string>
+    <string name="unable_to_work"><u>Не могу работать</u></string>
+    <string name="aboutApp"><u>О приложении</u></string>
+
+    <string name="analytics_desc">Проанализируй объект по цене и конкурентам</string>
+    <string name="search_desc">Ищи объекты на продающих площадках (Авито, ДомКлик, Циан)  и в соцсетях (VK, сторисы)</string>
+    <string name="calls_desc">Звонок это первый шаг в работе</string>
+    <string name="deal_desc">Проверь готовность документов к сделке и согласуй время с участниками</string>
+    <string name="show_desc">Назначь время и выбери методику показа (см. базу знаний)</string>
+    <string name="deposit_desc">Отправь юристу документы на проверку и согласуй время с участниками</string>
+    <string name="flyer_desc">Нужно клеить минимум 200 листов в неделю для хорошей конверсии</string>
+    <string name="meet_desc">Назначь время, подготовь документы, себя и пару шуток для small-talk</string>
+
+    <string name="about_qr_code_scan">Чтобы присоединиться к командному пространству, вы можете отсканировать QR-код, который сгенерирует администратор команды.</string>
+    <string name="showAddressesByPeriod">Показать адреса за период</string>
+
+    <string name="NOT_IMPORTANT_CHANNEL_NAME">BasicNotificationChannel</string>
+    <string name="NOT_IMPORTANT_CHANNEL_DESCRIPTION">Basic notification channel description</string>
+    <string name="IMPORTANT_CHANNEL_NAME">ImportantNotificationChannel</string>
+    <string name="IMPORTANT_CHANNEL_DESCRIPTION">Important notification channel description</string>
+
+    <string name="server_ip_address">http://31.129.102.158:8001/</string>
+<!--    <string name="server_ip_address">http://193.168.46.181:8001/</string>-->
+
+    <string name="map_api_key">800bff94-5dc3-46b8-8baf-6e2b2a3d3e18</string>
+    <string name="dadata_api_key">63fc0220f7a8411af1ec225a49ee35103be869c5</string>
+    <string name="secret">gnom48</string>
+    <string name="default_incoming_notification_channel_id">Incoming notification</string>
+</resources>

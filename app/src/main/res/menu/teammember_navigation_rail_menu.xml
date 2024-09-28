@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/navigation_statistics"
+        android:icon="@drawable/baseline_query_stats_24"
+        android:title="Статистика" />
+    <item
+        android:id="@+id/navigation_calls"
+        android:icon="@drawable/baseline_call_24"
+        android:title="Звонки" />
+    <item
+        android:id="@+id/navigation_addresses"
+        android:icon="@drawable/baseline_person_pin_circle_24"
+        android:title="Адреса" />
+    <item
+        android:id="@+id/navigation_kpi"
+        android:icon="@drawable/baseline_emoji_people_24"
+        android:title="KPI" />
+</menu>

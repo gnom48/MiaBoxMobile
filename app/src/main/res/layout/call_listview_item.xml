@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:padding="5dp"
+    android:background="@drawable/panels_res"
+    android:layout_width="match_parent"
+    android:layout_height="120dp">
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_margin="5dp"
+        android:src="@drawable/calls_stats"
+        app:layout_constraintBottom_toBottomOf="@+id/phoneNumberTextView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/phoneNumberTextView" />
+
+    <TextView
+        android:id="@+id/phoneNumberTextView"
+        style="@style/simpleText"
+        android:textSize="14sp"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="10dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:text="Номер телефона"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imageView3"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/playImageButton"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_margin="10dp"
+        android:background="@color/transparent0"
+        android:contentDescription="play"
+        android:src="@drawable/baseline_play_circle_outline_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/transcriptionButtonTextView"
+        app:layout_constraintTop_toBottomOf="@+id/lengthSecondsTextView"
+        tools:ignore="TouchTargetSizeCheck" />
+
+    <TextView
+        android:id="@+id/noRecordTextView"
+        style="@style/supportText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:textColor="@color/red"
+        android:layout_margin="10dp"
+        android:text="Без записи"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dateTimeTextView" />
+
+    <TextView
+        android:id="@+id/dateTimeTextView"
+        style="@style/supportText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="01.01.2011 10:10"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+
+    <TextView
+        android:id="@+id/lengthSecondsTextView"
+        style="@style/supportText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="10dp"
+        android:layout_marginStart="30dp"
+        android:text="0 sec"
+        app:layout_constraintStart_toEndOf="@id/dateTimeTextView"
+        app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/transcriptionButtonTextView"
+        style="@style/supportText"
+        android:layout_width="140dp"
+        android:layout_height="27dp"
+        android:layout_margin="10dp"
+        android:background="@drawable/main_buttons_res"
+        android:gravity="center_vertical|center_horizontal"
+        android:text="Расшифровка"
+        android:textAlignment="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dateTimeTextView"
+        tools:ignore="TouchTargetSizeCheck" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

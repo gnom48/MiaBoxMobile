@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity">
+
+    <data>
+        <variable
+            name="offlinePanelVisibility"
+            type="int" />
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.example.pronedvizapp.AnimatedGradientViewOnMain
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/gradientView"/>
+
+        <RelativeLayout
+            android:id="@+id/relativeContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:id="@+id/mainOfflineModeIndicatorLinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#D69028"
+                android:visibility="@{offlinePanelVisibility}"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="2dp"
+                    android:text="Offline режим"
+                    style="@style/simpleText" />
+
+            </LinearLayout>
+
+            <FrameLayout
+                android:id="@+id/mainContentFrame"
+                android:layout_below="@id/mainOfflineModeIndicatorLinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        </RelativeLayout>
+
+        <com.google.android.material.bottomappbar.BottomAppBar
+            android:id="@+id/panelBottomAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:backgroundTint="@color/grey"
+            android:layout_gravity="bottom"
+            app:fabAlignmentMode="center"
+            app:fabAnchorMode="cradle"
+            app:fabCradleMargin="0dp"
+            app:fabCradleRoundedCornerRadius="0dp"
+            app:fabCradleVerticalOffset="0dp">
+
+            <com.google.android.material.bottomnavigation.BottomNavigationView
+                android:id="@+id/bottomMenu"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:elevation="0dp"
+                android:background="@color/transparent0"
+                android:backgroundTint="@color/transparent0"
+                app:itemActiveIndicatorStyle="@color/transparent0"
+                app:itemBackground="@color/transparent0"
+                app:itemIconSize="23dp"
+                app:itemIconTint="@color/menu_items_color"
+                app:itemRippleColor="@color/transparent0"
+                app:itemTextColor="@color/transparent0"
+                app:labelVisibilityMode="unlabeled"
+                app:menu="@menu/bottom_menu_res" />
+
+        </com.google.android.material.bottomappbar.BottomAppBar>
+
+        <!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+        <!--        android:layout_width="wrap_content"-->
+        <!--        android:layout_height="wrap_content"-->
+        <!--        android:id="@+id/addNewNoteFloatingActionButton"-->
+        <!--        android:backgroundTint="@drawable/add_new_note_res"-->
+        <!--        app:tint="@color/white"-->
+        <!--        app:layout_anchor="@id/panelBottomAppBar"-->
+        <!--        android:src="@drawable/baseline_add_24" />-->
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:backgroundTint="@color/mainRichBlueEnd"
+            android:id="@+id/addNewNoteFloatingActionButton"
+            app:layout_anchor="@id/panelBottomAppBar"
+            android:src="@drawable/baseline_add_24"
+            app:tint="@color/white"/>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</layout>

@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black_background"
+    tools:context=".MapActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/constraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/panels_background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/goBackPanel"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/goBackImageButton"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_margin="20dp"
+                android:background="@color/transparent0"
+                android:src="@drawable/back_arrow_icon"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <TextView
+                style="@style/simpleText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:text="Назад"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/goBackImageButton"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/mapViewContainer"
+        android:layout_margin="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        app:cardCornerRadius="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/constraintLayout">
+
+        <com.yandex.mapkit.mapview.MapView
+            android:id="@+id/addressesMapView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <EditText
+                android:id="@+id/searchEditText"
+                style="@style/simpleText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/no_tansparent_rounded_corners"
+                android:hint="Поиск..."
+                android:imeOptions="actionSearch"
+                android:inputType="text"
+                android:maxLines="1"
+                android:minHeight="48dp"
+                android:paddingHorizontal="20dp" />
+
+            <ImageButton
+                android:id="@+id/cancelSearchButton"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignEnd="@+id/searchEditText"
+                android:layout_alignBottom="@+id/searchEditText"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:background="@color/transparent0"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/close_image"
+                app:layout_constraintBottom_toBottomOf="@+id/searchEditText"
+                app:layout_constraintEnd_toEndOf="@+id/searchEditText"
+                app:layout_constraintTop_toTopOf="@+id/searchEditText"
+                tools:ignore="TouchTargetSizeCheck" />
+
+        </com.yandex.mapkit.mapview.MapView>
+
+    </androidx.cardview.widget.CardView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/geopositionFloatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="30dp"
+        android:contentDescription="@string/aboutApp"
+        android:src="@drawable/cursor_map"
+        app:backgroundTint="@color/mainRichBlueEnd"
+        app:layout_constraintBottom_toBottomOf="@+id/mapViewContainer"
+        app:layout_constraintEnd_toEndOf="@+id/mapViewContainer"
+        app:tint="@color/white" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_margin="10dp"
+        android:id="@+id/whenAddressLinearLayout"
+        android:gravity="center_horizontal|center_vertical"
+        app:layout_constraintEnd_toEndOf="@+id/mapViewContainer"
+        app:layout_constraintStart_toStartOf="@+id/mapViewContainer"
+        app:layout_constraintTop_toBottomOf="@+id/mapViewContainer" >
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/showAddressesByPeriodTextView"
+            style="@style/customeButton"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/main_buttons_res"
+            android:gravity="center_horizontal"
+            android:text="@string/showAddressesByPeriod"
+            tools:ignore="TouchTargetSizeCheck" />
+
+        <LinearLayout
+            android:gravity="center_horizontal"
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/setDateStartTextView"
+                style="@style/supportText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="сегодня"
+                android:drawableRight="@drawable/baseline_calendar_month_24"/>
+
+            <TextView
+                android:layout_marginHorizontal="10dp"
+                style="@style/supportText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="-"/>
+
+            <TextView
+                android:id="@+id/setDateEndTextView"
+                style="@style/supportText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="сегодня"
+                android:drawableRight="@drawable/baseline_calendar_month_24"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/addressesListView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginBottom="30dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/whenAddressLinearLayout" />
+
+    <ImageView
+        android:id="@+id/noDataImageView"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:scaleType="centerCrop"
+        android:layout_margin="20dp"
+        android:src="@drawable/no_data_img"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/addressesListView"
+        app:layout_constraintStart_toStartOf="@+id/addressesListView"
+        app:layout_constraintTop_toBottomOf="@+id/whenAddressLinearLayout" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
