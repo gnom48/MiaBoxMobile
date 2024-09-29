@@ -150,7 +150,7 @@ class CallsActivity : AppCompatActivity() {
                             callback(userCalls, arrayListOf())
                         }
                     }
-                    // здесь не смысла обрабатывать onCached
+                    // здесь нет смысла обрабатывать onCached
                     allRecords.onFailure {
                         callback(userCalls, arrayListOf())
                     }
@@ -168,13 +168,7 @@ class CallsActivity : AppCompatActivity() {
                         MainStatic.currentToken!!
                     )
 
-                    allRecords.onSuccess {  userRecords ->
-                        if (userRecords != null) {
-                            callback(userCalls, userRecords as ArrayList<CallRecord>)
-                        } else {
-                            callback(userCalls, arrayListOf())
-                        }
-                    }
+                    // здесь нет смысла обрабатывать onSucces
                     allRecords.onCached {  userRecords ->
                         if (userRecords != null) {
                             callback(userCalls, userRecords as ArrayList<CallRecord>)

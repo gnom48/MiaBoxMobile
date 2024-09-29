@@ -764,7 +764,7 @@ object RequestsRepository {
             }
         } catch (e: Exception) {
             try {
-                val localData = MainStatic.dbViewModel.getAllUserCallsAsync(MainStatic.currentUser.id)
+                val localData = MainStatic.dbViewModel.getAllCallRecordsAsync(MainStatic.currentUser.id)
                 val data = localData.map { orm -> orm.castByJsonTo(CallRecord::class.java) }
                 DataResult.cached(data)
             } catch (e: Exception) {
