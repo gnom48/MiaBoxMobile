@@ -14,8 +14,8 @@ android {
         applicationId = "com.example.pronedvizapp"
         minSdk = 27
         targetSdk = 34
-        versionCode = 7
-        versionName = "4.5"
+        versionCode = 8
+        versionName = "5.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -55,9 +55,6 @@ dependencies {
     implementation("androidx.viewpager2:viewpager2:1.0.0")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-
-    // reflect
-    implementation("org.jetbrains.kotlin:kotlin-reflect:%kotlinVersion%")
 
     // retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")

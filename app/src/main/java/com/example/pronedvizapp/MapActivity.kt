@@ -310,7 +310,7 @@ class MapActivity : AppCompatActivity(), Session.SearchListener, UserLocationObj
                             val serverApiAddressAdditionResponse = addAddressRecordAsync(
                                 applicationContext, AddressInfo(
                                     userId = MainStatic.currentUser.id,
-                                    address = if (address.suggestions.isEmpty()) "Не определен" else address.suggestions[0].value,
+                                    address = if (address.suggestions.isEmpty()) GeoPositionService.UNKNOWN_ADDRESS else address.suggestions[0].value,
                                     lat = mLocation.latitude.toFloat(),
                                     lon = mLocation.longitude.toFloat(),
                                     dateTime = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC).toInt()

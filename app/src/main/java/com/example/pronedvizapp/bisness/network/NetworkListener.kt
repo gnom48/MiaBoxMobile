@@ -6,13 +6,16 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.SharedPreferences
+import android.location.Location
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.util.Log
 import com.example.pronedvizapp.MainStatic
 import com.example.pronedvizapp.bisness.SharedPreferencesHelper
 import com.example.pronedvizapp.bisness.calls.CallRecordingService
+import com.example.pronedvizapp.bisness.geo.GeoPositionService
 import com.example.pronedvizapp.databases.DbViewModel
+import com.example.pronedvizapp.databases.models.AddressInfoOrm
 import com.example.pronedvizapp.databases.models.CRUD
 import com.example.pronedvizapp.databases.models.StatisticChangeOptionInfo
 import com.example.pronedvizapp.requests.RequestsRepository
@@ -183,13 +186,32 @@ class NetworkListener(private val context: Context) {
                             AddressInfo::class.java.name -> {
                                 when (change.action) {
                                     CRUD.INSERT -> {
-                                        RequestsRepository.addAddressRecordAsync(context, dbViewModel.getAddressInfo(userId, change.recordId).castByJsonTo(AddressInfo::class.java), false)
-                                            .onFailure {
-
+                                        val address = dbViewModel.getAddressInfo(userId, change.recordId).castByJsonTo(AddressInfo::class.java)
+                                        if (address.address == GeoPositionService.UNKNOWN_ADDRESS) {
+                                            val location = Location("provider")
+                                            location.latitude = address.lat.toDouble()
+                                            location.longitude = address.lon.toDouble()
+                                            val addressResponse = RequestsRepository.getAddressByCoordsAsync(context, location)
+                                            addressResponse.onSuccess { res ->
+                                                address.address = if (res.suggestions.isEmpty()) GeoPositionService.UNKNOWN_ADDRESS else res.suggestions[0].value
+                                                MainStatic.dbViewModel.updateAddress(address.castByJsonTo(AddressInfoOrm::class.java))
+                                                RequestsRepository.addAddressRecordAsync(context, address, false)
+                                                    .onSuccess {
+                                                        dbViewModel.deleteChange(change)
+                                                    }
                                             }
-                                            .onSuccess {
-                                                dbViewModel.deleteChange(change)
+                                            addressResponse.onFailure {
+                                                RequestsRepository.addAddressRecordAsync(context, address, false)
+                                                    .onSuccess {
+                                                        dbViewModel.deleteChange(change)
+                                                    }
                                             }
+                                        } else {
+                                            RequestsRepository.addAddressRecordAsync(context, address, false)
+                                                .onSuccess {
+                                                    dbViewModel.deleteChange(change)
+                                                }
+                                        }
                                     }
                                 }
                             }
@@ -254,6 +276,7 @@ class NetworkListener(private val context: Context) {
     }
 
     companion object {
+
         const val DEBUG_TAG: String = "NetworkListener"
     }
 }

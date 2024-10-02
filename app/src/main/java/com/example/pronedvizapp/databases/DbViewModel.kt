@@ -315,9 +315,9 @@ class DbViewModel(
     suspend fun getKpi(userId: String): Kpi = coroutineScope {
             val last_month_kpi = dao.getLastMonthStatisticsWithKpi(userId)
             val summary = dao.getSummaryStatisticsWithLevel(userId)
-            Kpi(
+            return@coroutineScope Kpi(
                 lastMonthKpi = last_month_kpi?.castByJsonTo(StatisticsWithKpi::class.java),
-                currentMonthKpi = null,
+                currentMonthKpi = summary?.basePercent,
                 userLevel = summary?.userLevel,
                 summaryDealsRent = summary?.dealsRent,
                 summaryDealsSale = summary?.dealsSale

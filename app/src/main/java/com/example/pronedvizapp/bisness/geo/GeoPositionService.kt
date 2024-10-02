@@ -82,7 +82,7 @@ class GeoPositionService : Service() {
                                     this@GeoPositionService.applicationContext,
                                     AddressInfo(
                                         userId = preferences.getString("USER_ID", "")!!,
-                                        address = if (address.suggestions.isEmpty()) "Не определен" else address.suggestions[0].value,
+                                        address = if (address.suggestions.isEmpty()) UNKNOWN_ADDRESS else address.suggestions[0].value,
                                         lat = location.latitude.toFloat(),
                                         lon = location.longitude.toFloat(),
                                         dateTime = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC).toInt()
@@ -159,6 +159,9 @@ class GeoPositionService : Service() {
     }
 
     companion object {
+
+        const val UNKNOWN_ADDRESS = "Не определен"
+
         fun rememberLastGeoPointTime(context: Context) {
             val preferences: SharedPreferences = context.getSharedPreferences("settings", Context.MODE_PRIVATE)
             val editor = preferences.edit()

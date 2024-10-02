@@ -22,6 +22,7 @@ import com.example.pronedvizapp.requests.models.UserTypes
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
+import java.net.ConnectException
 
 class RegistrationFragment: Fragment() {
 
@@ -115,13 +116,13 @@ class RegistrationFragment: Fragment() {
                     }
                     res.onFailure {
                         token = null
-                        Toast.makeText(this@RegistrationFragment.requireContext(), "Пользователь не найден", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@RegistrationFragment.requireContext(), if (it is ConnectException) "Нет подключения к интернету" else "Пользователь не найден", Toast.LENGTH_SHORT).show()
                         return@launch
                     }
                 }
                 resUser.onFailure {
                     regResult = ""
-                    Toast.makeText(this@RegistrationFragment.requireContext(), "Ошибка регистрации", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@RegistrationFragment.requireContext(), if (it is ConnectException) "Нет подключения к интернету" else "Ошибка регистрации", Toast.LENGTH_SHORT).show()
                     return@launch
                 }
             }

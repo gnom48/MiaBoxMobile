@@ -19,6 +19,7 @@ import com.example.pronedvizapp.requests.RequestsRepository.usingLocalDataToast
 import com.example.pronedvizapp.requests.models.Team
 import com.example.pronedvizapp.requests.models.UserTeamsWithInfo
 import kotlinx.coroutines.launch
+import java.net.ConnectException
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
@@ -93,7 +94,7 @@ class AllTeamsActivity : AppCompatActivity() {
                     )
                     res.onSuccess { }
                     res.onFailure {
-                        Toast.makeText(this@AllTeamsActivity, "Не удалось создать команду! Попробуйте позже.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@AllTeamsActivity, if (it is ConnectException) "Нет подключения к интернету" else "Не удалось создать команду! Попробуйте позже.", Toast.LENGTH_SHORT).show()
                     }
                 }
                 dialog.dismiss()

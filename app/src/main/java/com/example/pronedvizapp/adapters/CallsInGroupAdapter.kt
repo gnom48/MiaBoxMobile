@@ -31,6 +31,7 @@ import okhttp3.Response
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.net.ConnectException
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
@@ -90,7 +91,7 @@ class CallsInGroupAdapter(private val context: Context, private val callsInfo: L
                         }
                         taskResponse.onFailure {
                             withContext(Dispatchers.Main) {
-                                Toast.makeText(context, "Ошибка отправки запроса", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, if (it is ConnectException) "Нет подключения к интернету" else "Ошибка отправки запроса", Toast.LENGTH_SHORT).show()
                             }
                         }
                     }
@@ -112,7 +113,7 @@ class CallsInGroupAdapter(private val context: Context, private val callsInfo: L
                     }
                     taskResponse.onFailure {
                         withContext(Dispatchers.Main) {
-                            Toast.makeText(context, "Ошибка отправки запроса", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, if (it is ConnectException) "Нет подключения к интернету" else "Ошибка отправки запроса", Toast.LENGTH_SHORT).show()
                         }
                     }
                 }

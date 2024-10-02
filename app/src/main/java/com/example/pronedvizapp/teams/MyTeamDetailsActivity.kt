@@ -28,6 +28,7 @@ import com.google.zxing.MultiFormatWriter
 import com.google.zxing.WriterException
 import com.google.zxing.common.BitMatrix
 import kotlinx.coroutines.launch
+import java.net.ConnectException
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.util.EnumMap
@@ -83,7 +84,7 @@ class MyTeamDetailsActivity : AppCompatActivity() {
                                 }
                             }
                             leaveRes.onFailure {
-                                Toast.makeText(this@MyTeamDetailsActivity, "Ошибка! Повторите попытку позже.", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(this@MyTeamDetailsActivity, if (it is ConnectException) "Нет подключения к интернету" else "Ошибка! Повторите попытку позже.", Toast.LENGTH_SHORT).show()
                             }
                         }
 //                        val teamsApi = RetrofitInstance.getRetrofitInstance(this@MyTeamDetailsActivity).create(ServerApiTeams::class.java)

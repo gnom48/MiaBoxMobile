@@ -14,6 +14,7 @@ import com.google.gson.JsonSyntaxException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.net.ConnectException
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
@@ -68,7 +69,7 @@ class JoinTeamActivity : AppCompatActivity() {
                         }
                         res.onFailure {
                             Toast.makeText(this@JoinTeamActivity, it.message, Toast.LENGTH_SHORT).show()
-                            binding.scanResultTextView.text = "Ошибка ${it.message}"
+                            binding.scanResultTextView.text = if (it is ConnectException) "Нет подключения к интернету" else "Ошибка ${it.message}"
                         }
                     }
 

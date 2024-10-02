@@ -23,6 +23,7 @@ import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.net.ConnectException
 
 class TeamMembersAdapter(val dataSource: List<Member>, val context: Context, private val owner: MyTeamDetailsActivity, private val isOwner: Boolean, val team: Team): RecyclerView.Adapter<TeamMembersAdapter.InfoViewHolder>() {
 
@@ -75,7 +76,7 @@ class TeamMembersAdapter(val dataSource: List<Member>, val context: Context, pri
                                 }
                                 res.onFailure {
                                     CoroutineScope(Dispatchers.Main).launch {
-                                        Toast.makeText(context, "Ошибка смены статуса", Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(context, if (it is ConnectException) "Нет подключения к интернету" else "Ошибка смены статуса", Toast.LENGTH_SHORT).show()
                                     }
                                 }
                             }
@@ -93,7 +94,7 @@ class TeamMembersAdapter(val dataSource: List<Member>, val context: Context, pri
                                 }
                                 res.onFailure {
                                     CoroutineScope(Dispatchers.Main).launch {
-                                        Toast.makeText(context, "Ошибка смены статуса", Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(context, if (it is ConnectException) "Нет подключения к интернету" else "Ошибка смены статуса", Toast.LENGTH_SHORT).show()
                                     }
                                 }
                             }

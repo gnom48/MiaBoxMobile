@@ -73,6 +73,7 @@ import java.net.ConnectException
 object RequestsRepository {
 
     internal class NoDataException: Exception("No data")
+    internal class OnlyOnlineException: Exception("Нет подключения к интернету")
 
     fun usingLocalDataToast(context: Context) = Toast.makeText(context, "Используются локальные данные", Toast.LENGTH_SHORT).show()
 
@@ -82,7 +83,7 @@ object RequestsRepository {
 
     /**
      * Получить токен для запросов
-     * (доступно исключительно онлайн)
+     * (доступно только онлайн)
      */
     suspend fun authForToken(context: Context, login: String, password: String): Result<String?> = coroutineScope {
         val usersApi = RetrofitInstance.getRetrofitInstance(context).create(ServerApiUsers::class.java)
@@ -107,7 +108,7 @@ object RequestsRepository {
 
     /**
      * Регистрация нового пользователя
-     * (доступно исключительно онлайн)
+     * (доступно только онлайн)
      */
     suspend fun regNewUser(context: Context, newUser: User): Result<String> = coroutineScope {
         val usersApi = RetrofitInstance.getRetrofitInstance(context).create(ServerApiUsers::class.java)
@@ -163,7 +164,7 @@ object RequestsRepository {
                 if (response.body()!!) {
                     Result.success(true)
                 } else {
-                    Result.failure(NoDataException())
+                    throw NoDataException()
                 }
             } catch (e: Exception) {
                 Result.failure(e)
@@ -172,7 +173,7 @@ object RequestsRepository {
 
     /**
      * Изменить аватар пользователя
-     * (доступно исключительно онлайн)
+     * (доступно только онлайн)
      */
     suspend fun editAvatarImageFileAsync(context: Context, file: File, token: String = MainStatic.currentToken): Result<String> =
         coroutineScope {
@@ -507,9 +508,8 @@ object RequestsRepository {
         val serverApiAddress = RetrofitInstance.getRetrofitInstance(context).create(ServerApiAddress::class.java)
         val preferences = context.getSharedPreferences("settings", Service.MODE_PRIVATE)
         return@coroutineScope try {
-            val newAddressRecord = addressInfo.castByJsonTo(AddressInfoOrm::class.java)
-            addressInfo.recordId = newAddressRecord.recordId
             if (isFromUI) {
+                val newAddressRecord = addressInfo.castByJsonTo(AddressInfoOrm::class.java)
                 MainStatic.dbViewModel.insertAddress(newAddressRecord)
             }
             val response = serverApiAddress.addAddressInfo(addressInfo, preferences.getString(SharedPreferencesHelper.TOKEN_TAG, "")!!)
@@ -568,7 +568,7 @@ object RequestsRepository {
 
     /**
      * Обратное геокодирование - получить адрес по координатам
-     * (доступно исключительно онлайн)
+     * (доступно только онлайн)
      */
     suspend fun getAddressByCoordsAsync(context: Context, mLocation: Location?): Result<AddressResponse> = coroutineScope {
         val retrofit = Retrofit.Builder()
@@ -590,7 +590,7 @@ object RequestsRepository {
 
     /**
      * Обратное геокодирование - получить адрес по координатам
-     * (доступно исключительно онлайн)
+     * (доступно только онлайн)
      */
     suspend fun getAddressByCoordsAsyncOnlyTrue(context: Context, mLocation: Location?): Result<AddressResponse> = coroutineScope {
         val retrofit = Retrofit.Builder()
@@ -707,7 +707,7 @@ object RequestsRepository {
 
     /**
      * Заказать расшифровку записи разговора
-     * (доступно исключительно онлайн)
+     * (доступно только онлайн)
      */
     suspend fun orderCallTranscription(context: Context, userId: String, recordId: String, model: String = "base", tokenAuthorization: String?): Result<TranscriptionTask?> =
         coroutineScope {
@@ -727,7 +727,7 @@ object RequestsRepository {
 
     /**
      * Получить информацию о состоянии заказа на расшифровку записи разговора
-     * (доступно исключительно онлайн)
+     * (доступно только онлайн)
      */
     suspend fun getOrderTranscriptionStatus(context: Context, taskId: String, tokenAuthorization: String?): Result<TranscriptionTaskStatus?> =
         coroutineScope {
@@ -902,7 +902,7 @@ object RequestsRepository {
 
     /**
      * Изменить роль участника команды
-     * (доступно исключительно онлайн)
+     * (доступно только онлайн)
      */
     suspend fun moveTeamMemberRole(context: Context, userId: String, teamId: String, role: UserStatuses, token: String = MainStatic.currentToken): Result<Boolean?> = coroutineScope {
         val api = RetrofitInstance.getRetrofitInstance(context).create(ServerApiTeams::class.java)
@@ -1065,12 +1065,10 @@ object RequestsRepository {
                         MainStatic.dbViewModel.insertSummaryStatisticsWithLevel(
                             SummaryStatisticsWithLevelOrm(
                                 MainStatic.currentUser.id,
-                                kpi.summaryDealsRent!!,
-                                kpi.summaryDealsSale!!,
-                                0f,
-                                kpi.userLevel!!,
-                                1,
-                                System.currentTimeMillis() / 1000
+                                dealsRent = kpi.summaryDealsRent!!,
+                                dealsSale = kpi.summaryDealsSale!!,
+                                basePercent = kpi.currentMonthKpi!!,
+                                userLevel = kpi.userLevel!!
                             )
                         )
                     }
@@ -1081,7 +1079,6 @@ object RequestsRepository {
             try {
                 val localData: Kpi? = MainStatic.dbViewModel.getKpi(MainStatic.currentUser.id)
                 DataResult.cached(localData!!)
-                throw NoDataException()
             } catch (e: Exception) {
                 DataResult.failure(e)
             }

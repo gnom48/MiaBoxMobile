@@ -9,12 +9,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.pronedvizapp.adapters.CompletedTasksAdapter
 import com.example.pronedvizapp.databinding.ActivityResultsBinding
-import com.example.pronedvizapp.requests.RequestsRepository.getAllTasksCurrentUser
+import com.example.pronedvizapp.requests.RequestsRepository
 import com.example.pronedvizapp.requests.RequestsRepository.getUserStatisticsByPeriod
 import com.example.pronedvizapp.requests.RequestsRepository.getUserStatisticsWithKpi
 import com.example.pronedvizapp.requests.RequestsRepository.usingLocalDataToast
 import com.example.pronedvizapp.requests.models.CompletedTasks
 import com.example.pronedvizapp.requests.models.DAY_STATISTICS_PERIOD
+import com.example.pronedvizapp.requests.models.Kpi
 import com.example.pronedvizapp.requests.models.MONTH_STATISTICS_PERIOD
 import com.example.pronedvizapp.requests.models.Statistics
 import com.example.pronedvizapp.requests.models.Task
@@ -35,7 +36,7 @@ class ResultsActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             val userStatics = getUserStatisticsWithKpi(this@ResultsActivity, MainStatic.currentToken!!)
-            userStatics.onSuccess { kpi ->
+            val bindKpiData: suspend (kpi: Kpi) -> Unit =  { kpi: Kpi ->
                 binding.kpiLevelTextView.text = kpi.userLevel
                 kpi.currentMonthKpi?.let {
                     binding.currentKpiTextView.text = it.toString()
@@ -48,7 +49,12 @@ class ResultsActivity : AppCompatActivity() {
                 }
                 cachedStatistics["KPI"] = kpi
 
-                val userCompletedTasks = getAllTasksCurrentUser(this@ResultsActivity,  MainStatic.currentUser!!.id, MainStatic.currentToken!!, true)
+                val userCompletedTasks = RequestsRepository.getAllTasksCurrentUser(
+                    this@ResultsActivity,
+                    MainStatic.currentUser!!.id,
+                    MainStatic.currentToken!!,
+                    true
+                )
                 userCompletedTasks.onSuccess { tasks ->
                     completedTasks = CompletedTasks(tasks as MutableCollection<Task>)
                     binding.completedTasksListView.adapter = CompletedTasksAdapter(this@ResultsActivity, CompletedTasksAdapter.filterTasksForToday(completedTasks, DAY_STATISTICS_PERIOD))
@@ -61,6 +67,12 @@ class ResultsActivity : AppCompatActivity() {
                     completedTasks = CompletedTasks(mutableListOf())
                     Toast.makeText(this@ResultsActivity, "Ошибка загрузки задач", Toast.LENGTH_SHORT).show()
                 }
+            }
+            userStatics.onSuccess { kpi ->
+                bindKpiData(kpi)
+            }
+            userStatics.onCached { kpi ->
+                bindKpiData(kpi)
             }
         }
 

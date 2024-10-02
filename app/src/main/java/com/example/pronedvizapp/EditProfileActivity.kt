@@ -30,6 +30,7 @@ import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
+import java.net.ConnectException
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneOffset
@@ -70,6 +71,7 @@ class EditProfileActivity : AppCompatActivity() {
             }
 
             bindingDialog.saveButton.setOnClickListener {
+                val lastFieldValue = MainStatic.currentUser.name
                 val name = bindingDialog.editText.text.toString()
                 if (name.length > 50) {
                     Toast.makeText(this@EditProfileActivity, "Некорректное имя!", Toast.LENGTH_SHORT).show()
@@ -82,7 +84,8 @@ class EditProfileActivity : AppCompatActivity() {
                             Toast.makeText(this@EditProfileActivity, "Данные успешно обновлены", Toast.LENGTH_SHORT).show()
                         }
                         it.onFailure {
-                            Toast.makeText(this@EditProfileActivity, "Ошибка обновления данных", Toast.LENGTH_SHORT).show()
+                            MainStatic.currentUser.name = lastFieldValue
+                            Toast.makeText(this@EditProfileActivity, if (it is ConnectException) "Нет подключения к интернету" else "Ошибка обновления данных", Toast.LENGTH_SHORT).show()
                         }
                     }
                     dialog.dismiss()
@@ -111,6 +114,7 @@ class EditProfileActivity : AppCompatActivity() {
 //                    Toast.makeText(this, "Выбранная дата была менее чем 16 лет назад. Выберите другую дату.", Toast.LENGTH_SHORT).show()
 //                }
 //            }
+            val lastFieldValue = MainStatic.currentUser.birthday
 
             val calendar = Calendar.getInstance()
             val year = calendar.get(Calendar.YEAR)
@@ -130,7 +134,8 @@ class EditProfileActivity : AppCompatActivity() {
                                 Toast.makeText(this@EditProfileActivity, "Данные успешно обновлены", Toast.LENGTH_SHORT).show()
                             }
                             it.onFailure {
-                                Toast.makeText(this@EditProfileActivity, "Ошибка обновления данных", Toast.LENGTH_SHORT).show()
+                                MainStatic.currentUser.birthday = lastFieldValue
+                                Toast.makeText(this@EditProfileActivity, if (it is ConnectException) "Нет подключения к интернету" else "Ошибка обновления данных", Toast.LENGTH_SHORT).show()
                             }
                         }
                         showUserDataInFields()
@@ -144,6 +149,8 @@ class EditProfileActivity : AppCompatActivity() {
         }
 
         binding.editPhoneConstraintLayout.setOnClickListener {
+            val lastFieldValue = MainStatic.currentUser.phone
+
             val bindingDialog = EditProfilePhoneDialogBinding.inflate(LayoutInflater.from(this))
 
             val dialog = Dialog(this)
@@ -166,7 +173,8 @@ class EditProfileActivity : AppCompatActivity() {
                             Toast.makeText(this@EditProfileActivity, "Данные успешно обновлены", Toast.LENGTH_SHORT).show()
                         }
                         it.onFailure {
-                            Toast.makeText(this@EditProfileActivity, "Ошибка обновления данных", Toast.LENGTH_SHORT).show()
+                            MainStatic.currentUser.phone = lastFieldValue
+                            Toast.makeText(this@EditProfileActivity, if (it is ConnectException) "Нет подключения к интернету" else "Ошибка обновления данных", Toast.LENGTH_SHORT).show()
                         }
                     }
                     dialog.dismiss()
@@ -176,6 +184,8 @@ class EditProfileActivity : AppCompatActivity() {
         }
 
         binding.editRielterTypeConstraintLayout.setOnClickListener {
+            val lastFieldValue = MainStatic.currentUser.type
+
             val bindingDialog = EditProfileGenderDialogBinding.inflate(LayoutInflater.from(this))
 
             bindingDialog.male.text = "Коммерческий"
@@ -220,7 +230,8 @@ class EditProfileActivity : AppCompatActivity() {
                             Toast.makeText(this@EditProfileActivity, "Данные успешно обновлены", Toast.LENGTH_SHORT).show()
                         }
                         it.onFailure {
-                            Toast.makeText(this@EditProfileActivity, "Ошибка обновления данных", Toast.LENGTH_SHORT).show()
+                            MainStatic.currentUser.type = lastFieldValue
+                            Toast.makeText(this@EditProfileActivity, if (it is ConnectException) "Нет подключения к интернету" else "Ошибка обновления данных", Toast.LENGTH_SHORT).show()
                         }
                     }
                     dialog.dismiss()
@@ -230,6 +241,8 @@ class EditProfileActivity : AppCompatActivity() {
         }
 
         binding.editGenderConstraintLayout.setOnClickListener {
+            val lastFieldValue = MainStatic.currentUser.gender
+
             val bindingDialog = EditProfileGenderDialogBinding.inflate(LayoutInflater.from(this))
 
             val dialog = Dialog(this)
@@ -258,13 +271,13 @@ class EditProfileActivity : AppCompatActivity() {
             bindingDialog.radioGroup.setOnCheckedChangeListener { radioGroup, checkId ->
                 when(checkId) {
                     bindingDialog.male.id -> {
-                        MainStatic.currentUser!!.gender = bindingDialog.male.text.toString()
+                        MainStatic.currentUser.gender = bindingDialog.male.text.toString()
                     }
                     bindingDialog.female.id -> {
-                        MainStatic.currentUser!!.gender = bindingDialog.female.text.toString()
+                        MainStatic.currentUser.gender = bindingDialog.female.text.toString()
                     }
                     bindingDialog.nothing.id -> {
-                        MainStatic.currentUser!!.gender = bindingDialog.nothing.text.toString()
+                        MainStatic.currentUser.gender = bindingDialog.nothing.text.toString()
                     }
                 }
             }
@@ -276,7 +289,8 @@ class EditProfileActivity : AppCompatActivity() {
                             Toast.makeText(this@EditProfileActivity, "Данные успешно обновлены", Toast.LENGTH_SHORT).show()
                         }
                         it.onFailure {
-                            Toast.makeText(this@EditProfileActivity, "Ошибка обновления данных", Toast.LENGTH_SHORT).show()
+                            MainStatic.currentUser.gender = lastFieldValue
+                            Toast.makeText(this@EditProfileActivity, if (it is ConnectException) "Нет подключения к интернету" else "Ошибка обновления данных", Toast.LENGTH_SHORT).show()
                         }
                     }
                     dialog.dismiss()
@@ -323,7 +337,7 @@ class EditProfileActivity : AppCompatActivity() {
                                 Toast.makeText(this@EditProfileActivity, "Данные успешно обновлены", Toast.LENGTH_SHORT).show()
                             }
                             it.onFailure {
-                                Toast.makeText(this@EditProfileActivity, "Ошибка обновления данных", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(this@EditProfileActivity, if (it is ConnectException) "Нет подключения к интернету" else "Ошибка обновления данных", Toast.LENGTH_SHORT).show()
                             }
                         }
                         showEditEmailImage()
@@ -389,7 +403,7 @@ class EditProfileActivity : AppCompatActivity() {
                         MainStatic.currentUser.image = img
                     }
                     result.onFailure {
-                        Toast.makeText(applicationContext, "Ошибка загрузки картинки", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(applicationContext, if (it is ConnectException) "Нет подключения к интернету" else "Ошибка загрузки картинки", Toast.LENGTH_SHORT).show()
                         progressDialog.dismiss()
                     }
                 }

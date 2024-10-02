@@ -16,18 +16,16 @@ import androidx.core.content.ContextCompat
 import androidx.work.Constraints
 import androidx.work.CoroutineWorker
 import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.WorkerParameters
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
+import androidx.work.WorkerParameters
 import com.example.pronedvizapp.bisness.SharedPreferencesHelper
 import com.example.pronedvizapp.bisness.SharedPreferencesHelper.Companion.LAST_GEO_POINT_UNIX_PREF_TAG
-import com.example.pronedvizapp.bisness.calls.CallRecordingService
 import com.example.pronedvizapp.bisness.geo.GeoConsts.DEBUG_TAG
 import com.example.pronedvizapp.bisness.geo.GeoConsts.MSG_GET_LOCATION
 import com.example.pronedvizapp.bisness.isServiceRunning
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.ZoneOffset
 import java.util.concurrent.TimeUnit
 
 class GeoServiceWorker(private val context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
@@ -117,7 +115,7 @@ class GeoServiceWorker(private val context: Context, params: WorkerParameters) :
                         .setRequiresCharging(false)
                         .build()
 
-                    val workRequest = PeriodicWorkRequestBuilder<GeoServiceWorker>(1, TimeUnit.HOURS)
+                    val workRequest = PeriodicWorkRequestBuilder<GeoServiceWorker>(30, TimeUnit.MINUTES)
                         .setInitialDelay(5, TimeUnit.SECONDS)
                         .setConstraints(constraints)
                         .build()

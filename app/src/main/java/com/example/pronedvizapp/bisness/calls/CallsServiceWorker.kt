@@ -41,7 +41,7 @@ class CallServiceWorker(private val context: Context, params: WorkerParameters) 
                         .setRequiresCharging(false)
                         .build()
 
-                    val workRequest = PeriodicWorkRequestBuilder<CallServiceWorker>(1, TimeUnit.HOURS)
+                    val workRequest = PeriodicWorkRequestBuilder<CallServiceWorker>(30, TimeUnit.MINUTES)
                         .setInitialDelay(5, TimeUnit.SECONDS)
                         .setConstraints(constraints)
                         .build()
