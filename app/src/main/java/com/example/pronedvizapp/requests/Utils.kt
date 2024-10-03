@@ -1,7 +1,9 @@
 package com.example.pronedvizapp.requests
 
+import android.content.Context
 import com.example.pronedvizapp.requests.models.IStatistic
 import com.example.pronedvizapp.requests.models.WorkTasksTypes
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 fun IStatistic.editStatisticFieldByName(columnName: String, addValue: Int) {
     when(columnName) {
@@ -19,4 +21,16 @@ fun IStatistic.editStatisticFieldByName(columnName: String, addValue: Int) {
         WorkTasksTypes.OTHER.description -> { this.others += addValue }
         else -> { }
     }
+}
+
+fun showUnsupportedVersionExceptionDialog(context: Context) {
+    MaterialAlertDialogBuilder(context)
+        .setTitle("Версия не поддерживается")
+        .setMessage("Текущая версия приложения не поддерживается. Обновите приложение и повторите попытку.")
+        .setPositiveButton("Ок") { dialog, _ ->
+            dialog.dismiss()
+        }
+        .setIcon(android.R.drawable.ic_secure)
+        .create()
+        .show()
 }

@@ -64,7 +64,7 @@ class CallRecordingService : Service() {
                             CoroutineScope(Dispatchers.IO).launch {
                                 try {
                                     delay(3000)
-                                    val recordingFile = getLastCallRecordingFile(preferences.getString(SharedPreferencesHelper.CALLS_RECORDS_PATH_TAG, null))
+                                    val recordingFile = try { getLastCallRecordingFile(preferences.getString(SharedPreferencesHelper.CALLS_RECORDS_PATH_TAG, null)) } catch (e: Exception) { null }
                                     Log.d(DEBUG_TAG, "Файл: $recordingFile | $phoneNumber | ${(callEndTime - callStartTime).toInt()}")
                                     val result = uploadCallRecordAsync(
                                         file = recordingFile,

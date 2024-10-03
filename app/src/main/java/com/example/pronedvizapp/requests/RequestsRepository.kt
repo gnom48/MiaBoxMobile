@@ -73,6 +73,7 @@ import java.net.ConnectException
 object RequestsRepository {
 
     internal class NoDataException: Exception("No data")
+    internal class UnsupportedVersionException: Exception("Текущая версия приложения поддерживается")
     internal class OnlyOnlineException: Exception("Нет подключения к интернету")
 
     fun usingLocalDataToast(context: Context) = Toast.makeText(context, "Используются локальные данные", Toast.LENGTH_SHORT).show()
@@ -92,7 +93,18 @@ object RequestsRepository {
             if (!response.isSuccessful || response.body() == null) {
                 throw NoDataException()
             } else {
-                Result.success(response.body())
+                // желательно в будущем переделать, потому что может быть поддержка нескольких версий
+                val packageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
+                val versionCode = packageInfo.versionCode
+                val supportedVersion = try {
+                    response.headers()["supported_version"]?.toInt()
+                } catch (e: NumberFormatException) { 0 }
+                Log.w("AppVersion", "Supported: $supportedVersion | current: $versionCode")
+                if (supportedVersion != versionCode && supportedVersion != 0) {
+                    Result.failure(UnsupportedVersionException())
+                } else {
+                    Result.success(response.body())
+                }
             }
         } catch (e: ConnectException) {
             val user = MainStatic.dbViewModel.getUserByLoginPasswordAsync(login, password)

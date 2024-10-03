@@ -9,6 +9,7 @@ import android.content.SharedPreferences
 import androidx.core.app.NotificationCompat
 import com.example.pronedvizapp.InitialActivity
 import com.example.pronedvizapp.R
+import com.example.pronedvizapp.bisness.SharedPreferencesHelper
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 
@@ -44,8 +45,8 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             EVENT_MORNING -> { }
             EVENT_EVENING -> {
                 val editor = preferences.edit()
-                editor.putInt("EVENING_MESSAGE", (System.currentTimeMillis() / 1000).toInt()).apply()
-                intent.putExtra("EVENING_MESSAGE", (System.currentTimeMillis() / 1000).toInt())
+                editor.putInt(SharedPreferencesHelper.EVENING_MESSAGE_TAG, (System.currentTimeMillis() / 1000).toInt()).apply()
+                intent.putExtra(SharedPreferencesHelper.EVENING_MESSAGE_TAG, (System.currentTimeMillis() / 1000).toInt())
                 pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
                 notificationBuilder.setContentIntent(pendingIntent)
             }

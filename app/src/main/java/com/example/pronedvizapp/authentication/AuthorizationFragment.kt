@@ -14,10 +14,12 @@ import com.example.pronedvizapp.MainActivity
 import com.example.pronedvizapp.MainStatic
 import com.example.pronedvizapp.bisness.SharedPreferencesHelper
 import com.example.pronedvizapp.databinding.FragmentAuthorizationBinding
+import com.example.pronedvizapp.requests.RequestsRepository
 import com.example.pronedvizapp.requests.RequestsRepository.authForToken
 import com.example.pronedvizapp.requests.RequestsRepository.getUserInfo
 import com.example.pronedvizapp.requests.RequestsRepository.usingLocalDataToast
 import com.example.pronedvizapp.requests.models.User
+import com.example.pronedvizapp.requests.showUnsupportedVersionExceptionDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
 
@@ -136,9 +138,13 @@ class AuthorizationFragment: Fragment() {
                         return@launch
                     }
                 }
-                res.onFailure {
+                res.onFailure { e ->
                     token = null
-                    Toast.makeText(this@AuthorizationFragment.requireContext(), "Неверный логин или пароль", Toast.LENGTH_SHORT).show()
+                    if (e is RequestsRepository.UnsupportedVersionException) {
+                        showUnsupportedVersionExceptionDialog(this@AuthorizationFragment.requireContext())
+                    } else {
+                        Toast.makeText(this@AuthorizationFragment.requireContext(), "Неверный логин или пароль", Toast.LENGTH_SHORT).show()
+                    }
                     return@launch
                 }
             }

@@ -15,10 +15,12 @@ import com.example.pronedvizapp.MainActivity
 import com.example.pronedvizapp.MainStatic
 import com.example.pronedvizapp.R
 import com.example.pronedvizapp.databinding.FragmentRegistrationBinding
+import com.example.pronedvizapp.requests.RequestsRepository
 import com.example.pronedvizapp.requests.RequestsRepository.authForToken
 import com.example.pronedvizapp.requests.RequestsRepository.regNewUser
 import com.example.pronedvizapp.requests.models.User
 import com.example.pronedvizapp.requests.models.UserTypes
+import com.example.pronedvizapp.requests.showUnsupportedVersionExceptionDialog
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
@@ -114,9 +116,13 @@ class RegistrationFragment: Fragment() {
                         startActivity(intent)
                         this@RegistrationFragment.requireActivity().finish()
                     }
-                    res.onFailure {
+                    res.onFailure { e ->
                         token = null
-                        Toast.makeText(this@RegistrationFragment.requireContext(), if (it is ConnectException) "Нет подключения к интернету" else "Пользователь не найден", Toast.LENGTH_SHORT).show()
+                        if (e is RequestsRepository.UnsupportedVersionException) {
+                            showUnsupportedVersionExceptionDialog(this@RegistrationFragment.requireContext())
+                        } else {
+                            Toast.makeText(this@RegistrationFragment.requireContext(), if (e is ConnectException) "Нет подключения к интернету" else "Пользователь не найден", Toast.LENGTH_SHORT).show()
+                        }
                         return@launch
                     }
                 }

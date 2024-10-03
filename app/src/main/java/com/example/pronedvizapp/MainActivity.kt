@@ -88,64 +88,78 @@ class MainActivity : AppCompatActivity() {
         CallServiceWorker.schedulePeriodicWork(this)
 
         val lastEveningMessage = intent.getIntExtra(SharedPreferencesHelper.EVENING_MESSAGE_TAG, -1000000)
-        if (lastEveningMessage > 0 || preferences.getInt(SharedPreferencesHelper.EVENING_MESSAGE_TAG, -1000000) > (System.currentTimeMillis() / 1000) - 25000) {
+        val lastPrefEveningMessage = preferences.getInt(SharedPreferencesHelper.EVENING_MESSAGE_TAG, -1000000)
+        if (lastEveningMessage > 0 || lastPrefEveningMessage >= (System.currentTimeMillis() / 1000) - (3 * 60 * 60)) {
             lifecycleScope.launch {
                 val dayStatistics = getUserStatisticsByPeriod(DAY_STATISTICS_PERIOD, this@MainActivity, MainStatic.currentToken!!)
-                dayStatistics.onSuccess { stat: Statistics ->
-                    val dialogBinding = FragmentDayResultsBinding.inflate(LayoutInflater.from(this@MainActivity))
-
-                    dialogBinding.resultsTextView.text = generateMotivationalResultMessage(stat.flyers, stat.calls, stat.dealsRent + stat.dealsSale > 0)
-
-                    dialogBinding.countAnalyticsTextView.text = stat.analytics.toString()
-                    dialogBinding.countCallsTextView.text = stat.calls.toString()
-                    dialogBinding.countFlyersTextView.text = stat.flyers.toString()
-                    dialogBinding.countDealsTextView.text = (stat.dealsSale + stat.dealsRent).toString()
-                    dialogBinding.subCountDealsSaleTextView.text = stat.dealsSale.toString()
-                    dialogBinding.subCountDealsRentTextView.text = stat.dealsRent.toString()
-                    dialogBinding.countMeetsTextView.text = stat.meets.toString()
-                    dialogBinding.countDepositsTextView.text = stat.deposits.toString()
-                    dialogBinding.countSearchTextView.text = stat.searches.toString()
-                    dialogBinding.countShowsTextView.text = stat.shows.toString()
-                    dialogBinding.countOthersTextView.text = stat.others.toString()
-
-                    if (stat.analytics == 0) {
-                        dialogBinding.aCont.visibility = View.GONE
-                    }
-                    if (stat.calls == 0) {
-                        dialogBinding.cCont.visibility = View.GONE
-                    }
-                    if (stat.flyers == 0) {
-                        dialogBinding.fCont.visibility = View.GONE
-                    }
-                    if (stat.dealsRent == 0 && stat.dealsSale == 0) {
-                        dialogBinding.dCont.visibility = View.GONE
-                    }
-                    if (stat.meets == 0) {
-                        dialogBinding.mCont.visibility = View.GONE
-                    }
-                    if (stat.deposits == 0) {
-                        dialogBinding.depCont.visibility = View.GONE
-                    }
-                    if (stat.searches == 0) {
-                        dialogBinding.searchCont.visibility = View.GONE
-                    }
-                    if (stat.shows == 0) {
-                        dialogBinding.shCont.visibility = View.GONE
-                    }
-                    if (stat.others == 0) {
-                        dialogBinding.oCont.visibility = View.GONE
-                    }
-
-                    val dialog = Dialog(this@MainActivity)
-                    dialog.window?.setBackgroundDrawableResource(R.color.transparent0)
-                    dialog.setContentView(dialogBinding.root)
-                    dialog.show()
+                dayStatistics.onSuccess { s: Statistics ->
+                    showEveningMessage(s)
                 }
                 dayStatistics.onFailure { e ->
-                    Log.e("MiaBox", "getUserStatisticsByPeriod onFailure in eveningMessage", e)
+                    Log.e("EveningMessage", "getUserStatisticsByPeriod onFailure in eveningMessage", e)
                 }
             }
         }
+    }
+
+    private fun showEveningMessage(stat: Statistics) {
+
+        val editor = preferences.edit()
+        editor.putInt(SharedPreferencesHelper.EVENING_MESSAGE_TAG, -100000).apply()
+
+        val dialog = Dialog(this@MainActivity)
+
+        val dialogBinding = FragmentDayResultsBinding.inflate(LayoutInflater.from(this@MainActivity))
+
+        dialogBinding.resultsTextView.text = generateMotivationalResultMessage(stat.flyers, stat.calls, stat.dealsRent + stat.dealsSale > 0)
+
+        dialogBinding.countAnalyticsTextView.text = stat.analytics.toString()
+        dialogBinding.countCallsTextView.text = stat.calls.toString()
+        dialogBinding.countFlyersTextView.text = stat.flyers.toString()
+        dialogBinding.countDealsTextView.text = (stat.dealsSale + stat.dealsRent).toString()
+        dialogBinding.subCountDealsSaleTextView.text = stat.dealsSale.toString()
+        dialogBinding.subCountDealsRentTextView.text = stat.dealsRent.toString()
+        dialogBinding.countMeetsTextView.text = stat.meets.toString()
+        dialogBinding.countDepositsTextView.text = stat.deposits.toString()
+        dialogBinding.countSearchTextView.text = stat.searches.toString()
+        dialogBinding.countShowsTextView.text = stat.shows.toString()
+        dialogBinding.countOthersTextView.text = stat.others.toString()
+
+        dialogBinding.closeImageButton.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        if (stat.analytics == 0) {
+            dialogBinding.aCont.visibility = View.GONE
+        }
+        if (stat.calls == 0) {
+            dialogBinding.cCont.visibility = View.GONE
+        }
+        if (stat.flyers == 0) {
+            dialogBinding.fCont.visibility = View.GONE
+        }
+        if (stat.dealsRent == 0 && stat.dealsSale == 0) {
+            dialogBinding.dCont.visibility = View.GONE
+        }
+        if (stat.meets == 0) {
+            dialogBinding.mCont.visibility = View.GONE
+        }
+        if (stat.deposits == 0) {
+            dialogBinding.depCont.visibility = View.GONE
+        }
+        if (stat.searches == 0) {
+            dialogBinding.searchCont.visibility = View.GONE
+        }
+        if (stat.shows == 0) {
+            dialogBinding.shCont.visibility = View.GONE
+        }
+        if (stat.others == 0) {
+            dialogBinding.oCont.visibility = View.GONE
+        }
+
+        dialog.window?.setBackgroundDrawableResource(R.color.transparent0)
+        dialog.setContentView(dialogBinding.root)
+        dialog.show()
     }
 
     private fun initUi() {
@@ -255,7 +269,7 @@ class MainActivity : AppCompatActivity() {
                 messageBuilder.append("Вы сделали $flyers рассклеек. Это отлично! ")
             } else {
                 if (flyers == 0) {
-                    messageBuilder.append("Вы не сделали ниодной расклейки! Постарайтесь в следующий раз улучшить результат. ")
+                    messageBuilder.append("Вы не сделали ни одной расклейки! Постарайтесь в следующий раз улучшить результат. ")
                 } else {
                     messageBuilder.append("Вы сделали $flyers рассклеек. Это хорошо, но можно еще лучше. ")
                 }
@@ -265,7 +279,7 @@ class MainActivity : AppCompatActivity() {
                 messageBuilder.append("\nВы сделали $calls звонков. Это отлично! ")
             } else {
                 if (calls == 0) {
-                    messageBuilder.append("Вы не сделали ниодного холодного звонка! Задумайтесь над улучшением этого показателя в следующий раз. ")
+                    messageBuilder.append("Вы не сделали ни одного холодного звонка! Задумайтесь над улучшением этого показателя в следующий раз. ")
                 } else {
                     messageBuilder.append("\nВы сделали $calls звонков. Это хорошо, но можно еще лучше. ")
                 }

@@ -16,8 +16,10 @@ import androidx.core.app.ActivityCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.pronedvizapp.bisness.SharedPreferencesHelper
 import com.example.pronedvizapp.bisness.network.isNetworkAvailable
+import com.example.pronedvizapp.requests.RequestsRepository
 import com.example.pronedvizapp.requests.RequestsRepository.authForToken
 import com.example.pronedvizapp.requests.RequestsRepository.getUserInfo
+import com.example.pronedvizapp.requests.showUnsupportedVersionExceptionDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
 
@@ -31,23 +33,7 @@ class InitialActivity : AppCompatActivity() {
         setContentView(R.layout.activity_initial)
         val networkStatus = isNetworkAvailable(this)
         MainStatic.isCurrentOnline.value = networkStatus
-//        if (!networkStatus) {
-//            MaterialAlertDialogBuilder(this)
-//                .setTitle("Внимание")
-//                .setMessage("Отсутствует подключение к интернету, вы будете использовать локальные данные. Синхронизация произойдет автоматически при подключении к сети.")
-//                .setPositiveButton("Ок") { dialog, _ ->
-//                    dialog.dismiss()
-//                }
-//                .setOnDismissListener {
-//                    checkPermissions()
-//                }
-//                .create()
-//                .show()
-//        } else {
-//            checkPermissions()
-//        }
         checkPermissions()
-
     }
 
     override fun onRequestPermissionsResult(
@@ -155,17 +141,18 @@ class InitialActivity : AppCompatActivity() {
                             editor.putString(SharedPreferencesHelper.LAST_PASSWORD_TAG, password).apply()
                             editor.putString(SharedPreferencesHelper.TOKEN_TAG, token).apply()
                             editor.putString(SharedPreferencesHelper.USER_ID_TAG, user.id).apply()
+
                             if (!preferences.contains(SharedPreferencesHelper.CALLS_RECORDS_PATH_TAG)) {
                                 editor.putString(SharedPreferencesHelper.CALLS_RECORDS_PATH_TAG, "Recordings/Call").apply()
                             }
 
                             if (this@InitialActivity.intent.getBooleanExtra("IS_OLD_ENTER", true)) {
-                                val intent = Intent(this@InitialActivity, MainActivity::class.java)
-                                val lastEveningMessage = intent.getIntExtra("EVENING_MESSAGE", -1000000)
+                                val mainIntent = Intent(this@InitialActivity, MainActivity::class.java)
+                                val lastEveningMessage = intent.getIntExtra(SharedPreferencesHelper.EVENING_MESSAGE_TAG, -1000000)
                                 if (lastEveningMessage > 0) {
-                                    intent.putExtra("EVENING_MESSAGE", (System.currentTimeMillis() / 1000).toInt())
+                                    mainIntent.putExtra(SharedPreferencesHelper.EVENING_MESSAGE_TAG, (System.currentTimeMillis() / 1000).toInt())
                                 }
-                                startActivity(intent)
+                                startActivity(mainIntent)
                                 this@InitialActivity.finish()
                             } else {
                                 this@InitialActivity.finish()
@@ -198,8 +185,12 @@ class InitialActivity : AppCompatActivity() {
                             return@launch
                         }
                     }
-                    res.onFailure {
-                        Toast.makeText(this@InitialActivity, "Ошибка авторизации", Toast.LENGTH_SHORT).show()
+                    res.onFailure { e ->
+                        if (e is RequestsRepository.UnsupportedVersionException) {
+                            showUnsupportedVersionExceptionDialog(this@InitialActivity)
+                        } else {
+                            Toast.makeText(this@InitialActivity, "Ошибка авторизации", Toast.LENGTH_SHORT).show()
+                        }
                         this@InitialActivity.finish()
                         return@launch
                     }

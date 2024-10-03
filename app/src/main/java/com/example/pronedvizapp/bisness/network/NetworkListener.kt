@@ -99,13 +99,13 @@ class NetworkListener(private val context: Context) {
 
         if (isNetworkAvailable) {
             CoroutineScope(Dispatchers.Main).launch {
-                val login = preferences.getString(SharedPreferencesHelper.LAST_LOGIN_TAG, null)
-                val password = preferences.getString(SharedPreferencesHelper.LAST_PASSWORD_TAG, null)
+                val login = try { preferences.getString(SharedPreferencesHelper.LAST_LOGIN_TAG, null) } catch (e: Exception) { null }
+                val password = try { preferences.getString(SharedPreferencesHelper.LAST_PASSWORD_TAG, null) } catch (e: Exception) { null }
                 if (login.isNullOrEmpty() || password.isNullOrEmpty()) {
                     stopListening()
                     return@launch
                 } else {
-                    val userId = preferences.getString(SharedPreferencesHelper.USER_ID_TAG, null)
+                    val userId = try { preferences.getString(SharedPreferencesHelper.USER_ID_TAG, null) } catch (e: Exception) { null }
                     if (dbViewModel.getChangesByUserIdAsync(userId.toString()).isEmpty()) {
                         return@launch
                     }

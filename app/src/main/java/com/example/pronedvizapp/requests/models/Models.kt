@@ -7,8 +7,8 @@ import java.io.Serializable
 import java.util.UUID
 
 enum class UserTypes(var description: String): Serializable {
-    COMMERCIAL("Риелтер коммерческой недвижимости"),
-    PRIVATE("Риелтер частной недвижимости")
+    COMMERCIAL("Риелтор коммерческой недвижимости"),
+    PRIVATE("Риелтор частной недвижимости")
 }
 
 enum class WorkTasksTypes(var description: String): Serializable {
