@@ -1,157 +1,123 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".main.ProfileFragment"
-    tools:background="@color/black_background">
+    android:background="@color/black"
+    tools:context=".main.ProfileFragment">
 
+    <!-- Фон с легкой текстурой или градиентом -->
+    <ImageView
+        android:id="@+id/backgroundImage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/minimal_texture"
+        android:alpha="0.68"
+        android:contentDescription="@null" />
+
+    <!-- Основной интерфейс -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:fillViewport="true">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:padding="24dp">
 
-            <LinearLayout
-                android:id="@+id/linearLayout3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:gravity="center"
-                android:orientation="horizontal"
-                app:layout_constraintEnd_toEndOf="parent"
+            <!-- Аватар -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/photoCardView"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                app:cardCornerRadius="48dp"
+                app:cardElevation="2dp"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintEnd_toEndOf="parent">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp">
-
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="120dp"
-                        android:layout_height="120dp"
-                        app:cardCornerRadius="20dp"
-                        android:id="@+id/photoCardView"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
-
-                        <ImageView
-                            android:id="@+id/photoImageView"
-                            android:layout_width="120dp"
-                            android:layout_height="120dp"
-                            android:scaleType="centerCrop"
-                            android:src="@drawable/avatar"/>
-
-                    </androidx.cardview.widget.CardView>
-
-                    <View
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:background="@drawable/green_circle_online"
-                        android:elevation="15dp"
-                        app:layout_constraintEnd_toEndOf="@id/photoCardView"
-                        app:layout_constraintTop_toTopOf="@id/photoCardView" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <LinearLayout
+                <ImageView
+                    android:id="@+id/photoImageView"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginStart="10dp"
-                    android:orientation="vertical">
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/avatar" />
+            </androidx.cardview.widget.CardView>
 
-                    <TextView
-                        style="@style/supportText"
-                        android:id="@+id/dayTimeGreetingsTextView"
-                        android:textAlignment="center"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="С возвращением," />
-
-                    <TextView
-                        android:id="@+id/userNameTextView"
-                        style="@style/simpleText"
-                        android:textAlignment="center"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="Пользователь" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
+            <!-- Приветствие -->
+            <TextView
+                android:id="@+id/dayTimeGreetingsTextView"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/subMenuLinearLayout"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayout3"
-                android:gravity="center"
-                android:orientation="horizontal">
+                android:text="С возвращением,"
+                android:textColor="@color/light_grey"
+                android:textSize="16sp"
+                android:letterSpacing="0.03"
+                app:layout_constraintTop_toBottomOf="@id/photoCardView"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="16dp" />
 
-                <androidx.appcompat.widget.AppCompatButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    style="@style/customeButton"
+            <TextView
+                android:id="@+id/userNameTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Имя пользователя"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                app:layout_constraintTop_toBottomOf="@id/dayTimeGreetingsTextView"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="4dp" />
+
+            <!-- Кнопки переключения -->
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/subMenuToggleGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                app:layout_constraintTop_toBottomOf="@id/userNameTextView"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:singleSelection="true">
+
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/targetsButton"
-                    android:background="@drawable/button_selector"
-                    android:text="Цели"
-                    android:textColor="@color/button_text_selector"/>
-
-                <androidx.appcompat.widget.AppCompatButton
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    style="@style/customeButton"
-                    android:layout_margin="10dp"
+                    android:text="Цели"
+                    android:textColor="@color/white"
+                    app:cornerRadius="12dp" />
+
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/achivesButton"
-                    android:background="@drawable/button_selector"
-                    android:textColor="@color/button_text_selector"
-                    android:text="Достижения"/>
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Достижения"
+                    android:textColor="@color/white"
+                    app:cornerRadius="12dp" />
+            </com.google.android.material.button.MaterialButtonToggleGroup>
 
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/linearLayout2"
-                android:layout_width="match_parent"
+            <!-- RecyclerView -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/mainInfoRecyclerView"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="105dp"
-                android:layout_marginTop="15dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="24dp"
+                android:clipToPadding="false"
+                android:paddingBottom="100dp"
+                app:layout_constraintTop_toBottomOf="@id/subMenuToggleGroup"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/subMenuLinearLayout">
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/mainInfoRecyclerView"
-                    android:layout_width="match_parent"
-                    android:layout_height="330dp"
-                    android:layout_marginVertical="10dp"
-                    android:background="@color/transparent0"
-                    android:orientation="horizontal" />
-
-            </LinearLayout>
+                app:layout_constraintEnd_toEndOf="parent"
+                 />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
     </ScrollView>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>
