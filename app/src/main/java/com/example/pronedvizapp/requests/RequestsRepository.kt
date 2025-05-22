@@ -100,11 +100,14 @@ object RequestsRepository {
                     response.headers()["supported_version"]?.toInt()
                 } catch (e: NumberFormatException) { 0 }
                 Log.w("AppVersion", "Supported: $supportedVersion | current: $versionCode")
-                if (supportedVersion != versionCode && supportedVersion != 0) {
-                    Result.failure(UnsupportedVersionException())
-                } else {
-                    Result.success(response.body())
-                }
+//                if (supportedVersion != versionCode && supportedVersion != 0) {
+//                    Result.failure(UnsupportedVersionException())
+//                } else {
+//                    Result.success(response.body())
+//                }
+
+                Result.success(response.body())
+
             }
         } catch (e: ConnectException) {
             val user = MainStatic.dbViewModel.getUserByLoginPasswordAsync(login, password)
